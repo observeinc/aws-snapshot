@@ -1,0 +1,46 @@
+[
+    {
+      "action": "",
+      "id": "fl-04000000000000059",
+      "data": {
+        "CreationTime": "2019-10-02T22:25:56.108Z",
+        "DeliverCrossAccountRole": null,
+        "DeliverLogsErrorMessage": null,
+        "DeliverLogsPermissionArn": null,
+        "DeliverLogsStatus": "SUCCESS",
+        "DestinationOptions": null,
+        "FlowLogId": "fl-04000000000000059",
+        "FlowLogStatus": "ACTIVE",
+        "LogDestination": "arn:aws:s3:::whatever",
+        "LogDestinationType": "s3",
+        "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}",
+        "LogGroupName": null,
+        "MaxAggregationInterval": 600,
+        "ResourceId": "vpc-070000000000000c5",
+        "Tags": [],
+        "TrafficType": "ACCEPT"
+      }
+    },
+    {
+      "action": "",
+      "id": "fl-050000000000000a7",
+      "data": {
+        "CreationTime": "2020-01-27T21:29:36.24Z",
+        "DeliverCrossAccountRole": null,
+        "DeliverLogsErrorMessage": null,
+        "DeliverLogsPermissionArn": null,
+        "DeliverLogsStatus": "SUCCESS",
+        "DestinationOptions": null,
+        "FlowLogId": "fl-050000000000000a7",
+        "FlowLogStatus": "ACTIVE",
+        "LogDestination": "arn:aws:s3:::whatever",
+        "LogDestinationType": "s3",
+        "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}",
+        "LogGroupName": null,
+        "MaxAggregationInterval": 600,
+        "ResourceId": "vpc-af0000d6",
+        "Tags": [],
+        "TrafficType": "ACCEPT"
+      }
+    }
+  ]

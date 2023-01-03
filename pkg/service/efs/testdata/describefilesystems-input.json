@@ -1,0 +1,28 @@
+{
+    "FileSystems": [
+        {
+            "OwnerId": "123456789012",
+            "CreationToken": "ed16ef58-9735-4c3e-a173-27ac773f721c",
+            "FileSystemId": "fs-0a54816cdec9f2180",
+            "FileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+            "CreationTime": "2022-01-28T08:30:27+00:00",
+            "LifeCycleState": "available",
+            "NumberOfMountTargets": 1,
+            "SizeInBytes": {
+                "Value": 12288,
+                "Timestamp": "2022-01-28T11:36:23+00:00",
+                "ValueInIA": 0,
+                "ValueInStandard": 12288
+            },
+            "PerformanceMode": "generalPurpose",
+            "Encrypted": false,
+            "ThroughputMode": "bursting",
+            "Tags": [
+                {
+                    "Key": "aws:elasticfilesystem:default-backup",
+                    "Value": "enabled"
+                }
+            ]
+        }
+    ]
+}

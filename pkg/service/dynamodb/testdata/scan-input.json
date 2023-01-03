@@ -1,0 +1,24 @@
+{
+    "Items": [
+        {
+            "Digest": {
+                "S": "f7f30779d394e6925663aeaec15966b0"
+            },
+            "LockID": {
+                "S": "terraform-state/eng-md5"
+            }
+        },
+        {
+            "Digest": {
+                "S": "6930ae99c406abdc6356d8b9e5eec1bb"
+            },
+            "LockID": {
+                "S": "terraform-state/prod-md5"
+            }
+        }
+        
+    ],
+    "Count": 2,
+    "ScannedCount": 2,
+    "ConsumedCapacity": null
+}

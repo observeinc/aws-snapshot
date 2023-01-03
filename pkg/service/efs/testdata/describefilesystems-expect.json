@@ -1,0 +1,35 @@
+[
+    {
+      "action": "",
+      "id": "fs-0a54816cdec9f2180",
+      "data": {
+        "AvailabilityZoneId": null,
+        "AvailabilityZoneName": null,
+        "CreationTime": "2022-01-28T08:30:27Z",
+        "CreationToken": "ed16ef58-9735-4c3e-a173-27ac773f721c",
+        "Encrypted": false,
+        "FileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+        "FileSystemId": "fs-0a54816cdec9f2180",
+        "KmsKeyId": null,
+        "LifeCycleState": "available",
+        "Name": null,
+        "NumberOfMountTargets": 1,
+        "OwnerId": "123456789012",
+        "PerformanceMode": "generalPurpose",
+        "ProvisionedThroughputInMibps": null,
+        "SizeInBytes": {
+          "Timestamp": "2022-01-28T11:36:23Z",
+          "Value": 12288,
+          "ValueInIA": 0,
+          "ValueInStandard": 12288
+        },
+        "Tags": [
+          {
+            "Key": "aws:elasticfilesystem:default-backup",
+            "Value": "enabled"
+          }
+        ],
+        "ThroughputMode": "bursting"
+      }
+    }
+  ]

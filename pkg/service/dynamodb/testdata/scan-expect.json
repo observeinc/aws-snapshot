@@ -1,0 +1,40 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:dynamodb:us-west-1:123456789012:table/example",
+      "data": {
+        "Keys": {
+          "LockID": {
+            "S": "terraform-state/eng-md5"
+          }
+        },
+        "NewImage": {
+          "Digest": {
+            "S": "f7f30779d394e6925663aeaec15966b0"
+          },
+          "LockID": {
+            "S": "terraform-state/eng-md5"
+          }
+        }
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:dynamodb:us-west-1:123456789012:table/example",
+      "data": {
+        "Keys": {
+          "LockID": {
+            "S": "terraform-state/prod-md5"
+          }
+        },
+        "NewImage": {
+          "Digest": {
+            "S": "6930ae99c406abdc6356d8b9e5eec1bb"
+          },
+          "LockID": {
+            "S": "terraform-state/prod-md5"
+          }
+        }
+      }
+    }
+  ]

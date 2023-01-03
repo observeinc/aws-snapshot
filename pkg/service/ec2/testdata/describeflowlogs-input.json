@@ -1,0 +1,31 @@
+{
+    "FlowLogs": [
+        {
+            "CreationTime": "2019-10-02T22:25:56.108000+00:00",
+            "DeliverLogsStatus": "SUCCESS",
+            "FlowLogId": "fl-04000000000000059",
+            "FlowLogStatus": "ACTIVE",
+            "ResourceId": "vpc-070000000000000c5",
+            "TrafficType": "ACCEPT",
+            "LogDestinationType": "s3",
+            "LogDestination": "arn:aws:s3:::whatever",
+            "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}",
+            "Tags": [],
+            "MaxAggregationInterval": 600
+        },
+        {
+            "CreationTime": "2020-01-27T21:29:36.240000+00:00",
+            "DeliverLogsStatus": "SUCCESS",
+            "FlowLogId": "fl-050000000000000a7",
+            "FlowLogStatus": "ACTIVE",
+            "ResourceId": "vpc-af0000d6",
+            "TrafficType": "ACCEPT",
+            "LogDestinationType": "s3",
+            "LogDestination": "arn:aws:s3:::whatever",
+            "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}",
+            "Tags": [],
+            "MaxAggregationInterval": 600
+        }
+    ],
+    "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
+}

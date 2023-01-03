@@ -1,0 +1,64 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:eks:us-west-2:123456789012:nodegroup/eg-test-eks-fargate-cluster/eg-test-eks-fargate-workers/e0bf25ce-d4e3-6831-f4bf-000000000000",
+      "data": {
+        "Nodegroup": {
+          "AmiType": "AL2_x86_64",
+          "CapacityType": "ON_DEMAND",
+          "ClusterName": "eg-test-eks-fargate-cluster",
+          "CreatedAt": "2022-01-11T16:08:53.682-08:00",
+          "DiskSize": null,
+          "Health": {
+            "Issues": []
+          },
+          "InstanceTypes": [
+            "t3.small"
+          ],
+          "Labels": {},
+          "LaunchTemplate": {
+            "Id": "lt-0b8715c26ba000000",
+            "Name": "eg-test-eks-fargate-workers20220112000849611400000000",
+            "Version": "1"
+          },
+          "ModifiedAt": "2022-01-18T17:29:12.009-08:00",
+          "NodeRole": "arn:aws:iam::123456789012:role/eg-test-eks-fargate-workers",
+          "NodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/eg-test-eks-fargate-cluster/eg-test-eks-fargate-workers/e0bf25ce-d4e3-6831-f4bf-000000000000",
+          "NodegroupName": "eg-test-eks-fargate-workers",
+          "ReleaseVersion": "1.21.5-20211206",
+          "RemoteAccess": null,
+          "Resources": {
+            "AutoScalingGroups": [
+              {
+                "Name": "eks-eg-test-eks-fargate-workers-e0bf25ce-d4e3-6831-f4bf-000000000000"
+              }
+            ],
+            "RemoteAccessSecurityGroup": null
+          },
+          "ScalingConfig": {
+            "DesiredSize": 2,
+            "MaxSize": 3,
+            "MinSize": 2
+          },
+          "Status": "ACTIVE",
+          "Subnets": [
+            "subnet-0bef2c06e96d00000",
+            "subnet-0168edb672b400000"
+          ],
+          "Tags": {
+            "Attributes": "workers",
+            "Name": "eg-test-eks-fargate-workers",
+            "Namespace": "eg",
+            "Stage": "test",
+            "kubernetes.io/cluster/eg-test-eks-fargate-cluster": "owned"
+          },
+          "Taints": null,
+          "UpdateConfig": {
+            "MaxUnavailable": 1,
+            "MaxUnavailablePercentage": null
+          },
+          "Version": "1.21"
+        }
+      }
+    }
+  ]

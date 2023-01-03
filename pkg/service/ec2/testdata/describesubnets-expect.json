@@ -1,0 +1,61 @@
+[
+    {
+      "action": "",
+      "id": "subnet-0a00000000000000a",
+      "data": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "us-west-2a",
+        "AvailabilityZoneId": "usw2-az1",
+        "AvailableIpAddressCount": 250,
+        "CidrBlock": "10.1.0.0/24",
+        "CustomerOwnedIpv4Pool": null,
+        "DefaultForAz": false,
+        "EnableDns64": null,
+        "EnableLniAtDeviceIndex": null,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": null,
+        "MapCustomerOwnedIpOnLaunch": false,
+        "MapPublicIpOnLaunch": true,
+        "OutpostArn": null,
+        "OwnerId": "1234567890",
+        "PrivateDnsNameOptionsOnLaunch": null,
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:us-west-2:1234567890:subnet/subnet-0a00000000000000a",
+        "SubnetId": "subnet-0a00000000000000a",
+        "Tags": null,
+        "VpcId": "vpc-0900000000000000b"
+      }
+    },
+    {
+      "action": "",
+      "id": "subnet-08000000000000008",
+      "data": {
+        "AssignIpv6AddressOnCreation": false,
+        "AvailabilityZone": "us-west-2c",
+        "AvailabilityZoneId": "usw2-az3",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "172.20.252.0/24",
+        "CustomerOwnedIpv4Pool": null,
+        "DefaultForAz": false,
+        "EnableDns64": null,
+        "EnableLniAtDeviceIndex": null,
+        "Ipv6CidrBlockAssociationSet": [],
+        "Ipv6Native": null,
+        "MapCustomerOwnedIpOnLaunch": false,
+        "MapPublicIpOnLaunch": false,
+        "OutpostArn": null,
+        "OwnerId": "1234567890",
+        "PrivateDnsNameOptionsOnLaunch": null,
+        "State": "available",
+        "SubnetArn": "arn:aws:ec2:us-west-2:1234567890:subnet/subnet-08000000000000008",
+        "SubnetId": "subnet-08000000000000008",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "observe-eng-rds-2c"
+          }
+        ],
+        "VpcId": "vpc-07000000000000005"
+      }
+    }
+  ]

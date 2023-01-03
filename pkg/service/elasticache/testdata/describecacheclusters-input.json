@@ -1,0 +1,41 @@
+{
+    "CacheClusters": [
+        {
+            "CacheClusterId": "test",
+            "ConfigurationEndpoint": {
+                "Address": "test.onaybx.cfg.usw2.cache.amazonaws.com",
+                "Port": 11211
+            },
+            "ClientDownloadLandingPage": "https://console.aws.amazon.com/elasticache/home#client-download:",
+            "CacheNodeType": "cache.r6g.large",
+            "Engine": "memcached",
+            "EngineVersion": "1.6.6",
+            "CacheClusterStatus": "available",
+            "NumCacheNodes": 1,
+            "PreferredAvailabilityZone": "us-west-2b",
+            "CacheClusterCreateTime": "2021-07-08T17:15:32.622000+00:00",
+            "PreferredMaintenanceWindow": "sun:06:30-sun:07:30",
+            "PendingModifiedValues": {},
+            "CacheSecurityGroups": [],
+            "CacheParameterGroup": {
+                "CacheParameterGroupName": "default.memcached1.6",
+                "ParameterApplyStatus": "in-sync",
+                "CacheNodeIdsToReboot": []
+            },
+            "CacheSubnetGroupName": "test",
+            "AutoMinorVersionUpgrade": true,
+            "SecurityGroups": [
+                {
+                    "SecurityGroupId": "sg-0000123b",
+                    "Status": "active"
+                }
+            ],
+            "AuthTokenEnabled": false,
+            "TransitEncryptionEnabled": false,
+            "AtRestEncryptionEnabled": false,
+            "ARN": "arn:aws:elasticache:us-west-2:123456789012:cluster:test",
+            "ReplicationGroupLogDeliveryEnabled": false,
+            "LogDeliveryConfigurations": []
+        }
+    ]
+}

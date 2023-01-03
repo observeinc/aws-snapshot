@@ -1,0 +1,27 @@
+[
+    {
+      "action": "",
+      "id": "nat-00000000000000000",
+      "data": {
+        "ConnectivityType": "public",
+        "CreateTime": "2021-08-28T22:38:21Z",
+        "DeleteTime": "2021-08-28T22:39:32Z",
+        "FailureCode": null,
+        "FailureMessage": null,
+        "NatGatewayAddresses": [
+          {
+            "AllocationId": "eipalloc-00000000000000000",
+            "NetworkInterfaceId": "eni-00000000000000000",
+            "PrivateIp": "172.31.10.100",
+            "PublicIp": null
+          }
+        ],
+        "NatGatewayId": "nat-00000000000000000",
+        "ProvisionedBandwidth": null,
+        "State": "deleted",
+        "SubnetId": "subnet-00000000",
+        "Tags": [],
+        "VpcId": "vpc-00000000"
+      }
+    }
+  ]

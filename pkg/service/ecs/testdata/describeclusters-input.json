@@ -1,0 +1,24 @@
+{
+    "clusters": [
+        {
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+            "clusterName": "ec2-tutorial",
+            "status": "ACTIVE",
+            "registeredContainerInstancesCount": 2,
+            "runningTasksCount": 1,
+            "pendingTasksCount": 0,
+            "activeServicesCount": 1,
+            "statistics": [],
+            "tags": [],
+            "settings": [
+                {
+                    "name": "containerInsights",
+                    "value": "disabled"
+                }
+            ],
+            "capacityProviders": [],
+            "defaultCapacityProviderStrategy": []
+        }
+    ],
+    "failures": []
+}

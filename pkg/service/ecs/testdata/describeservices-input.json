@@ -1,0 +1,66 @@
+{
+    "services": [
+        {
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/ec2-tutorial/ecs-tutorial",
+            "serviceName": "ecs-tutorial",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+            "loadBalancers": [],
+            "serviceRegistries": [],
+            "status": "ACTIVE",
+            "desiredCount": 1,
+            "runningCount": 1,
+            "pendingCount": 0,
+            "launchType": "EC2",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+            "deploymentConfiguration": {
+                "deploymentCircuitBreaker": {
+                    "enable": false,
+                    "rollback": false
+                },
+                "maximumPercent": 200,
+                "minimumHealthyPercent": 100
+            },
+            "deployments": [
+                {
+                    "id": "ecs-svc/8746618186506775795",
+                    "status": "PRIMARY",
+                    "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+                    "desiredCount": 1,
+                    "pendingCount": 0,
+                    "runningCount": 1,
+                    "failedTasks": 0,
+                    "createdAt": "2021-06-23T14:56:15.824000-07:00",
+                    "updatedAt": "2021-06-23T14:56:45.588000-07:00",
+                    "launchType": "EC2",
+                    "rolloutState": "COMPLETED",
+                    "rolloutStateReason": "ECS deployment ecs-svc/8746618186506775795 completed."
+                }
+            ],
+            "events": [
+                {
+                    "id": "9b9bb0cd-3952-4c10-874c-da9ac947b240",
+                    "createdAt": "2021-06-23T14:56:45.595000-07:00",
+                    "message": "(service ecs-tutorial) has reached a steady state."
+                },
+                {
+                    "id": "323b4414-abb1-4bfc-bdd2-fee7d0fb3d53",
+                    "createdAt": "2021-06-23T14:56:45.594000-07:00",
+                    "message": "(service ecs-tutorial) (deployment ecs-svc/8746618186506775795) deployment completed."
+                },
+                {
+                    "id": "21802c3b-3d3a-4569-a531-d0271100d1ca",
+                    "createdAt": "2021-06-23T14:56:23.651000-07:00",
+                    "message": "(service ecs-tutorial) has started 1 tasks: (task beadf95ec94e41cabd16fcb829d6fa5b)."
+                }
+            ],
+            "createdAt": "2021-06-23T14:56:15.824000-07:00",
+            "placementConstraints": [],
+            "placementStrategy": [],
+            "schedulingStrategy": "REPLICA",
+            "createdBy": "arn:aws:iam::123456789012:user/alice",
+            "enableECSManagedTags": true,
+            "propagateTags": "TASK_DEFINITION"
+        }
+    ],
+    "failures": []
+}

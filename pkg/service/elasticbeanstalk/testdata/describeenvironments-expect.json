@@ -1,0 +1,33 @@
+[
+    {
+      "action": "",
+      "id": "e-375mc9kpzq",
+      "data": {
+        "AbortableOperationInProgress": false,
+        "ApplicationName": "terraflood-luke",
+        "CNAME": "Terrafloodluke-env.eba-sbmik2dc.us-west-2.elasticbeanstalk.com",
+        "DateCreated": "2022-02-08T13:29:43.31Z",
+        "DateUpdated": "2022-02-08T13:32:58.723Z",
+        "Description": null,
+        "EndpointURL": "awseb-AWSEB-7C9CN9OAGS3F-1494762530.us-west-2.elb.amazonaws.com",
+        "EnvironmentArn": "arn:aws:elasticbeanstalk:us-west-2:739672403694:environment/terraflood-luke/Terrafloodluke-env",
+        "EnvironmentId": "e-375mc9kpzq",
+        "EnvironmentLinks": [],
+        "EnvironmentName": "Terrafloodluke-env",
+        "Health": "Green",
+        "HealthStatus": "Ok",
+        "OperationsRole": null,
+        "PlatformArn": "arn:aws:elasticbeanstalk:us-west-2::platform/Docker running on 64bit Amazon Linux 2/3.4.11",
+        "Resources": null,
+        "SolutionStackName": "64bit Amazon Linux 2 v3.4.11 running Docker",
+        "Status": "Ready",
+        "TemplateName": null,
+        "Tier": {
+          "Name": "WebServer",
+          "Type": "Standard",
+          "Version": "1.0"
+        },
+        "VersionLabel": "Sample Application"
+      }
+    }
+  ]

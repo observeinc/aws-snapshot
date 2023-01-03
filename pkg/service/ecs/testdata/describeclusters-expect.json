@@ -1,0 +1,29 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+      "data": {
+        "ActiveServicesCount": 1,
+        "Attachments": null,
+        "AttachmentsStatus": null,
+        "CapacityProviders": [],
+        "ClusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+        "ClusterName": "ec2-tutorial",
+        "Configuration": null,
+        "DefaultCapacityProviderStrategy": [],
+        "PendingTasksCount": 0,
+        "RegisteredContainerInstancesCount": 2,
+        "RunningTasksCount": 1,
+        "ServiceConnectDefaults": null,
+        "Settings": [
+          {
+            "Name": "containerInsights",
+            "Value": "disabled"
+          }
+        ],
+        "Statistics": [],
+        "Status": "ACTIVE",
+        "Tags": []
+      }
+    }
+  ]

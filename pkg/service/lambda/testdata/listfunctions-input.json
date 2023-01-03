@@ -1,0 +1,47 @@
+{
+    "Functions": [
+        {
+            "FunctionName": "observe-lambda",
+            "FunctionArn": "arn:aws:lambda:us-west-2:1234567890:function:observe-lambda",
+            "Runtime": "go1.x",
+            "Role": "arn:aws:iam::1234567890:role/observe-lambda-20210511193624970600000001",
+            "Handler": "main",
+            "CodeSize": 4941725,
+            "Description": "Lambda function to forward events towards Observe",
+            "Timeout": 60,
+            "MemorySize": 128,
+            "LastModified": "2021-05-11T19:39:30.644+0000",
+            "CodeSha256": "duQ00000000000000000000000000000000000002Vg=",
+            "Version": "$LATEST",
+            "VpcConfig": {
+                "SubnetIds": [],
+                "SecurityGroupIds": [],
+                "VpcId": ""
+            },
+            "TracingConfig": {
+                "Mode": "PassThrough"
+            },
+            "RevisionId": "00000000-8813-4c0d-0000-0000000000b4",
+            "PackageType": "Zip"
+        },
+        {
+            "FunctionName": "marketing-dev-app",
+            "FunctionArn": "arn:aws:lambda:us-west-2:1234567890:function:marketing-dev-app",
+            "Runtime": "nodejs8.10",
+            "Role": "arn:aws:iam::1234567890:role/marketing-dev-us-west-2-role",
+            "Handler": "index.handler",
+            "CodeSize": 79621115,
+            "Description": "",
+            "Timeout": 6,
+            "MemorySize": 1024,
+            "LastModified": "2018-12-11T03:56:54.517+0000",
+            "CodeSha256": "uDyEpj0000000000000000000000000000000AV3lnA=",
+            "Version": "$LATEST",
+            "TracingConfig": {
+                "Mode": "PassThrough"
+            },
+            "RevisionId": "00000000-c1c6-4c88-0000-0000000000bf",
+            "PackageType": "Zip"
+        }
+    ]
+}

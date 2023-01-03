@@ -1,0 +1,85 @@
+{
+    "Vpcs": [
+        {
+            "CidrBlock": "10.0.0.0/16",
+            "DhcpOptionsId": "dopt-be0000c7",
+            "State": "available",
+            "VpcId": "vpc-0700000000000fecf",
+            "OwnerId": "1234567890",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-0fc0000000000ac71",
+                    "CidrBlock": "10.0.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "devinfra"
+                }
+            ]
+        },
+        {
+            "CidrBlock": "10.1.0.0/16",
+            "DhcpOptionsId": "dopt-be0000c7",
+            "State": "available",
+            "VpcId": "vpc-090000000000000cb",
+            "OwnerId": "1234567890",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-00000000000000027",
+                    "CidrBlock": "10.1.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "bastion"
+                }
+            ]
+        },
+        {
+            "CidrBlock": "172.20.0.0/16",
+            "DhcpOptionsId": "dopt-05000000000000029",
+            "State": "available",
+            "VpcId": "vpc-070000000000000c5",
+            "OwnerId": "1234567890",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-08000000000000037",
+                    "CidrBlock": "172.20.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "k8s.example.com"
+                },
+                {
+                    "Key": "kubernetes.io/cluster/k8s.example.com",
+                    "Value": "owned"
+                },
+                {
+                    "Key": "KubernetesCluster",
+                    "Value": "k8s.example.com"
+                }
+            ]
+        }
+    ],
+    "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAzfQ=="
+}

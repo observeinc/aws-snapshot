@@ -1,0 +1,21 @@
+[
+    {
+      "action": "",
+      "id": "fsap-0422dc7b3ecb018bd",
+      "data": {
+        "AccessPointArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:access-point/fsap-0422dc7b3ecb018bd",
+        "AccessPointId": "fsap-0422dc7b3ecb018bd",
+        "ClientToken": "5cdc6a99-ecbd-4b5b-bd26-b137716ddbf1",
+        "FileSystemId": "fs-0a54816cdec9f2180",
+        "LifeCycleState": "available",
+        "Name": null,
+        "OwnerId": "123456789012",
+        "PosixUser": null,
+        "RootDirectory": {
+          "CreationInfo": null,
+          "Path": "/"
+        },
+        "Tags": []
+      }
+    }
+  ]

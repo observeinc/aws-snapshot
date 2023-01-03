@@ -1,0 +1,60 @@
+{
+    "tasks": [
+        {
+            "attachments": [],
+            "availabilityZone": "us-west-2a",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+            "connectivity": "CONNECTED",
+            "connectivityAt": "2021-06-22T09:40:17.339000-07:00",
+            "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/ec2-tutorial/7f5aeceba085402f8b9268dccdad3965",
+            "containers": [
+                {
+                    "containerArn": "arn:aws:ecs:us-west-2:123456789012:container/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d/8fe69fb9-b3b6-42dd-ab7f-1a51a02b787e",
+                    "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d",
+                    "name": "web",
+                    "image": "amazon/amazon-ecs-sample",
+                    "runtimeId": "ab2827e655458a51b803dcfb366fec632c64ae9f983a417920cd725b68cdaf12",
+                    "lastStatus": "RUNNING",
+                    "networkBindings": [
+                        {
+                            "bindIP": "0.0.0.0",
+                            "containerPort": 80,
+                            "containerPortRange": null,
+                            "hostPort": 80,
+                            "hostPortRange": null,
+                            "protocol": "tcp"
+                        }
+                    ],
+                    "networkInterfaces": [],
+                    "healthStatus": "UNKNOWN",
+                    "cpu": "100",
+                    "memory": "500"
+                }
+            ],
+            "cpu": "100",
+            "createdAt": "2021-06-22T09:40:17.339000-07:00",
+            "desiredStatus": "RUNNING",
+            "group": "task:ecs-tutorial",
+            "healthStatus": "UNKNOWN",
+            "lastStatus": "RUNNING",
+            "launchType": "EC2",
+            "memory": "500",
+            "overrides": {
+                "containerOverrides": [
+                    {
+                        "name": "web"
+                    }
+                ],
+                "inferenceAcceleratorOverrides": []
+            },
+            "pullStartedAt": "2021-06-22T09:40:19.919000-07:00",
+            "pullStoppedAt": "2021-06-22T09:40:28.100000-07:00",
+            "startedAt": "2021-06-22T09:40:32.832000-07:00",
+            "tags": [],
+            "taskArn": "arn:aws:ecs:us-west-2:123456789012:task/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d",
+            "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+            "version": 2
+        }
+    ],
+    "failures": []
+}

@@ -1,0 +1,84 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:firehose:us-west-2:123456789012:deliverystream/example",
+      "data": {
+        "CreateTimestamp": "2021-07-13T10:45:38.848-07:00",
+        "DeliveryStreamARN": "arn:aws:firehose:us-west-2:123456789012:deliverystream/example",
+        "DeliveryStreamEncryptionConfiguration": {
+          "FailureDescription": null,
+          "KeyARN": null,
+          "KeyType": null,
+          "Status": "DISABLED"
+        },
+        "DeliveryStreamName": "example",
+        "DeliveryStreamStatus": "ACTIVE",
+        "DeliveryStreamType": "DirectPut",
+        "Destinations": [
+          {
+            "AmazonOpenSearchServerlessDestinationDescription": null,
+            "AmazonopensearchserviceDestinationDescription": null,
+            "DestinationId": "destinationId-000000000001",
+            "ElasticsearchDestinationDescription": null,
+            "ExtendedS3DestinationDescription": null,
+            "HttpEndpointDestinationDescription": {
+              "BufferingHints": {
+                "IntervalInSeconds": 60,
+                "SizeInMBs": 1
+              },
+              "CloudWatchLoggingOptions": {
+                "Enabled": true,
+                "LogGroupName": "/aws/firehose/example",
+                "LogStreamName": "HttpEndpointDelivery"
+              },
+              "EndpointConfiguration": {
+                "Name": "Observe",
+                "Url": "https://kinesis.collect.observe-o2.com"
+              },
+              "ProcessingConfiguration": {
+                "Enabled": false,
+                "Processors": []
+              },
+              "RequestConfiguration": {
+                "CommonAttributes": [],
+                "ContentEncoding": "GZIP"
+              },
+              "RetryOptions": {
+                "DurationInSeconds": 300
+              },
+              "RoleARN": "arn:aws:iam::123456789012:role/example-20210713174528046200000014",
+              "S3BackupMode": "FailedDataOnly",
+              "S3DestinationDescription": {
+                "BucketARN": "arn:aws:s3:::example-us-west-2-yk6du6wk",
+                "BufferingHints": {
+                  "IntervalInSeconds": 300,
+                  "SizeInMBs": 5
+                },
+                "CloudWatchLoggingOptions": {
+                  "Enabled": true,
+                  "LogGroupName": "/aws/firehose/example",
+                  "LogStreamName": "S3Delivery"
+                },
+                "CompressionFormat": "UNCOMPRESSED",
+                "EncryptionConfiguration": {
+                  "KMSEncryptionConfig": null,
+                  "NoEncryptionConfig": "NoEncryption"
+                },
+                "ErrorOutputPrefix": null,
+                "Prefix": "",
+                "RoleARN": "arn:aws:iam::123456789012:role/example-20210713174528046200000014"
+              }
+            },
+            "RedshiftDestinationDescription": null,
+            "S3DestinationDescription": null,
+            "SplunkDestinationDescription": null
+          }
+        ],
+        "FailureDescription": null,
+        "HasMoreDestinations": false,
+        "LastUpdateTimestamp": "2021-07-14T15:34:44.06-07:00",
+        "Source": null,
+        "VersionId": "2"
+      }
+    }
+  ]

@@ -1,0 +1,17 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:events:us-west-1:123456789012:api-destination/Observe/00000000-7f06-482f-bf85-3eb94ae0d6c3",
+      "data": {
+        "ApiDestinationArn": "arn:aws:events:us-west-1:123456789012:api-destination/Observe/00000000-7f06-482f-bf85-3eb94ae0d6c3",
+        "ApiDestinationState": "ACTIVE",
+        "ConnectionArn": "arn:aws:events:us-west-1:123456789012:connection/ObserveEventBridge/00000000-bbc0-49c5-bb86-b4c57b1ecb70",
+        "CreationTime": "2021-08-13T10:56:27-07:00",
+        "HttpMethod": "POST",
+        "InvocationEndpoint": "https://collect.observeinc.com/v1/http/aws/eventbridge",
+        "InvocationRateLimitPerSecond": 300,
+        "LastModifiedTime": "2021-08-13T10:56:27-07:00",
+        "Name": "Observe"
+      }
+    }
+  ]

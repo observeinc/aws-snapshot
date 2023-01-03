@@ -1,0 +1,129 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:cloudformation:us-west-2:123456789012:stack/test/00000000-0792-11ec-83de-0a1eb8199e0b",
+      "data": {
+        "Capabilities": [
+          "CAPABILITY_IAM"
+        ],
+        "ChangeSetId": null,
+        "CreationTime": "2021-08-27T23:58:31.327Z",
+        "DeletionTime": "2021-08-27T23:59:01.528Z",
+        "Description": null,
+        "DisableRollback": false,
+        "DriftInformation": {
+          "LastCheckTimestamp": null,
+          "StackDriftStatus": "NOT_CHECKED"
+        },
+        "EnableTerminationProtection": null,
+        "LastUpdatedTime": null,
+        "NotificationARNs": [],
+        "Outputs": null,
+        "Parameters": [
+          {
+            "ParameterKey": "TrailMultiRegion",
+            "ParameterValue": "false",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "FirehoseHttpEndpointBufferingSize",
+            "ParameterValue": "1",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "BucketExpirationInDays",
+            "ParameterValue": "30",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "FirehoseHttpEndpointRetryDuration",
+            "ParameterValue": "90",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "EventBridgeSnapshotSchedule",
+            "ParameterValue": "rate(1 hour)",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LambdaMemorySize",
+            "ParameterValue": "128",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LambdaTimeout",
+            "ParameterValue": "60",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "TrailIncludeGlobalEvents",
+            "ParameterValue": "true",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LogGroupExpirationInDays",
+            "ParameterValue": "365",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "FirehoseHttpEndpointBufferingInterval",
+            "ParameterValue": "60",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "TrailEnableLogFileValidation",
+            "ParameterValue": "false",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LambdaS3CustomRules",
+            "ParameterValue": "",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "EventBridgeSnapshotConfig",
+            "ParameterValue": "dynamodb:List*,dynamodb:Describe*,ec2:Describe*,ecs:List*,ecs:Describe*,elasticache:Describe*,elasticloadbalancing:Describe*,firehose:List*,firehose:Describe*,kinesis:List*,kinesis:Describe*,iam:Get*,iam:List*,lambda:List*,logs:Describe*,rds:Describe*,redshift:Describe*,route53:List*,s3:List*,sns:List*,sns:Get*,sqs:List*,sqs:Get*",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LambdaReservedConcurrentExecutions",
+            "ParameterValue": "100",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          },
+          {
+            "ParameterKey": "LambdaVersion",
+            "ParameterValue": "latest",
+            "ResolvedValue": null,
+            "UsePreviousValue": null
+          }
+        ],
+        "ParentId": null,
+        "RoleARN": null,
+        "RollbackConfiguration": {
+          "MonitoringTimeInMinutes": null,
+          "RollbackTriggers": []
+        },
+        "RootId": null,
+        "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/test/00000000-0792-11ec-83de-0a1eb8199e0b",
+        "StackName": "test",
+        "StackStatus": "ROLLBACK_COMPLETE",
+        "StackStatusReason": null,
+        "Tags": [],
+        "TimeoutInMinutes": null
+      }
+    }
+  ]

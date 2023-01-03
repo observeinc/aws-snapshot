@@ -1,0 +1,10 @@
+[
+    {
+      "action": "",
+      "id": "fs-0a54816cdec9f2180",
+      "data": {
+        "FileSystemId": "fs-0a54816cdec9f2180",
+        "Policy": "{\n  \"Version\" : \"2008-10-17\",\n  \"Id\" : \"1\",\n  \"Statement\" : [ {\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::384876807807:root\"\n    },\n    \"Action\" : \"elasticfilesystem:ClientMount\",\n    \"Resource\" : \"arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180\"\n  } ]\n}"
+      }
+    }
+  ]

@@ -1,0 +1,117 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:elasticache:us-west-1:123456789012:replicationgroup:redis-test",
+      "data": {
+        "ARN": "arn:aws:elasticache:us-west-1:123456789012:replicationgroup:redis-test",
+        "AtRestEncryptionEnabled": false,
+        "AuthTokenEnabled": false,
+        "AuthTokenLastModifiedDate": null,
+        "AutoMinorVersionUpgrade": null,
+        "AutomaticFailover": "enabled",
+        "CacheNodeType": "cache.r6g.large",
+        "ClusterEnabled": false,
+        "ConfigurationEndpoint": null,
+        "DataTiering": null,
+        "Description": " ",
+        "GlobalReplicationGroupInfo": {
+          "GlobalReplicationGroupId": null,
+          "GlobalReplicationGroupMemberRole": null
+        },
+        "IpDiscovery": null,
+        "KmsKeyId": null,
+        "LogDeliveryConfigurations": [
+          {
+            "DestinationDetails": {
+              "CloudWatchLogsDetails": null,
+              "KinesisFirehoseDetails": {
+                "DeliveryStream": "observe-collection"
+              }
+            },
+            "DestinationType": "kinesis-firehose",
+            "LogFormat": "json",
+            "LogType": "slow-log",
+            "Message": null,
+            "Status": "active"
+          }
+        ],
+        "MemberClusters": [
+          "redis-test-001",
+          "redis-test-002",
+          "redis-test-003"
+        ],
+        "MemberClustersOutpostArns": null,
+        "MultiAZ": "disabled",
+        "NetworkType": null,
+        "NodeGroups": [
+          {
+            "NodeGroupId": "0001",
+            "NodeGroupMembers": [
+              {
+                "CacheClusterId": "redis-test-001",
+                "CacheNodeId": "0001",
+                "CurrentRole": "primary",
+                "PreferredAvailabilityZone": "us-west-1c",
+                "PreferredOutpostArn": null,
+                "ReadEndpoint": {
+                  "Address": "redis-test-001.svyhum.0001.usw1.cache.amazonaws.com",
+                  "Port": 6379
+                }
+              },
+              {
+                "CacheClusterId": "redis-test-002",
+                "CacheNodeId": "0001",
+                "CurrentRole": "replica",
+                "PreferredAvailabilityZone": "us-west-1c",
+                "PreferredOutpostArn": null,
+                "ReadEndpoint": {
+                  "Address": "redis-test-002.svyhum.0001.usw1.cache.amazonaws.com",
+                  "Port": 6379
+                }
+              },
+              {
+                "CacheClusterId": "redis-test-003",
+                "CacheNodeId": "0001",
+                "CurrentRole": "replica",
+                "PreferredAvailabilityZone": "us-west-1c",
+                "PreferredOutpostArn": null,
+                "ReadEndpoint": {
+                  "Address": "redis-test-003.svyhum.0001.usw1.cache.amazonaws.com",
+                  "Port": 6379
+                }
+              }
+            ],
+            "PrimaryEndpoint": {
+              "Address": "redis-test.svyhum.ng.0001.usw1.cache.amazonaws.com",
+              "Port": 6379
+            },
+            "ReaderEndpoint": {
+              "Address": "redis-test-ro.svyhum.ng.0001.usw1.cache.amazonaws.com",
+              "Port": 6379
+            },
+            "Slots": null,
+            "Status": "available"
+          }
+        ],
+        "PendingModifiedValues": {
+          "AuthTokenStatus": null,
+          "AutomaticFailoverStatus": null,
+          "LogDeliveryConfigurations": null,
+          "PrimaryClusterId": null,
+          "Resharding": null,
+          "TransitEncryptionEnabled": null,
+          "TransitEncryptionMode": null,
+          "UserGroups": null
+        },
+        "ReplicationGroupCreateTime": null,
+        "ReplicationGroupId": "redis-test",
+        "SnapshotRetentionLimit": 1,
+        "SnapshotWindow": "07:00-08:00",
+        "SnapshottingClusterId": "redis-test-002",
+        "Status": "available",
+        "TransitEncryptionEnabled": false,
+        "TransitEncryptionMode": null,
+        "UserGroupIds": null
+      }
+    }
+  ]

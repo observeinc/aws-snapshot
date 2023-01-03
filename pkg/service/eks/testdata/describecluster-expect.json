@@ -1,0 +1,82 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:eks:us-west-2:123456789012:cluster/eg-test-eks-fargate-cluster",
+      "data": {
+        "Cluster": {
+          "Arn": "arn:aws:eks:us-west-2:123456789012:cluster/eg-test-eks-fargate-cluster",
+          "CertificateAuthority": {
+            "Data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJeU1ERXhNakF3TURNd01Wb1hEVE15TURFeE1EQXdNRE13TVZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBS20xClQ0YXZrKzFZSmxLbUNrNHFDd2hrZFJnVnlITU80dkJmSlZtbHc0K0ZRbFUyRTZpWUtORU5sYkVDc2xqdXVvckgKZUtuVjVZQjQyMDI5N0Z5L2N4aWFXQTdVcnE4eTlEb05rb1dvWGJhUFlxTTBmcnUycnlsZEFSaVJJdlBmRlo1cgpwNWp4MGdUcWFnM3k2NzhHQm1KS0QwOU1FNkZlN1NCZ3hNaU4xdDVrdkJpaEJhdEtGTmFsV1MyVEtTK0FIY2s1ClVkZTJQTUxjN2NaWnpIT0t6b0xqc3hXMWZUa2hHeHNrQzgwbmwwSld4WlVtaEY4OGlGMHRaWEh1ckVxZ0RydGoKT3JUOTdnQnQ5N0xJbitoT2s0a2JVVjZDSWF6S0kxbUlxYW1LYTlHMHdsTlJMTHZkL3RlMkhoUEhQalpPN0xBegpMZ3BDaGhEVGVHSGZOMzdqREcwQ0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZQd3hzb2YyZ2V2djA0WndseXJBM3BUVEZDcUlNQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFDaWtJR0lTMVE4eVpRM1BoYk9EZStEMzN3dzFHNnVMVVpsR09pYjROMW1RbXFMMmhnYQo5cGQ1L0N2WCtuNjVjRFVWak9IOGhFV1l6RTNMRk41VjZ0RnhSdkdvS3dSU01QSmdyZjdCMEx5aTZxRnZtOThCCk1pUE00YUFNQUhWSFVPeHIrc1hQcmg2ZmgzT2NqMHdmRjVrN3oxRlZPYUlzUFdWaU41MUdzbFVxaCtaUWpIWEQKdG9LQkYyNmhSTS9MSE5kY3l1bjdKVHZ2RG1kT1lZVEdpMC9GOTlGNUJmT1p1cjEzNGRwc2FjRXVIRSsxZE9hbwpGODdYQVZGUm4vaXQ1WVRhaXBURmFMaWVvVVh1QjQybExtNEJBMFBhNVgxWC9lWTlSVjYyRXJ4Vzd6bVpiSk0yCmxTRVlqSSs4WUhCVGVNb3BxblMrMmtnK0pXYXNUVXhzNWYxMgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+          },
+          "ClientRequestToken": null,
+          "ConnectorConfig": null,
+          "CreatedAt": "2022-01-11T15:56:11.434-08:00",
+          "EncryptionConfig": [
+            {
+              "Provider": {
+                "KeyArn": "arn:aws:kms:us-west-2:123456789012:key/ae9b8f05-6e82-4754-9890-000000000000"
+              },
+              "Resources": [
+                "secrets"
+              ]
+            }
+          ],
+          "Endpoint": "https://54D93F8EF53F6C000000724BD81D0A5C.yl4.us-west-2.eks.amazonaws.com",
+          "Health": null,
+          "Id": null,
+          "Identity": {
+            "Oidc": {
+              "Issuer": "https://oidc.eks.us-west-2.amazonaws.com/id/54D93F8EF53F6CACFF8F724B00000000"
+            }
+          },
+          "KubernetesNetworkConfig": {
+            "IpFamily": "ipv4",
+            "ServiceIpv4Cidr": "10.100.0.0/16",
+            "ServiceIpv6Cidr": null
+          },
+          "Logging": {
+            "ClusterLogging": [
+              {
+                "Enabled": true,
+                "Types": [
+                  "api",
+                  "audit",
+                  "authenticator",
+                  "controllerManager",
+                  "scheduler"
+                ]
+              }
+            ]
+          },
+          "Name": "eg-test-eks-fargate-cluster",
+          "OutpostConfig": null,
+          "PlatformVersion": "eks.4",
+          "ResourcesVpcConfig": {
+            "ClusterSecurityGroupId": "sg-0058d0acc1a000000",
+            "EndpointPrivateAccess": false,
+            "EndpointPublicAccess": true,
+            "PublicAccessCidrs": [
+              "0.0.0.0/0"
+            ],
+            "SecurityGroupIds": [
+              "sg-04646b8d11b000000"
+            ],
+            "SubnetIds": [
+              "subnet-0bef2c06e96000000",
+              "subnet-0168edb672b000000"
+            ],
+            "VpcId": "vpc-03d18037890000000"
+          },
+          "RoleArn": "arn:aws:iam::123456789012:role/eg-test-eks-fargate-cluster",
+          "Status": "ACTIVE",
+          "Tags": {
+            "Attributes": "cluster",
+            "Name": "eg-test-eks-fargate-cluster",
+            "Namespace": "eg",
+            "Stage": "test"
+          },
+          "Version": "1.21"
+        }
+      }
+    }
+  ]

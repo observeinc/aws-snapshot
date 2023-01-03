@@ -1,0 +1,38 @@
+{
+  "EnvironmentName": "Terrafloodluke-env",
+  "HealthStatus": "Ok",
+  "Status": "Ready",
+  "Color": "Green",
+  "Causes": [],
+  "ApplicationMetrics": {
+      "Duration": 10,
+      "RequestCount": 1,
+      "StatusCodes": {
+          "Status2xx": 1,
+          "Status3xx": 0,
+          "Status4xx": 0,
+          "Status5xx": 0
+      },
+      "Latency": {
+          "P999": 0.002,
+          "P99": 0.002,
+          "P95": 0.002,
+          "P90": 0.002,
+          "P85": 0.002,
+          "P75": 0.002,
+          "P50": 0.002,
+          "P10": 0.002
+      }
+  },
+  "InstancesHealth": {
+      "NoData": 0,
+      "Unknown": 0,
+      "Pending": 0,
+      "Ok": 1,
+      "Info": 0,
+      "Warning": 0,
+      "Degraded": 0,
+      "Severe": 0
+  },
+  "RefreshedAt": "2022-02-09T05:46:15Z"
+}

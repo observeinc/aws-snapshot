@@ -1,0 +1,62 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:elasticache:us-west-2:123456789012:cluster:test",
+      "data": {
+        "ARN": "arn:aws:elasticache:us-west-2:123456789012:cluster:test",
+        "AtRestEncryptionEnabled": false,
+        "AuthTokenEnabled": false,
+        "AuthTokenLastModifiedDate": null,
+        "AutoMinorVersionUpgrade": true,
+        "CacheClusterCreateTime": "2021-07-08T17:15:32.622Z",
+        "CacheClusterId": "test",
+        "CacheClusterStatus": "available",
+        "CacheNodeType": "cache.r6g.large",
+        "CacheNodes": null,
+        "CacheParameterGroup": {
+          "CacheNodeIdsToReboot": [],
+          "CacheParameterGroupName": "default.memcached1.6",
+          "ParameterApplyStatus": "in-sync"
+        },
+        "CacheSecurityGroups": [],
+        "CacheSubnetGroupName": "test",
+        "ClientDownloadLandingPage": "https://console.aws.amazon.com/elasticache/home#client-download:",
+        "ConfigurationEndpoint": {
+          "Address": "test.onaybx.cfg.usw2.cache.amazonaws.com",
+          "Port": 11211
+        },
+        "Engine": "memcached",
+        "EngineVersion": "1.6.6",
+        "IpDiscovery": null,
+        "LogDeliveryConfigurations": [],
+        "NetworkType": null,
+        "NotificationConfiguration": null,
+        "NumCacheNodes": 1,
+        "PendingModifiedValues": {
+          "AuthTokenStatus": null,
+          "CacheNodeIdsToRemove": null,
+          "CacheNodeType": null,
+          "EngineVersion": null,
+          "LogDeliveryConfigurations": null,
+          "NumCacheNodes": null,
+          "TransitEncryptionEnabled": null,
+          "TransitEncryptionMode": null
+        },
+        "PreferredAvailabilityZone": "us-west-2b",
+        "PreferredMaintenanceWindow": "sun:06:30-sun:07:30",
+        "PreferredOutpostArn": null,
+        "ReplicationGroupId": null,
+        "ReplicationGroupLogDeliveryEnabled": false,
+        "SecurityGroups": [
+          {
+            "SecurityGroupId": "sg-0000123b",
+            "Status": "active"
+          }
+        ],
+        "SnapshotRetentionLimit": null,
+        "SnapshotWindow": null,
+        "TransitEncryptionEnabled": false,
+        "TransitEncryptionMode": null
+      }
+    }
+  ]

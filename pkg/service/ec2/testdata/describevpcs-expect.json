@@ -1,0 +1,100 @@
+[
+    {
+      "action": "",
+      "id": "vpc-0700000000000fecf",
+      "data": {
+        "CidrBlock": "10.0.0.0/16",
+        "CidrBlockAssociationSet": [
+          {
+            "AssociationId": "vpc-cidr-assoc-0fc0000000000ac71",
+            "CidrBlock": "10.0.0.0/16",
+            "CidrBlockState": {
+              "State": "associated",
+              "StatusMessage": null
+            }
+          }
+        ],
+        "DhcpOptionsId": "dopt-be0000c7",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": null,
+        "IsDefault": false,
+        "OwnerId": "1234567890",
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "devinfra"
+          }
+        ],
+        "VpcId": "vpc-0700000000000fecf"
+      }
+    },
+    {
+      "action": "",
+      "id": "vpc-090000000000000cb",
+      "data": {
+        "CidrBlock": "10.1.0.0/16",
+        "CidrBlockAssociationSet": [
+          {
+            "AssociationId": "vpc-cidr-assoc-00000000000000027",
+            "CidrBlock": "10.1.0.0/16",
+            "CidrBlockState": {
+              "State": "associated",
+              "StatusMessage": null
+            }
+          }
+        ],
+        "DhcpOptionsId": "dopt-be0000c7",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": null,
+        "IsDefault": false,
+        "OwnerId": "1234567890",
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "bastion"
+          }
+        ],
+        "VpcId": "vpc-090000000000000cb"
+      }
+    },
+    {
+      "action": "",
+      "id": "vpc-070000000000000c5",
+      "data": {
+        "CidrBlock": "172.20.0.0/16",
+        "CidrBlockAssociationSet": [
+          {
+            "AssociationId": "vpc-cidr-assoc-08000000000000037",
+            "CidrBlock": "172.20.0.0/16",
+            "CidrBlockState": {
+              "State": "associated",
+              "StatusMessage": null
+            }
+          }
+        ],
+        "DhcpOptionsId": "dopt-05000000000000029",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": null,
+        "IsDefault": false,
+        "OwnerId": "1234567890",
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "k8s.example.com"
+          },
+          {
+            "Key": "kubernetes.io/cluster/k8s.example.com",
+            "Value": "owned"
+          },
+          {
+            "Key": "KubernetesCluster",
+            "Value": "k8s.example.com"
+          }
+        ],
+        "VpcId": "vpc-070000000000000c5"
+      }
+    }
+  ]

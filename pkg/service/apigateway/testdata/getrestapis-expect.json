@@ -1,0 +1,194 @@
+[
+    {
+      "action": "",
+      "id": "0z9np5mpx8",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T03:56:33Z",
+        "Description": null,
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "0z9np5mpx8",
+        "MinimumCompressionSize": null,
+        "Name": "dev-marketing",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "4kti67gd72",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T00:51:48Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "4kti67gd72",
+        "MinimumCompressionSize": null,
+        "Name": "marketing4-API",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "8aspkjn4f9",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-04T06:56:03Z",
+        "Description": null,
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "8aspkjn4f9",
+        "MinimumCompressionSize": null,
+        "Name": "dev-observation-tree",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "9h8qn0wnuk",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T00:23:51Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "9h8qn0wnuk",
+        "MinimumCompressionSize": null,
+        "Name": "marketing-API",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "akep5p4rwk",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T00:40:42Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "akep5p4rwk",
+        "MinimumCompressionSize": null,
+        "Name": "marketing4-API",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "dpx18wesfk",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-06-28T20:42:16Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "dpx18wesfk",
+        "MinimumCompressionSize": null,
+        "Name": "test-lambda",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "gz1miwyz38",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T00:24:46Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "gz1miwyz38",
+        "MinimumCompressionSize": null,
+        "Name": "marketing-API",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    },
+    {
+      "action": "",
+      "id": "j7f2l8ooma",
+      "data": {
+        "ApiKeySource": "HEADER",
+        "BinaryMediaTypes": null,
+        "CreatedDate": "2018-12-11T00:23:14Z",
+        "Description": "Created by AWS Lambda",
+        "DisableExecuteApiEndpoint": false,
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ],
+          "VpcEndpointIds": null
+        },
+        "Id": "j7f2l8ooma",
+        "MinimumCompressionSize": null,
+        "Name": "marketing-API",
+        "Policy": null,
+        "Tags": null,
+        "Version": null,
+        "Warnings": null
+      }
+    }
+  ]

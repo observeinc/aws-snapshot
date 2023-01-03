@@ -1,0 +1,16 @@
+{
+    "AccessPoints": [
+        {
+            "ClientToken": "5cdc6a99-ecbd-4b5b-bd26-b137716ddbf1",
+            "Tags": [],
+            "AccessPointId": "fsap-0422dc7b3ecb018bd",
+            "AccessPointArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:access-point/fsap-0422dc7b3ecb018bd",
+            "FileSystemId": "fs-0a54816cdec9f2180",
+            "RootDirectory": {
+                "Path": "/"
+            },
+            "OwnerId": "123456789012",
+            "LifeCycleState": "available"
+        }
+    ]
+}

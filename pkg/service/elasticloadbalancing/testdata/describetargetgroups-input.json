@@ -1,0 +1,69 @@
+{
+    "TargetGroups": [
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/ecs-scorek-scorekeep-service/000e5ec5033664ed",
+            "TargetGroupName": "ecs-scorek-scorekeep-service",
+            "Protocol": "HTTP",
+            "Port": 80,
+            "VpcId": "vpc-0001585c",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "traffic-port",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 30,
+            "HealthCheckTimeoutSeconds": 5,
+            "HealthyThresholdCount": 5,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/",
+            "Matcher": {
+                "HttpCode": "200"
+            },
+            "LoadBalancerArns": [],
+            "TargetType": "ip",
+            "ProtocolVersion": "HTTP1"
+        },
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/ingress-000d33d91a/000000334956f960",
+            "TargetGroupName": "ingress-000d33d91a",
+            "Protocol": "TCP",
+            "Port": 30760,
+            "VpcId": "vpc-000000e828b96a0c5",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "31605",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 10,
+            "HealthCheckTimeoutSeconds": 6,
+            "HealthyThresholdCount": 2,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/healthz",
+            "Matcher": {
+                "HttpCode": "200-399"
+            },
+            "LoadBalancerArns": [
+                "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/00000000000a0406d8940aa64e16e3f2/20dcc90526501e81"
+            ],
+            "TargetType": "instance"
+        },
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/ingress-00054ab92b/0000004742fa810b",
+            "TargetGroupName": "ingress-00054ab92b",
+            "Protocol": "TCP",
+            "Port": 31156,
+            "VpcId": "vpc-000000e828b96a0c5",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "31605",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 10,
+            "HealthCheckTimeoutSeconds": 6,
+            "HealthyThresholdCount": 2,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/healthz",
+            "Matcher": {
+                "HttpCode": "200-399"
+            },
+            "LoadBalancerArns": [
+                "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/00000000000a0406d8940aa64e16e3f2/20dcc90526501e81"
+            ],
+            "TargetType": "instance"
+        }
+    ]
+}

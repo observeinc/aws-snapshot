@@ -1,0 +1,155 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:group/Admins",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:group/Admins",
+        "AttachedManagedPolicies": [
+          {
+            "PolicyArn": "arn:aws:iam::1234567890:policy/BillingFullAccess",
+            "PolicyName": "BillingFullAccess"
+          },
+          {
+            "PolicyArn": "arn:aws:iam::aws:policy/job-function/Billing",
+            "PolicyName": "Billing"
+          },
+          {
+            "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess",
+            "PolicyName": "AdministratorAccess"
+          }
+        ],
+        "CreateDate": "2017-09-29T20:42:50Z",
+        "GroupId": "AGPAIEZCT5T1W2OUZSFVM",
+        "GroupName": "Admins",
+        "GroupPolicyList": [],
+        "Path": "/"
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:group/Eng",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:group/Eng",
+        "AttachedManagedPolicies": [
+          {
+            "PolicyArn": "arn:aws:iam::1234567890:policy/ObserveTerraformStateLock",
+            "PolicyName": "ObserveTerraformStateLock"
+          },
+          {
+            "PolicyArn": "arn:aws:iam::aws:policy/job-function/Billing",
+            "PolicyName": "Billing"
+          },
+          {
+            "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess",
+            "PolicyName": "AdministratorAccess"
+          }
+        ],
+        "CreateDate": "2018-04-10T20:41:54Z",
+        "GroupId": "AGPAJHF6SMSH1COWVFRMC",
+        "GroupName": "Eng",
+        "GroupPolicyList": [
+          {
+            "PolicyDocument": null,
+            "PolicyName": "allow-assume-cost-reader-role-in-staging"
+          }
+        ],
+        "Path": "/"
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:role/aws-ec2-spot-fleet-tagging-role",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:role/aws-ec2-spot-fleet-tagging-role",
+        "AssumeRolePolicyDocument": null,
+        "AttachedManagedPolicies": [
+          {
+            "PolicyArn": "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole",
+            "PolicyName": "AmazonEC2SpotFleetTaggingRole"
+          }
+        ],
+        "CreateDate": "2018-11-06T01:40:12Z",
+        "InstanceProfileList": [],
+        "Path": "/",
+        "PermissionsBoundary": null,
+        "RoleId": "AROAIKJ4OR16APPRFHFC6",
+        "RoleLastUsed": {
+          "LastUsedDate": null,
+          "Region": null
+        },
+        "RoleName": "aws-ec2-spot-fleet-tagging-role",
+        "RolePolicyList": [],
+        "Tags": []
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:user/johndoe",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:user/johndoe",
+        "AttachedManagedPolicies": [],
+        "CreateDate": "2020-11-24T19:12:36Z",
+        "GroupList": [
+          "Eng"
+        ],
+        "Path": "/",
+        "PermissionsBoundary": null,
+        "Tags": [],
+        "UserId": "AIDA3QMWKFEPWO53YTKJC",
+        "UserName": "johndoe",
+        "UserPolicyList": null
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:user/janedoe",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:user/janedoe",
+        "AttachedManagedPolicies": [],
+        "CreateDate": "2020-10-30T16:23:30Z",
+        "GroupList": [
+          "Eng"
+        ],
+        "Path": "/",
+        "PermissionsBoundary": null,
+        "Tags": [],
+        "UserId": "AIDA3Q2WKKWP3KXLNAW4E",
+        "UserName": "janedoe",
+        "UserPolicyList": null
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:user/billing-infra-test",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:user/billing-infra-test",
+        "AttachedManagedPolicies": [],
+        "CreateDate": "2021-04-23T19:44:58Z",
+        "GroupList": [],
+        "Path": "/",
+        "PermissionsBoundary": null,
+        "Tags": [],
+        "UserId": "AIDA3Q2WKKEP4BFH4IGFH",
+        "UserName": "billing-infra-test",
+        "UserPolicyList": null
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:iam::1234567890:policy/service-role/AWSLambdaBasicExecutionRole-86c24639-e372-4075-96c4-9166decf6cc4",
+      "data": {
+        "Arn": "arn:aws:iam::1234567890:policy/service-role/AWSLambdaBasicExecutionRole-86c24639-e372-4075-96c4-9166decf6cc4",
+        "AttachmentCount": 1,
+        "CreateDate": "2019-09-25T22:55:27Z",
+        "DefaultVersionId": "v1",
+        "Description": null,
+        "IsAttachable": true,
+        "Path": "/service-role/",
+        "PermissionsBoundaryUsageCount": 0,
+        "PolicyId": "ANPA21AMF5EP2BW352GOE",
+        "PolicyName": "AWSLambdaBasicExecutionRole-86c24639-e372-4075-96c4-9166decf6cc4",
+        "PolicyVersionList": [],
+        "UpdateDate": "2019-09-25T22:55:27Z"
+      }
+    }
+  ]

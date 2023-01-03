@@ -1,0 +1,205 @@
+[
+    {
+      "action": "",
+      "id": "sg-0000000000000000d",
+      "data": {
+        "Description": "Security group for nodes",
+        "GroupId": "sg-0000000000000000d",
+        "GroupName": "nodes.k8s.example.com",
+        "IpPermissions": [
+          {
+            "FromPort": 31156,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": "kubernetes.io/rule/nlb/client=a0000000000000000000000000000002"
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 31156,
+            "UserIdGroupPairs": []
+          },
+          {
+            "FromPort": null,
+            "IpProtocol": "-1",
+            "IpRanges": [],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": null,
+            "UserIdGroupPairs": [
+              {
+                "Description": null,
+                "GroupId": "sg-0000000000000000d",
+                "GroupName": null,
+                "PeeringStatus": null,
+                "UserId": "1234567890",
+                "VpcId": null,
+                "VpcPeeringConnectionId": null
+              },
+              {
+                "Description": null,
+                "GroupId": "sg-00000000000000097",
+                "GroupName": null,
+                "PeeringStatus": null,
+                "UserId": "1234567890",
+                "VpcId": null,
+                "VpcPeeringConnectionId": null
+              },
+              {
+                "Description": null,
+                "GroupId": "sg-000000000000000d6",
+                "GroupName": null,
+                "PeeringStatus": null,
+                "UserId": "1234567890",
+                "VpcId": null,
+                "VpcPeeringConnectionId": null
+              },
+              {
+                "Description": null,
+                "GroupId": "sg-000000000000000d4",
+                "GroupName": null,
+                "PeeringStatus": null,
+                "UserId": "1234567890",
+                "VpcId": null,
+                "VpcPeeringConnectionId": null
+              }
+            ]
+          },
+          {
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "54.185.93.213/32",
+                "Description": null
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 22,
+            "UserIdGroupPairs": []
+          },
+          {
+            "FromPort": 31605,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "172.20.32.0/19",
+                "Description": "kubernetes.io/rule/nlb/health=a000000000000006d8940aa64e16e3f2"
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 31605,
+            "UserIdGroupPairs": []
+          },
+          {
+            "FromPort": 30760,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": "kubernetes.io/rule/nlb/client=a000000000000006d8940aa64e16e3f2"
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 30760,
+            "UserIdGroupPairs": []
+          },
+          {
+            "FromPort": 3,
+            "IpProtocol": "icmp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": "kubernetes.io/rule/nlb/mtu"
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 4,
+            "UserIdGroupPairs": []
+          }
+        ],
+        "IpPermissionsEgress": [
+          {
+            "FromPort": null,
+            "IpProtocol": "-1",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": null
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": null,
+            "UserIdGroupPairs": []
+          }
+        ],
+        "OwnerId": "1234567890",
+        "Tags": [
+          {
+            "Key": "kubernetes.io/cluster/k8s.example.com",
+            "Value": "owned"
+          },
+          {
+            "Key": "Name",
+            "Value": "nodes.k8s.example.com"
+          },
+          {
+            "Key": "KubernetesCluster",
+            "Value": "k8s.example.com"
+          }
+        ],
+        "VpcId": "vpc-07000000000000005"
+      }
+    },
+    {
+      "action": "",
+      "id": "sg-0000000000000000e",
+      "data": {
+        "Description": "launch-wizard-6 created 2021-01-20T11:00:58.431-08:00",
+        "GroupId": "sg-0000000000000000e",
+        "GroupName": "launch-wizard-6",
+        "IpPermissions": [
+          {
+            "FromPort": 22,
+            "IpProtocol": "tcp",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": null
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": 22,
+            "UserIdGroupPairs": []
+          }
+        ],
+        "IpPermissionsEgress": [
+          {
+            "FromPort": null,
+            "IpProtocol": "-1",
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0",
+                "Description": null
+              }
+            ],
+            "Ipv6Ranges": [],
+            "PrefixListIds": [],
+            "ToPort": null,
+            "UserIdGroupPairs": []
+          }
+        ],
+        "OwnerId": "1234567890",
+        "Tags": null,
+        "VpcId": "vpc-af0000d6"
+      }
+    }
+  ]

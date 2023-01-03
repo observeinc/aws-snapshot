@@ -1,0 +1,160 @@
+{
+    "AutoScalingGroups": [
+        {
+            "AutoScalingGroupName": "k8s.com",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:cc72d9f6-f5c6-4ee6-b937-000000000000:autoScalingGroupName/.k8s.com",
+            "LaunchConfigurationName": "k8s.com-20210629043624",
+            "MinSize": 1,
+            "MaxSize": 1,
+            "DesiredCapacity": 1,
+            "DefaultCooldown": 300,
+            "AvailabilityZones": [
+                "us-west-1a"
+            ],
+            "LoadBalancerNames": [],
+            "TargetGroupARNs": [],
+            "HealthCheckType": "EC2",
+            "HealthCheckGracePeriod": 0,
+            "Instances": [
+                {
+                    "InstanceId": "i-00000000000000000",
+                    "InstanceType": "m5.large",
+                    "AvailabilityZone": "us-west-2a",
+                    "LifecycleState": "InService",
+                    "HealthStatus": "Healthy",
+                    "LaunchConfigurationName": "k8s.com-20210629043624",
+                    "ProtectedFromScaleIn": false
+                }
+            ],
+            "CreatedTime": "2019-04-30T07:27:25.579000+00:00",
+            "SuspendedProcesses": [],
+            "VPCZoneIdentifier": "subnet-00000000000000000",
+            "EnabledMetrics": [
+                {
+                    "Metric": "GroupTerminatingInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupTotalInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupMinSize",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupDesiredCapacity",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupPendingInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupInServiceInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupMaxSize",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupStandbyInstances",
+                    "Granularity": "1Minute"
+                }
+            ],
+            "Tags": [
+                {
+                    "ResourceId": "k8s.com",
+                    "ResourceType": "auto-scaling-group",
+                    "Key": "KubernetesCluster",
+                    "Value": "k8s.com",
+                    "PropagateAtLaunch": true
+                }
+            ],
+            "TerminationPolicies": [
+                "Default"
+            ],
+            "NewInstancesProtectedFromScaleIn": false,
+            "ServiceLinkedRoleARN": "arn:aws:iam::123456789012:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+        },
+        {
+            "AutoScalingGroupName": "master-us-west-2a.masters.k8s.com",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:00000000-0000-0000-0000-000000000000:autoScalingGroupName/master-us-west-2a.masters.k8s.com",
+            "LaunchConfigurationName": "master-us-west-2a.masters.k8s.com-20210720174645",
+            "MinSize": 1,
+            "MaxSize": 1,
+            "DesiredCapacity": 1,
+            "DefaultCooldown": 300,
+            "AvailabilityZones": [
+                "us-west-1a"
+            ],
+            "LoadBalancerNames": [],
+            "TargetGroupARNs": [],
+            "HealthCheckType": "EC2",
+            "HealthCheckGracePeriod": 0,
+            "Instances": [
+                {
+                    "InstanceId": "i-09aa80aac4920832b",
+                    "InstanceType": "m5.large",
+                    "AvailabilityZone": "us-west-1a",
+                    "LifecycleState": "InService",
+                    "HealthStatus": "Healthy",
+                    "LaunchConfigurationName": "master-us-west-1a.masters.k8s.com-20210720174645",
+                    "ProtectedFromScaleIn": false
+                }
+            ],
+            "CreatedTime": "2018-11-01T17:46:06.069000+00:00",
+            "SuspendedProcesses": [],
+            "VPCZoneIdentifier": "subnet-032d09968aae92d8f",
+            "EnabledMetrics": [
+                {
+                    "Metric": "GroupTerminatingInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupMinSize",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupInServiceInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupStandbyInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupDesiredCapacity",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupTotalInstances",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupMaxSize",
+                    "Granularity": "1Minute"
+                },
+                {
+                    "Metric": "GroupPendingInstances",
+                    "Granularity": "1Minute"
+                }
+            ],
+            "Tags": [
+                {
+                    "ResourceId": "master-us-west-1a.masters.k8s.com",
+                    "ResourceType": "auto-scaling-group",
+                    "Key": "KubernetesCluster",
+                    "Value": "k8s.com",
+                    "PropagateAtLaunch": true
+                }
+            ],
+            "TerminationPolicies": [
+                "Default"
+            ],
+            "NewInstancesProtectedFromScaleIn": false,
+            "ServiceLinkedRoleARN": "arn:aws:iam::123456789012:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+        }
+    ]
+}

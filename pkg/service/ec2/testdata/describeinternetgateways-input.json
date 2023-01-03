@@ -1,0 +1,37 @@
+{
+    "InternetGateways": [
+        {
+            "Attachments": [
+                {
+                    "State": "available",
+                    "VpcId": "vpc-090000000000000cb"
+                }
+            ],
+            "InternetGatewayId": "igw-000000000000000ab",
+            "OwnerId": "1234567890",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "bastion"
+                }
+            ]
+        },
+        {
+            "Attachments": [
+                {
+                    "State": "available",
+                    "VpcId": "vpc-070000000000000cf"
+                }
+            ],
+            "InternetGatewayId": "igw-010000000000000b9",
+            "OwnerId": "1234567890",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "devinfra"
+                }
+            ]
+        }
+    ],
+    "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
+}

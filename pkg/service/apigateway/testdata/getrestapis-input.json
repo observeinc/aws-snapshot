@@ -1,0 +1,106 @@
+{
+  "items": [
+      {
+          "id": "0z9np5mpx8",
+          "name": "dev-marketing",
+          "createdDate": "2018-12-11T03:56:33+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "EDGE"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "4kti67gd72",
+          "name": "marketing4-API",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-12-11T00:51:48+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "REGIONAL"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "8aspkjn4f9",
+          "name": "dev-observation-tree",
+          "createdDate": "2018-12-04T06:56:03+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "EDGE"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "9h8qn0wnuk",
+          "name": "marketing-API",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-12-11T00:23:51+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "REGIONAL"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "akep5p4rwk",
+          "name": "marketing4-API",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-12-11T00:40:42+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "REGIONAL"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "dpx18wesfk",
+          "name": "test-lambda",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-06-28T20:42:16+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "EDGE"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "gz1miwyz38",
+          "name": "marketing-API",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-12-11T00:24:46+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "REGIONAL"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      },
+      {
+          "id": "j7f2l8ooma",
+          "name": "marketing-API",
+          "description": "Created by AWS Lambda",
+          "createdDate": "2018-12-11T00:23:14+00:00",
+          "apiKeySource": "HEADER",
+          "endpointConfiguration": {
+              "types": [
+                  "REGIONAL"
+              ]
+          },
+          "disableExecuteApiEndpoint": false
+      }
+  ]
+}

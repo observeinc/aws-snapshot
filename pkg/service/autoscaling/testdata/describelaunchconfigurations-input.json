@@ -1,0 +1,35 @@
+{
+    "LaunchConfigurations": [
+        {
+            "LaunchConfigurationName": "benchmark.k8s.com-20210212063107",
+            "LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:047c0758-c798-4749-98cc-7f121acc73a1:launchConfigurationName/benchmark.k8s.com-20210212063107",
+            "ImageId": "ami-0c828baed4c412f25",
+            "KeyName": "kubernetes.k8s.com-1c:4f:1a:af:b8:9d:00:00:00:00:00:00:00:00:00:00",
+            "SecurityGroups": [
+                "sg-00000000000000000"
+            ],
+            "ClassicLinkVPCSecurityGroups": [],
+            "UserData": "",
+            "InstanceType": "m5.large",
+            "KernelId": "",
+            "RamdiskId": "",
+            "BlockDeviceMappings": [
+                {
+                    "DeviceName": "/dev/xvda",
+                    "Ebs": {
+                        "VolumeSize": 64,
+                        "VolumeType": "gp2",
+                        "DeleteOnTermination": true
+                    }
+                }
+            ],
+            "InstanceMonitoring": {
+                "Enabled": false
+            },
+            "IamInstanceProfile": "nodes.k8s.com",
+            "CreatedTime": "2021-02-12T06:31:08.205000+00:00",
+            "EbsOptimized": false,
+            "AssociatePublicIpAddress": true
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:dynamodb:us-west-2:123456789012:table/state-lock",
+      "data": {
+        "ArchivalSummary": null,
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "LockID",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingModeSummary": null,
+        "CreationDateTime": "2020-04-09T12:57:21.205-07:00",
+        "GlobalSecondaryIndexes": null,
+        "GlobalTableVersion": null,
+        "ItemCount": 9,
+        "KeySchema": [
+          {
+            "AttributeName": "LockID",
+            "KeyType": "HASH"
+          }
+        ],
+        "LatestStreamArn": null,
+        "LatestStreamLabel": null,
+        "LocalSecondaryIndexes": null,
+        "ProvisionedThroughput": {
+          "LastDecreaseDateTime": null,
+          "LastIncreaseDateTime": null,
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "Replicas": null,
+        "RestoreSummary": null,
+        "SSEDescription": null,
+        "StreamSpecification": null,
+        "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/state-lock",
+        "TableId": "00000000-13f8-4a20-a6e7-000000000000",
+        "TableName": "state-lock",
+        "TableSizeBytes": 796,
+        "TableStatus": "ACTIVE"
+      }
+    }
+  ]

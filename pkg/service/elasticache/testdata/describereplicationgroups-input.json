@@ -1,0 +1,86 @@
+{
+    "ReplicationGroups": [
+        {
+            "ReplicationGroupId": "redis-test",
+            "Description": " ",
+            "GlobalReplicationGroupInfo": {},
+            "Status": "available",
+            "PendingModifiedValues": {},
+            "MemberClusters": [
+                "redis-test-001",
+                "redis-test-002",
+                "redis-test-003"
+            ],
+            "NodeGroups": [
+                {
+                    "NodeGroupId": "0001",
+                    "Status": "available",
+                    "PrimaryEndpoint": {
+                        "Address": "redis-test.svyhum.ng.0001.usw1.cache.amazonaws.com",
+                        "Port": 6379
+                    },
+                    "ReaderEndpoint": {
+                        "Address": "redis-test-ro.svyhum.ng.0001.usw1.cache.amazonaws.com",
+                        "Port": 6379
+                    },
+                    "NodeGroupMembers": [
+                        {
+                            "CacheClusterId": "redis-test-001",
+                            "CacheNodeId": "0001",
+                            "ReadEndpoint": {
+                                "Address": "redis-test-001.svyhum.0001.usw1.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-1c",
+                            "CurrentRole": "primary"
+                        },
+                        {
+                            "CacheClusterId": "redis-test-002",
+                            "CacheNodeId": "0001",
+                            "ReadEndpoint": {
+                                "Address": "redis-test-002.svyhum.0001.usw1.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-1c",
+                            "CurrentRole": "replica"
+                        },
+                        {
+                            "CacheClusterId": "redis-test-003",
+                            "CacheNodeId": "0001",
+                            "ReadEndpoint": {
+                                "Address": "redis-test-003.svyhum.0001.usw1.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-1c",
+                            "CurrentRole": "replica"
+                        }
+                    ]
+                }
+            ],
+            "SnapshottingClusterId": "redis-test-002",
+            "AutomaticFailover": "enabled",
+            "MultiAZ": "disabled",
+            "SnapshotRetentionLimit": 1,
+            "SnapshotWindow": "07:00-08:00",
+            "ClusterEnabled": false,
+            "CacheNodeType": "cache.r6g.large",
+            "AuthTokenEnabled": false,
+            "TransitEncryptionEnabled": false,
+            "AtRestEncryptionEnabled": false,
+            "ARN": "arn:aws:elasticache:us-west-1:123456789012:replicationgroup:redis-test",
+            "LogDeliveryConfigurations": [
+                {
+                    "LogType": "slow-log",
+                    "DestinationType": "kinesis-firehose",
+                    "DestinationDetails": {
+                        "KinesisFirehoseDetails": {
+                            "DeliveryStream": "observe-collection"
+                        }
+                    },
+                    "LogFormat": "json",
+                    "Status": "active"
+                }
+            ]
+        }
+    ]
+}

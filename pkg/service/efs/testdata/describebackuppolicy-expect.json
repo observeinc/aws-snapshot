@@ -1,0 +1,11 @@
+[
+    {
+      "action": "",
+      "data": {
+        "FilesystemID": null,
+        "BackupPolicy": {
+          "Status": "ENABLED"
+        }
+      }
+    }
+  ]

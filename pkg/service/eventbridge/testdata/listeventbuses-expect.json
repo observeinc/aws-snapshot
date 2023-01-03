@@ -1,0 +1,20 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:events:us-west-2:123456789012:event-bus/default",
+      "data": {
+        "Arn": "arn:aws:events:us-west-2:123456789012:event-bus/default",
+        "Name": "default",
+        "Policy": null
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:events:us-west-2:123456789012:event-bus/new",
+      "data": {
+        "Arn": "arn:aws:events:us-west-2:123456789012:event-bus/new",
+        "Name": "new",
+        "Policy": null
+      }
+    }
+  ]

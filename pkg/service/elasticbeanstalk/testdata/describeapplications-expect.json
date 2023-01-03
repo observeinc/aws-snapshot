@@ -1,0 +1,60 @@
+[
+    {
+      "action": "",
+      "id": "terraflood-luke-cli",
+      "data": {
+        "ApplicationArn": "arn:aws:elasticbeanstalk:us-west-2:739672403694:application/terraflood-luke-cli",
+        "ApplicationName": "terraflood-luke-cli",
+        "ConfigurationTemplates": [],
+        "DateCreated": "2022-02-09T05:10:51.187Z",
+        "DateUpdated": "2022-02-09T05:10:51.187Z",
+        "Description": null,
+        "ResourceLifecycleConfig": {
+          "ServiceRole": null,
+          "VersionLifecycleConfig": {
+            "MaxAgeRule": {
+              "DeleteSourceFromS3": false,
+              "Enabled": false,
+              "MaxAgeInDays": 180
+            },
+            "MaxCountRule": {
+              "DeleteSourceFromS3": false,
+              "Enabled": false,
+              "MaxCount": 200
+            }
+          }
+        },
+        "Versions": null
+      }
+    },
+    {
+      "action": "",
+      "id": "terraflood-luke",
+      "data": {
+        "ApplicationArn": "arn:aws:elasticbeanstalk:us-west-2:739672403694:application/terraflood-luke",
+        "ApplicationName": "terraflood-luke",
+        "ConfigurationTemplates": [],
+        "DateCreated": "2022-02-08T13:29:34.68Z",
+        "DateUpdated": "2022-02-08T13:29:34.68Z",
+        "Description": null,
+        "ResourceLifecycleConfig": {
+          "ServiceRole": null,
+          "VersionLifecycleConfig": {
+            "MaxAgeRule": {
+              "DeleteSourceFromS3": false,
+              "Enabled": false,
+              "MaxAgeInDays": 180
+            },
+            "MaxCountRule": {
+              "DeleteSourceFromS3": false,
+              "Enabled": false,
+              "MaxCount": 200
+            }
+          }
+        },
+        "Versions": [
+          "Sample Application"
+        ]
+      }
+    }
+  ]

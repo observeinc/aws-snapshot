@@ -1,0 +1,4 @@
+{
+    "include": [ "eks:*" ],
+    "exclude": [ "rds:DescribeDBInstances" ]
+}

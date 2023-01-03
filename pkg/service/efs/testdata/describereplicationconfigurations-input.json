@@ -1,0 +1,19 @@
+{
+  "Replications": [
+      {
+          "SourceFileSystemId": "fs-0a54816cdec9f2180",
+          "SourceFileSystemRegion": "us-west-2",
+          "SourceFileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+          "OriginalSourceFileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+          "CreationTime": "2022-01-28T10:17:18+00:00",
+          "Destinations": [
+              {
+                  "Status": "ENABLED",
+                  "FileSystemId": "fs-0b9f93ec8736b67ba",
+                  "Region": "us-east-2",
+                  "LastReplicatedTimestamp": "2022-01-28T11:41:39.905000+00:00"
+              }
+          ]
+      }
+  ]
+}

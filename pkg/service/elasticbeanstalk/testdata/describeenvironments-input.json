@@ -1,0 +1,27 @@
+{
+  "Environments": [
+      {
+          "EnvironmentName": "Terrafloodluke-env",
+          "EnvironmentId": "e-375mc9kpzq",
+          "ApplicationName": "terraflood-luke",
+          "VersionLabel": "Sample Application",
+          "SolutionStackName": "64bit Amazon Linux 2 v3.4.11 running Docker",
+          "PlatformArn": "arn:aws:elasticbeanstalk:us-west-2::platform/Docker running on 64bit Amazon Linux 2/3.4.11",
+          "EndpointURL": "awseb-AWSEB-7C9CN9OAGS3F-1494762530.us-west-2.elb.amazonaws.com",
+          "CNAME": "Terrafloodluke-env.eba-sbmik2dc.us-west-2.elasticbeanstalk.com",
+          "DateCreated": "2022-02-08T13:29:43.310Z",
+          "DateUpdated": "2022-02-08T13:32:58.723Z",
+          "Status": "Ready",
+          "AbortableOperationInProgress": false,
+          "Health": "Green",
+          "HealthStatus": "Ok",
+          "Tier": {
+              "Name": "WebServer",
+              "Type": "Standard",
+              "Version": "1.0"
+          },
+          "EnvironmentLinks": [],
+          "EnvironmentArn": "arn:aws:elasticbeanstalk:us-west-2:739672403694:environment/terraflood-luke/Terrafloodluke-env"
+      }
+  ]
+}

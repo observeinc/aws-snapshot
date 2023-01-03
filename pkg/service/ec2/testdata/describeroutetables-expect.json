@@ -1,0 +1,108 @@
+[
+    {
+      "action": "",
+      "id": "rtb-0e0000000000000ea",
+      "data": {
+        "Associations": [
+          {
+            "AssociationState": {
+              "State": "associated",
+              "StatusMessage": null
+            },
+            "GatewayId": null,
+            "Main": true,
+            "RouteTableAssociationId": "rtbassoc-090000000000000a6",
+            "RouteTableId": "rtb-0e0000000000000ea",
+            "SubnetId": null
+          }
+        ],
+        "OwnerId": "1234567890",
+        "PropagatingVgws": [],
+        "RouteTableId": "rtb-0e0000000000000ea",
+        "Routes": [
+          {
+            "CarrierGatewayId": null,
+            "CoreNetworkArn": null,
+            "DestinationCidrBlock": "172.20.0.0/16",
+            "DestinationIpv6CidrBlock": null,
+            "DestinationPrefixListId": null,
+            "EgressOnlyInternetGatewayId": null,
+            "GatewayId": "local",
+            "InstanceId": null,
+            "InstanceOwnerId": null,
+            "LocalGatewayId": null,
+            "NatGatewayId": null,
+            "NetworkInterfaceId": null,
+            "Origin": "CreateRouteTable",
+            "State": "active",
+            "TransitGatewayId": null,
+            "VpcPeeringConnectionId": null
+          }
+        ],
+        "Tags": [],
+        "VpcId": "vpc-070000000000000c5"
+      }
+    },
+    {
+      "action": "",
+      "id": "rtb-0f000000000000049",
+      "data": {
+        "Associations": [
+          {
+            "AssociationState": {
+              "State": "associated",
+              "StatusMessage": null
+            },
+            "GatewayId": null,
+            "Main": true,
+            "RouteTableAssociationId": "rtbassoc-0700000000000004d",
+            "RouteTableId": "rtb-0f000000000000049",
+            "SubnetId": null
+          }
+        ],
+        "OwnerId": "1234567890",
+        "PropagatingVgws": [],
+        "RouteTableId": "rtb-0f000000000000049",
+        "Routes": [
+          {
+            "CarrierGatewayId": null,
+            "CoreNetworkArn": null,
+            "DestinationCidrBlock": "10.0.0.0/16",
+            "DestinationIpv6CidrBlock": null,
+            "DestinationPrefixListId": null,
+            "EgressOnlyInternetGatewayId": null,
+            "GatewayId": "local",
+            "InstanceId": null,
+            "InstanceOwnerId": null,
+            "LocalGatewayId": null,
+            "NatGatewayId": null,
+            "NetworkInterfaceId": null,
+            "Origin": "CreateRouteTable",
+            "State": "active",
+            "TransitGatewayId": null,
+            "VpcPeeringConnectionId": null
+          },
+          {
+            "CarrierGatewayId": null,
+            "CoreNetworkArn": null,
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "DestinationIpv6CidrBlock": null,
+            "DestinationPrefixListId": null,
+            "EgressOnlyInternetGatewayId": null,
+            "GatewayId": "igw-010000000000000b9",
+            "InstanceId": null,
+            "InstanceOwnerId": null,
+            "LocalGatewayId": null,
+            "NatGatewayId": null,
+            "NetworkInterfaceId": null,
+            "Origin": "CreateRoute",
+            "State": "active",
+            "TransitGatewayId": null,
+            "VpcPeeringConnectionId": null
+          }
+        ],
+        "Tags": [],
+        "VpcId": "vpc-070000000000000cf"
+      }
+    }
+  ]

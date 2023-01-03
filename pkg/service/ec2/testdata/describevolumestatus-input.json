@@ -1,0 +1,42 @@
+{
+    "VolumeStatuses": [
+        {
+            "Actions": [],
+            "AvailabilityZone": "us-west-2c",
+            "Events": [],
+            "VolumeId": "vol-0c9f739c9a071867b",
+            "VolumeStatus": {
+                "Details": [
+                    {
+                        "Name": "io-enabled",
+                        "Status": "passed"
+                    },
+                    {
+                        "Name": "io-performance",
+                        "Status": "not-applicable"
+                    }
+                ],
+                "Status": "ok"
+            }
+        },
+        {
+            "Actions": [],
+            "AvailabilityZone": "us-west-2b",
+            "Events": [],
+            "VolumeId": "vol-07c77eea53b526f8b",
+            "VolumeStatus": {
+                "Details": [
+                    {
+                        "Name": "io-enabled",
+                        "Status": "passed"
+                    },
+                    {
+                        "Name": "io-performance",
+                        "Status": "normal"
+                    }
+                ],
+                "Status": "ok"
+            }
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "HostedZones": [
+        {
+            "Id": "/hostedzone/Z62P9LJ63IZZCV",
+            "Name": "example.com.",
+            "CallerReference": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+            "Config": {
+                "Comment": "Old zone, kept as a backup, don't change this one",
+                "PrivateZone": false
+            },
+            "ResourceRecordSetCount": 30
+        },
+        {
+            "Id": "/hostedzone/ZHC6145EY3LS9",
+            "Name": "o11y.ho.ho.ho.",
+            "CallerReference": "RISWorkflow-RD:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+            "Config": {
+                "Comment": "HostedZone created by Route53 Registrar",
+                "PrivateZone": false
+            },
+            "ResourceRecordSetCount": 2
+        },
+        {
+            "Id": "/hostedzone/Z3RAT9SX0F91EJ",
+            "Name": "local.",
+            "CallerReference": "RISWorkflow-RD:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+            "Config": {
+                "Comment": "Created by Route 53 Auto Naming",
+                "PrivateZone": true
+            },
+            "ResourceRecordSetCount": 2,
+            "LinkedService": {
+                "ServicePrincipal": "servicediscovery.amazonaws.com",
+                "Description": "arn:aws:servicediscovery:us-west-2:123456789012:namespace/ns-eqqck6rvjvc7fqqi"
+            }
+        }
+    ]
+}

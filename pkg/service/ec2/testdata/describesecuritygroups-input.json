@@ -1,0 +1,169 @@
+{
+    "SecurityGroups": [
+        {
+            "Description": "Security group for nodes",
+            "GroupName": "nodes.k8s.example.com",
+            "IpPermissions": [
+                {
+                    "FromPort": 31156,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0",
+                            "Description": "kubernetes.io/rule/nlb/client=a0000000000000000000000000000002"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 31156,
+                    "UserIdGroupPairs": []
+                },
+                {
+                    "IpProtocol": "-1",
+                    "IpRanges": [],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "UserIdGroupPairs": [
+                        {
+                            "GroupId": "sg-0000000000000000d",
+                            "UserId": "1234567890"
+                        },
+                        {
+                            "GroupId": "sg-00000000000000097",
+                            "UserId": "1234567890"
+                        },
+                        {
+                            "GroupId": "sg-000000000000000d6",
+                            "UserId": "1234567890"
+                        },
+                        {
+                            "GroupId": "sg-000000000000000d4",
+                            "UserId": "1234567890"
+                        }
+                    ]
+                },
+                {
+                    "FromPort": 22,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "54.185.93.213/32"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 22,
+                    "UserIdGroupPairs": []
+                },
+                {
+                    "FromPort": 31605,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "172.20.32.0/19",
+                            "Description": "kubernetes.io/rule/nlb/health=a000000000000006d8940aa64e16e3f2"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 31605,
+                    "UserIdGroupPairs": []
+                },
+                {
+                    "FromPort": 30760,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0",
+                            "Description": "kubernetes.io/rule/nlb/client=a000000000000006d8940aa64e16e3f2"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 30760,
+                    "UserIdGroupPairs": []
+                },
+                {
+                    "FromPort": 3,
+                    "IpProtocol": "icmp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0",
+                            "Description": "kubernetes.io/rule/nlb/mtu"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 4,
+                    "UserIdGroupPairs": []
+                }
+            ],
+            "OwnerId": "1234567890",
+            "GroupId": "sg-0000000000000000d",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "UserIdGroupPairs": []
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "kubernetes.io/cluster/k8s.example.com",
+                    "Value": "owned"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "nodes.k8s.example.com"
+                },
+                {
+                    "Key": "KubernetesCluster",
+                    "Value": "k8s.example.com"
+                }
+            ],
+            "VpcId": "vpc-07000000000000005"
+        },
+        {
+            "Description": "launch-wizard-6 created 2021-01-20T11:00:58.431-08:00",
+            "GroupName": "launch-wizard-6",
+            "IpPermissions": [
+                {
+                    "FromPort": 22,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "ToPort": 22,
+                    "UserIdGroupPairs": []
+                }
+            ],
+            "OwnerId": "1234567890",
+            "GroupId": "sg-0000000000000000e",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [],
+                    "UserIdGroupPairs": []
+                }
+            ],
+            "VpcId": "vpc-af0000d6"
+        }
+    ],
+    "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
+}

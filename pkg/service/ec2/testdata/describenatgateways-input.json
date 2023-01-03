@@ -1,0 +1,21 @@
+{
+    "NatGateways": [
+        {
+            "CreateTime": "2021-08-28T22:38:21+00:00",
+            "DeleteTime": "2021-08-28T22:39:32+00:00",
+            "NatGatewayAddresses": [
+                {
+                    "AllocationId": "eipalloc-00000000000000000",
+                    "NetworkInterfaceId": "eni-00000000000000000",
+                    "PrivateIp": "172.31.10.100"
+                }
+            ],
+            "NatGatewayId": "nat-00000000000000000",
+            "State": "deleted",
+            "SubnetId": "subnet-00000000",
+            "VpcId": "vpc-00000000",
+            "Tags": [],
+            "ConnectivityType": "public"
+        }
+    ]
+}

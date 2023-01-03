@@ -1,0 +1,182 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:rds:us-west-2:1234567890:db:example",
+      "data": {
+        "ActivityStreamEngineNativeAuditFieldsIncluded": null,
+        "ActivityStreamKinesisStreamName": null,
+        "ActivityStreamKmsKeyId": null,
+        "ActivityStreamMode": null,
+        "ActivityStreamPolicyStatus": null,
+        "ActivityStreamStatus": null,
+        "AllocatedStorage": 1,
+        "AssociatedRoles": [],
+        "AutoMinorVersionUpgrade": true,
+        "AutomaticRestartTime": null,
+        "AutomationMode": null,
+        "AvailabilityZone": "us-west-2b",
+        "AwsBackupRecoveryPointArn": null,
+        "BackupRetentionPeriod": 7,
+        "BackupTarget": null,
+        "CACertificateIdentifier": "rds-ca-2019",
+        "CharacterSetName": null,
+        "CopyTagsToSnapshot": false,
+        "CustomIamInstanceProfile": null,
+        "CustomerOwnedIpEnabled": false,
+        "DBClusterIdentifier": "example",
+        "DBInstanceArn": "arn:aws:rds:us-west-2:1234567890:db:example",
+        "DBInstanceAutomatedBackupsReplications": null,
+        "DBInstanceClass": "db.r5.2xlarge",
+        "DBInstanceIdentifier": "example",
+        "DBInstanceStatus": "available",
+        "DBName": "example",
+        "DBParameterGroups": [
+          {
+            "DBParameterGroupName": "aurora-postgres10-database-log-connections",
+            "ParameterApplyStatus": "in-sync"
+          }
+        ],
+        "DBSecurityGroups": [],
+        "DBSubnetGroup": {
+          "DBSubnetGroupArn": null,
+          "DBSubnetGroupDescription": "Created from the RDS Management Console",
+          "DBSubnetGroupName": "default-vpc-070000000000000c5",
+          "SubnetGroupStatus": "Complete",
+          "Subnets": [
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "us-west-2b"
+              },
+              "SubnetIdentifier": "subnet-0f0000000000000f6",
+              "SubnetOutpost": {
+                "Arn": null
+              },
+              "SubnetStatus": "Active"
+            },
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "us-west-2a"
+              },
+              "SubnetIdentifier": "subnet-08000000000000001",
+              "SubnetOutpost": {
+                "Arn": null
+              },
+              "SubnetStatus": "Active"
+            },
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "us-west-2a"
+              },
+              "SubnetIdentifier": "subnet-0300000000000008f",
+              "SubnetOutpost": {
+                "Arn": null
+              },
+              "SubnetStatus": "Active"
+            },
+            {
+              "SubnetAvailabilityZone": {
+                "Name": "us-west-2c"
+              },
+              "SubnetIdentifier": "subnet-08000000000000058",
+              "SubnetOutpost": {
+                "Arn": null
+              },
+              "SubnetStatus": "Active"
+            }
+          ],
+          "SupportedNetworkTypes": null,
+          "VpcId": "vpc-070000000000000c5"
+        },
+        "DBSystemId": null,
+        "DbInstancePort": 0,
+        "DbiResourceId": "db-6D0000000000000000000000FI",
+        "DeletionProtection": false,
+        "DomainMemberships": [],
+        "EnabledCloudwatchLogsExports": [
+          "postgresql"
+        ],
+        "Endpoint": {
+          "Address": "example.cy00000000nq.us-west-2.rds.amazonaws.com",
+          "HostedZoneId": "Z100000000001W",
+          "Port": 5432
+        },
+        "Engine": "aurora-postgresql",
+        "EngineVersion": "10.14",
+        "EnhancedMonitoringResourceArn": "arn:aws:logs:us-west-2:1234567890:log-group:RDSOSMetrics:log-stream:db-6D0000000000000000000000FI",
+        "IAMDatabaseAuthenticationEnabled": false,
+        "InstanceCreateTime": "2018-11-05T19:32:28.805Z",
+        "Iops": null,
+        "KmsKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000032",
+        "LatestRestorableTime": null,
+        "LicenseModel": "postgresql-license",
+        "ListenerEndpoint": null,
+        "MasterUserSecret": null,
+        "MasterUsername": "postgres",
+        "MaxAllocatedStorage": null,
+        "MonitoringInterval": 60,
+        "MonitoringRoleArn": "arn:aws:iam::1234567890:role/rds-monitoring-role",
+        "MultiAZ": false,
+        "NcharCharacterSetName": null,
+        "NetworkType": null,
+        "OptionGroupMemberships": [
+          {
+            "OptionGroupName": "default:aurora-postgresql-10",
+            "Status": "in-sync"
+          }
+        ],
+        "PendingModifiedValues": {
+          "AllocatedStorage": null,
+          "AutomationMode": null,
+          "BackupRetentionPeriod": null,
+          "CACertificateIdentifier": null,
+          "DBInstanceClass": null,
+          "DBInstanceIdentifier": null,
+          "DBSubnetGroupName": null,
+          "EngineVersion": null,
+          "IAMDatabaseAuthenticationEnabled": null,
+          "Iops": null,
+          "LicenseModel": null,
+          "MasterUserPassword": null,
+          "MultiAZ": null,
+          "PendingCloudwatchLogsExports": null,
+          "Port": null,
+          "ProcessorFeatures": null,
+          "ResumeFullAutomationModeTime": null,
+          "StorageThroughput": null,
+          "StorageType": null
+        },
+        "PerformanceInsightsEnabled": true,
+        "PerformanceInsightsKMSKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000032",
+        "PerformanceInsightsRetentionPeriod": 7,
+        "PreferredBackupWindow": "12:12-12:42",
+        "PreferredMaintenanceWindow": "mon:09:00-mon:09:30",
+        "ProcessorFeatures": null,
+        "PromotionTier": 1,
+        "PubliclyAccessible": false,
+        "ReadReplicaDBClusterIdentifiers": null,
+        "ReadReplicaDBInstanceIdentifiers": [],
+        "ReadReplicaSourceDBInstanceIdentifier": null,
+        "ReplicaMode": null,
+        "ResumeFullAutomationModeTime": null,
+        "SecondaryAvailabilityZone": null,
+        "StatusInfos": null,
+        "StorageEncrypted": true,
+        "StorageThroughput": null,
+        "StorageType": "aurora",
+        "TagList": [
+          {
+            "Key": "workload-type",
+            "Value": "other"
+          }
+        ],
+        "TdeCredentialArn": null,
+        "Timezone": null,
+        "VpcSecurityGroups": [
+          {
+            "Status": "active",
+            "VpcSecurityGroupId": "sg-05000000000000068"
+          }
+        ]
+      }
+    }
+  ]

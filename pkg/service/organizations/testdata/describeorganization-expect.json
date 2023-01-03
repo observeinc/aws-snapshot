@@ -1,0 +1,22 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:organizations::123456789012:organization/o-0000000000",
+      "data": {
+        "Organization": {
+          "Arn": "arn:aws:organizations::123456789012:organization/o-0000000000",
+          "AvailablePolicyTypes": [
+            {
+              "Status": "ENABLED",
+              "Type": "SERVICE_CONTROL_POLICY"
+            }
+          ],
+          "FeatureSet": "ALL",
+          "Id": "o-0000000000",
+          "MasterAccountArn": "arn:aws:organizations::123456789012:account/o-0000000000/123456789012",
+          "MasterAccountEmail": "aws-observe-contact@observeinc.com",
+          "MasterAccountId": "123456789012"
+        }
+      }
+    }
+  ]

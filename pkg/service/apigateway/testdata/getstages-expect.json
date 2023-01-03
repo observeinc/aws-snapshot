@@ -1,0 +1,26 @@
+[
+    {
+      "action": "",
+      "data": {
+        "AccessLogSettings": null,
+        "CacheClusterEnabled": false,
+        "CacheClusterSize": null,
+        "CacheClusterStatus": "NOT_AVAILABLE",
+        "CanarySettings": null,
+        "ClientCertificateId": null,
+        "CreatedDate": "2018-12-11T00:51:49Z",
+        "DeploymentId": "3omtcb",
+        "Description": "Created by AWS Lambda",
+        "DocumentationVersion": null,
+        "LastUpdatedDate": "2018-12-11T00:51:49Z",
+        "MethodSettings": {},
+        "StageName": "default",
+        "Tags": null,
+        "TracingEnabled": false,
+        "Variables": null,
+        "WebAclArn": null,
+        "RestApiId": null,
+        "RestApiName": null
+      }
+    }
+  ]

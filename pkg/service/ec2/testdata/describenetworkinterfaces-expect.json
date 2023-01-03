@@ -1,0 +1,173 @@
+[
+    {
+      "action": "",
+      "id": "eni-06000000000000008",
+      "data": {
+        "Association": null,
+        "Attachment": {
+          "AttachTime": "2020-02-05T17:29:34Z",
+          "AttachmentId": "eni-attach-0400000000000000d",
+          "DeleteOnTermination": false,
+          "DeviceIndex": 1,
+          "EnaSrdSpecification": null,
+          "InstanceId": null,
+          "InstanceOwnerId": "1234567890",
+          "NetworkCardIndex": 0,
+          "Status": "attached"
+        },
+        "AvailabilityZone": "us-west-2b",
+        "DenyAllIgwTraffic": null,
+        "Description": "RDSNetworkInterface",
+        "Groups": [
+          {
+            "GroupId": "sg-05000000000000008",
+            "GroupName": "rds-launch-wizard"
+          }
+        ],
+        "InterfaceType": "interface",
+        "Ipv4Prefixes": null,
+        "Ipv6Address": null,
+        "Ipv6Addresses": [],
+        "Ipv6Native": null,
+        "Ipv6Prefixes": null,
+        "MacAddress": "06:e8:00:00:00:a6",
+        "NetworkInterfaceId": "eni-06000000000000008",
+        "OutpostArn": null,
+        "OwnerId": "1234567890",
+        "PrivateDnsName": "ip-172-20-253-124.us-west-2.compute.internal",
+        "PrivateIpAddress": "172.20.253.124",
+        "PrivateIpAddresses": [
+          {
+            "Association": null,
+            "Primary": true,
+            "PrivateDnsName": "ip-172-20-253-124.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.253.124"
+          }
+        ],
+        "RequesterId": "1234567890",
+        "RequesterManaged": true,
+        "SourceDestCheck": true,
+        "Status": "in-use",
+        "SubnetId": "subnet-0f000000000000006",
+        "TagSet": [],
+        "VpcId": "vpc-07000000000000005"
+      }
+    },
+    {
+      "action": "",
+      "id": "eni-06000000000000004",
+      "data": {
+        "Association": null,
+        "Attachment": {
+          "AttachTime": "2021-05-17T18:15:44Z",
+          "AttachmentId": "eni-attach-0000000000000000b",
+          "DeleteOnTermination": true,
+          "DeviceIndex": 1,
+          "EnaSrdSpecification": null,
+          "InstanceId": "i-0700000000000000c",
+          "InstanceOwnerId": "1234567890",
+          "NetworkCardIndex": 0,
+          "Status": "attached"
+        },
+        "AvailabilityZone": "us-west-2a",
+        "DenyAllIgwTraffic": null,
+        "Description": "aws-K8S-i-0700000000000000c",
+        "Groups": [
+          {
+            "GroupId": "sg-0a000000000000006",
+            "GroupName": "masters.k8s.observe-eng.com"
+          }
+        ],
+        "InterfaceType": "interface",
+        "Ipv4Prefixes": null,
+        "Ipv6Address": null,
+        "Ipv6Addresses": [],
+        "Ipv6Native": null,
+        "Ipv6Prefixes": null,
+        "MacAddress": "02:21:00:00:00:c1",
+        "NetworkInterfaceId": "eni-06000000000000004",
+        "OutpostArn": null,
+        "OwnerId": "1234567890",
+        "PrivateDnsName": "ip-172-20-46-182.us-west-2.compute.internal",
+        "PrivateIpAddress": "172.20.46.182",
+        "PrivateIpAddresses": [
+          {
+            "Association": null,
+            "Primary": true,
+            "PrivateDnsName": "ip-172-20-46-182.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.46.182"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-49-144.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.49.144"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-37-144.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.37.144"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-35-99.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.35.99"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-58-163.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.58.163"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-39-92.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.39.92"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-63-254.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.63.254"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-45-142.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.45.142"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-51-127.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.51.127"
+          },
+          {
+            "Association": null,
+            "Primary": false,
+            "PrivateDnsName": "ip-172-20-52-40.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.20.52.40"
+          }
+        ],
+        "RequesterId": "AROAJSHQCASDASDFASDFW:i-0700000000000000c",
+        "RequesterManaged": false,
+        "SourceDestCheck": true,
+        "Status": "in-use",
+        "SubnetId": "subnet-0300000000000000f",
+        "TagSet": [
+          {
+            "Key": "cluster.k8s.amazonaws.com/name",
+            "Value": "k8s.example.com"
+          },
+          {
+            "Key": "node.k8s.amazonaws.com/instance_id",
+            "Value": "i-0700000000000000c"
+          }
+        ],
+        "VpcId": "vpc-07000000000000005"
+      }
+    }
+  ]

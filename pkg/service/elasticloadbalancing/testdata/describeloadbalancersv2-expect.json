@@ -1,0 +1,39 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/00000000000a0406d8940aa64e16e3f2/20dcc90526501e81",
+      "data": {
+        "AvailabilityZones": [
+          {
+            "LoadBalancerAddresses": [
+              {
+                "AllocationId": "eipalloc-0000000fb5f6c0628",
+                "IPv6Address": null,
+                "IpAddress": "52.40.202.64",
+                "PrivateIPv4Address": null
+              }
+            ],
+            "OutpostId": null,
+            "SubnetId": "subnet-000009968aae92d8f",
+            "ZoneName": "us-west-2a"
+          }
+        ],
+        "CanonicalHostedZoneId": "00000FSROUN65G",
+        "CreatedTime": "2021-04-02T23:24:56.264Z",
+        "CustomerOwnedIpv4Pool": null,
+        "DNSName": "00000000000a0406d8940aa64e16e3f2-20dcc90526501e81.elb.us-west-2.amazonaws.com",
+        "IpAddressType": "ipv4",
+        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/00000000000a0406d8940aa64e16e3f2/20dcc90526501e81",
+        "LoadBalancerName": "00000000000a0406d8940aa64e16e3f2",
+        "Scheme": "internet-facing",
+        "SecurityGroups": null,
+        "State": {
+          "Code": "active",
+          "Reason": null
+        },
+        "Type": "network",
+        "VpcId": "vpc-00000fe828b96a0c5",
+        "Tags": null
+      }
+    }
+  ]

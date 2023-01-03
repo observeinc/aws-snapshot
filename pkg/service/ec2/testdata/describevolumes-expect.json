@@ -1,0 +1,88 @@
+[
+    {
+      "action": "",
+      "id": "vol-07000000000000005",
+      "data": {
+        "Attachments": [],
+        "AvailabilityZone": "us-west-2a",
+        "CreateTime": "2018-07-05T22:22:05.632Z",
+        "Encrypted": false,
+        "FastRestored": null,
+        "Iops": 100,
+        "KmsKeyId": null,
+        "MultiAttachEnabled": false,
+        "OutpostArn": null,
+        "Size": 20,
+        "SnapshotId": "",
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "a.etcd-main.k8s.example.com"
+          },
+          {
+            "Key": "k8s.io/role/master",
+            "Value": "1"
+          },
+          {
+            "Key": "k8s.io/etcd/main",
+            "Value": "a/a"
+          },
+          {
+            "Key": "kubernetes.io/cluster/k8s.example.com",
+            "Value": "owned"
+          },
+          {
+            "Key": "KubernetesCluster",
+            "Value": "k8s.example.com"
+          }
+        ],
+        "Throughput": null,
+        "VolumeId": "vol-07000000000000005",
+        "VolumeType": "gp2"
+      }
+    },
+    {
+      "action": "",
+      "id": "vol-00000000000000006",
+      "data": {
+        "Attachments": [],
+        "AvailabilityZone": "us-west-2a",
+        "CreateTime": "2018-07-05T22:22:05.667Z",
+        "Encrypted": false,
+        "FastRestored": null,
+        "Iops": 100,
+        "KmsKeyId": null,
+        "MultiAttachEnabled": false,
+        "OutpostArn": null,
+        "Size": 20,
+        "SnapshotId": "",
+        "State": "available",
+        "Tags": [
+          {
+            "Key": "k8s.io/role/master",
+            "Value": "1"
+          },
+          {
+            "Key": "Name",
+            "Value": "a.etcd-events.k8s.example.com"
+          },
+          {
+            "Key": "k8s.io/etcd/events",
+            "Value": "a/a"
+          },
+          {
+            "Key": "KubernetesCluster",
+            "Value": "k8s.example.com"
+          },
+          {
+            "Key": "kubernetes.io/cluster/k8s.example.com",
+            "Value": "owned"
+          }
+        ],
+        "Throughput": null,
+        "VolumeId": "vol-00000000000000006",
+        "VolumeType": "gp2"
+      }
+    }
+  ]

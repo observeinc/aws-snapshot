@@ -1,0 +1,22 @@
+[
+    {
+      "action": "",
+      "id": "eipalloc-00000000000000000",
+      "data": {
+        "AllocationId": "eipalloc-00000000000000000",
+        "AssociationId": null,
+        "CarrierIp": null,
+        "CustomerOwnedIp": null,
+        "CustomerOwnedIpv4Pool": null,
+        "Domain": "vpc",
+        "InstanceId": null,
+        "NetworkBorderGroup": "us-east-2",
+        "NetworkInterfaceId": null,
+        "NetworkInterfaceOwnerId": null,
+        "PrivateIpAddress": null,
+        "PublicIp": "1.2.3.4",
+        "PublicIpv4Pool": "amazon",
+        "Tags": null
+      }
+    }
+  ]

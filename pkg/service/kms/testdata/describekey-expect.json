@@ -1,0 +1,36 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:kms:us-west-2:123456789012:key/1443a63b-1111-4588-b283-111111111111",
+      "data": {
+        "KeyMetadata": {
+          "AWSAccountId": "xxxxxxxxxxxx",
+          "Arn": "arn:aws:kms:us-west-2:123456789012:key/1443a63b-1111-4588-b283-111111111111",
+          "CloudHsmClusterId": null,
+          "CreationDate": "2018-08-09T10:44:02.036-07:00",
+          "CustomKeyStoreId": null,
+          "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
+          "DeletionDate": null,
+          "Description": "Default master key that protects my RDS database volumes when no other key is defined",
+          "Enabled": true,
+          "EncryptionAlgorithms": [
+            "SYMMETRIC_DEFAULT"
+          ],
+          "ExpirationModel": null,
+          "KeyId": "1443a63b-1111-4588-b283-111111111111",
+          "KeyManager": "AWS",
+          "KeySpec": null,
+          "KeyState": "Enabled",
+          "KeyUsage": "ENCRYPT_DECRYPT",
+          "MacAlgorithms": null,
+          "MultiRegion": false,
+          "MultiRegionConfiguration": null,
+          "Origin": "AWS_KMS",
+          "PendingDeletionWindowInDays": null,
+          "SigningAlgorithms": null,
+          "ValidTo": null,
+          "XksKeyConfiguration": null
+        }
+      }
+    }
+  ]

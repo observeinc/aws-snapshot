@@ -1,0 +1,56 @@
+{
+  "InstanceHealthList": [
+      {
+          "InstanceId": "i-0f63c78eb5d1b1ca7",
+          "HealthStatus": "Ok",
+          "Color": "Green",
+          "Causes": [],
+          "LaunchedAt": "2022-02-08T13:30:35Z",
+          "ApplicationMetrics": {
+              "Duration": 10,
+              "RequestCount": 1,
+              "StatusCodes": {
+                  "Status2xx": 1,
+                  "Status3xx": 0,
+                  "Status4xx": 0,
+                  "Status5xx": 0
+              },
+              "Latency": {
+                  "P999": 0.002,
+                  "P99": 0.002,
+                  "P95": 0.002,
+                  "P90": 0.002,
+                  "P85": 0.002,
+                  "P75": 0.002,
+                  "P50": 0.002,
+                  "P10": 0.002
+              }
+          },
+          "System": {
+              "CPUUtilization": {
+                  "User": 0.1,
+                  "Nice": 0.0,
+                  "System": 0.0,
+                  "Idle": 99.9,
+                  "IOWait": 0.0,
+                  "IRQ": 0.0,
+                  "SoftIRQ": 0.0
+              },
+              "LoadAverage": [
+                  0.0,
+                  0.0,
+                  0.0
+              ]
+          },
+          "Deployment": {
+              "VersionLabel": "Sample Application",
+              "DeploymentId": 1,
+              "Status": "Deployed",
+              "DeploymentTime": "2022-02-08T13:32:44Z"
+          },
+          "AvailabilityZone": "us-west-2c",
+          "InstanceType": "t2.micro"
+      }
+  ],
+  "RefreshedAt": "2022-02-09T05:58:20Z"
+}

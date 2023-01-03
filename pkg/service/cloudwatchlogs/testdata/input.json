@@ -1,0 +1,60 @@
+{
+    "logGroups": [
+        {
+            "logGroupName": "/aws/eks/az_test/cluster",
+            "creationTime": 1616686614974,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/eks/az_test/cluster:*",
+            "storedBytes": 4140633
+        },
+        {
+            "logGroupName": "/aws/kinesisfirehose/demo",
+            "creationTime": 1525905839402,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/demo:*",
+            "storedBytes": 0
+        },
+        {
+            "logGroupName": "/aws/kinesisfirehose/event_link_json_input_v1_s3",
+            "creationTime": 1521588035845,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/event_link_json_input_v1_s3:*",
+            "storedBytes": 1292
+        },
+        {
+            "logGroupName": "/aws/kinesisfirehose/twitter_stream",
+            "creationTime": 1520464878241,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_stream:*",
+            "storedBytes": 0
+        },
+        {
+            "logGroupName": "/aws/kinesisfirehose/twitter_to_s3",
+            "creationTime": 1520465901889,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_to_s3:*",
+            "storedBytes": 670
+        },
+        {
+            "logGroupName": "/aws/lambda/awsobserver",
+            "creationTime": 1569452642892,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/awsobserver:*",
+            "storedBytes": 191843447
+        },
+        {
+            "logGroupName": "/aws/lambda/marketing",
+            "creationTime": 1544487890798,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing:*",
+            "storedBytes": 535
+        },
+        {
+            "logGroupName": "/aws/lambda/marketing-dev-app",
+            "creationTime": 1544500593461,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing-dev-app:*",
+            "storedBytes": 2470
+        }
+    ]
+}

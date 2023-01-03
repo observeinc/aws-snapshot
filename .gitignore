@@ -1,0 +1,6 @@
+/bin
+/.go
+/.container-*
+/.dockerfile-*
+/.licenses
+.*.swp

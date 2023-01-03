@@ -1,0 +1,28 @@
+{
+    "Table": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "LockID",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "state-lock",
+        "KeySchema": [
+            {
+                "AttributeName": "LockID",
+                "KeyType": "HASH"
+            }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": "2020-04-09T12:57:21.205000-07:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+        },
+        "TableSizeBytes": 796,
+        "ItemCount": 9,
+        "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/state-lock",
+        "TableId": "00000000-13f8-4a20-a6e7-000000000000"
+    }
+}

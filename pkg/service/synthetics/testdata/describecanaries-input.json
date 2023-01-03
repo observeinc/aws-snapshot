@@ -1,0 +1,38 @@
+{
+    "Canaries": [
+        {
+            "Id": "14e150da-14bf-4fd4-a716-2d9def66eb60",
+            "Name": "erik_test_canary",
+            "Code": {
+                "SourceLocationArn": "arn:aws:lambda:us-west-2:739672403694:layer:cwsyn-erik_test_canary-14e150da-14bf-4fd4-a716-2d9def66eb60:1",
+                "Handler": "pageLoadBlueprint.handler"
+            },
+            "ExecutionRoleArn": "arn:aws:iam::739672403694:role/service-role/CloudWatchSyntheticsRole-erik_test_canary-042-0719200f75e6",
+            "Schedule": {
+                "Expression": "cron(0 13 ? * * *)",
+                "DurationInSeconds": 0
+            },
+            "RunConfig": {
+                "TimeoutInSeconds": 300,
+                "MemoryInMB": 1000
+            },
+            "SuccessRetentionPeriodInDays": 31,
+            "FailureRetentionPeriodInDays": 31,
+            "Status": {
+                "State": "RUNNING",
+                "StateReasonCode": "UPDATE_COMPLETE"
+            },
+            "Timeline": {
+                "Created": "2021-07-11T00:00:00+00:00",
+                "LastModified": "2021-07-11T00:00:00+00:00",
+                "LastStarted": "2021-07-11T00:00:00+00:00"
+            },
+            "ArtifactS3Location": "cw-syn-results-739672403694-us-west-2/canary/us-west-2/erik_test_canary-042-0719200f75e6",
+            "EngineArn": "arn:aws:lambda:us-west-2:739672403694:function:cwsyn-erik_test_canary-14e150da-14bf-4fd4-a716-2d9def66eb60:2",
+            "RuntimeVersion": "syn-nodejs-puppeteer-3.7",
+            "Tags": {
+                "blueprint": "heartbeat"
+            }
+        }
+    ]
+}

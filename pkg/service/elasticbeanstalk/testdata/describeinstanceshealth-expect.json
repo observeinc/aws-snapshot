@@ -1,0 +1,59 @@
+[
+    {
+      "action": "",
+      "id": "i-0f63c78eb5d1b1ca7",
+      "data": {
+        "ApplicationMetrics": {
+          "Duration": 10,
+          "Latency": {
+            "P10": 0.002,
+            "P50": 0.002,
+            "P75": 0.002,
+            "P85": 0.002,
+            "P90": 0.002,
+            "P95": 0.002,
+            "P99": 0.002,
+            "P999": 0.002
+          },
+          "RequestCount": 1,
+          "StatusCodes": {
+            "Status2xx": 1,
+            "Status3xx": 0,
+            "Status4xx": 0,
+            "Status5xx": 0
+          }
+        },
+        "AvailabilityZone": "us-west-2c",
+        "Causes": [],
+        "Color": "Green",
+        "Deployment": {
+          "DeploymentId": 1,
+          "DeploymentTime": "2022-02-08T13:32:44Z",
+          "Status": "Deployed",
+          "VersionLabel": "Sample Application"
+        },
+        "HealthStatus": "Ok",
+        "InstanceId": "i-0f63c78eb5d1b1ca7",
+        "InstanceType": "t2.micro",
+        "LaunchedAt": "2022-02-08T13:30:35Z",
+        "System": {
+          "CPUUtilization": {
+            "IOWait": 0,
+            "IRQ": 0,
+            "Idle": 99.9,
+            "Nice": 0,
+            "Privileged": null,
+            "SoftIRQ": 0,
+            "System": 0,
+            "User": 0.1
+          },
+          "LoadAverage": [
+            0,
+            0,
+            0
+          ]
+        },
+        "EnvironmentId": null
+      }
+    }
+  ]

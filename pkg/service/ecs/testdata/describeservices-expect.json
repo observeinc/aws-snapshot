@@ -1,0 +1,84 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:ecs:us-west-2:123456789012:service/ec2-tutorial/ecs-tutorial",
+      "data": {
+        "CapacityProviderStrategy": null,
+        "ClusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+        "CreatedAt": "2021-06-23T14:56:15.824-07:00",
+        "CreatedBy": "arn:aws:iam::123456789012:user/alice",
+        "DeploymentConfiguration": {
+          "Alarms": null,
+          "DeploymentCircuitBreaker": {
+            "Enable": false,
+            "Rollback": false
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100
+        },
+        "DeploymentController": null,
+        "Deployments": [
+          {
+            "CapacityProviderStrategy": null,
+            "CreatedAt": "2021-06-23T14:56:15.824-07:00",
+            "DesiredCount": 1,
+            "FailedTasks": 0,
+            "Id": "ecs-svc/8746618186506775795",
+            "LaunchType": "EC2",
+            "NetworkConfiguration": null,
+            "PendingCount": 0,
+            "PlatformFamily": null,
+            "PlatformVersion": null,
+            "RolloutState": "COMPLETED",
+            "RolloutStateReason": "ECS deployment ecs-svc/8746618186506775795 completed.",
+            "RunningCount": 1,
+            "ServiceConnectConfiguration": null,
+            "ServiceConnectResources": null,
+            "Status": "PRIMARY",
+            "TaskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+            "UpdatedAt": "2021-06-23T14:56:45.588-07:00"
+          }
+        ],
+        "DesiredCount": 1,
+        "EnableECSManagedTags": true,
+        "EnableExecuteCommand": null,
+        "Events": [
+          {
+            "CreatedAt": "2021-06-23T14:56:45.595-07:00",
+            "Id": "9b9bb0cd-3952-4c10-874c-da9ac947b240",
+            "Message": "(service ecs-tutorial) has reached a steady state."
+          },
+          {
+            "CreatedAt": "2021-06-23T14:56:45.594-07:00",
+            "Id": "323b4414-abb1-4bfc-bdd2-fee7d0fb3d53",
+            "Message": "(service ecs-tutorial) (deployment ecs-svc/8746618186506775795) deployment completed."
+          },
+          {
+            "CreatedAt": "2021-06-23T14:56:23.651-07:00",
+            "Id": "21802c3b-3d3a-4569-a531-d0271100d1ca",
+            "Message": "(service ecs-tutorial) has started 1 tasks: (task beadf95ec94e41cabd16fcb829d6fa5b)."
+          }
+        ],
+        "HealthCheckGracePeriodSeconds": null,
+        "LaunchType": "EC2",
+        "LoadBalancers": [],
+        "NetworkConfiguration": null,
+        "PendingCount": 0,
+        "PlacementConstraints": [],
+        "PlacementStrategy": [],
+        "PlatformFamily": null,
+        "PlatformVersion": null,
+        "PropagateTags": "TASK_DEFINITION",
+        "RoleArn": null,
+        "RunningCount": 1,
+        "SchedulingStrategy": "REPLICA",
+        "ServiceArn": "arn:aws:ecs:us-west-2:123456789012:service/ec2-tutorial/ecs-tutorial",
+        "ServiceName": "ecs-tutorial",
+        "ServiceRegistries": [],
+        "Status": "ACTIVE",
+        "Tags": null,
+        "TaskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+        "TaskSets": null
+      }
+    }
+  ]

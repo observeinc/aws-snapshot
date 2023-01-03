@@ -1,0 +1,75 @@
+{
+    "LoadBalancerDescriptions": [
+        {
+            "LoadBalancerName": "000000008922711e98f8e02481e016be",
+            "DNSName": "000000008922711e98f8e02481e016be-000000000.us-west-2.elb.amazonaws.com",
+            "CanonicalHostedZoneName": "000000008922711e98f8e02481e016be-000000000.us-west-2.elb.amazonaws.com",
+            "CanonicalHostedZoneNameID": "0000000HABSF5",
+            "ListenerDescriptions": [
+                {
+                    "Listener": {
+                        "Protocol": "TCP",
+                        "LoadBalancerPort": 443,
+                        "InstanceProtocol": "TCP",
+                        "InstancePort": 31825
+                    },
+                    "PolicyNames": []
+                },
+                {
+                    "Listener": {
+                        "Protocol": "TCP",
+                        "LoadBalancerPort": 80,
+                        "InstanceProtocol": "TCP",
+                        "InstancePort": 32124
+                    },
+                    "PolicyNames": []
+                }
+            ],
+            "Policies": {
+                "AppCookieStickinessPolicies": [],
+                "LBCookieStickinessPolicies": [],
+                "OtherPolicies": [
+                    "k8s-proxyprotocol-enabled"
+                ]
+            },
+            "BackendServerDescriptions": [
+                {
+                    "InstancePort": 31825,
+                    "PolicyNames": [
+                        "k8s-proxyprotocol-enabled"
+                    ]
+                },
+                {
+                    "InstancePort": 32124,
+                    "PolicyNames": [
+                        "k8s-proxyprotocol-enabled"
+                    ]
+                }
+            ],
+            "AvailabilityZones": [
+                "us-west-2a"
+            ],
+            "Subnets": [
+                "subnet-000000008aae92d8f"
+            ],
+            "VPCId": "vpc-0000000028b96a0c5",
+            "Instances": [],
+            "HealthCheck": {
+                "Target": "TCP:32124",
+                "Interval": 10,
+                "Timeout": 5,
+                "UnhealthyThreshold": 6,
+                "HealthyThreshold": 2
+            },
+            "SourceSecurityGroup": {
+                "OwnerAlias": "123456789012",
+                "GroupName": "k8s-elb-000000008922711e98f8e02481e016be"
+            },
+            "SecurityGroups": [
+                "sg-0000008562d2033d4"
+            ],
+            "CreatedTime": "2019-06-19T00:18:34.280000+00:00",
+            "Scheme": "internet-facing"
+        }
+    ]
+}

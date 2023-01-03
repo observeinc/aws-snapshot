@@ -1,0 +1,33 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:eks:us-west-2:123456789012:fargateprofile/eg-test-eks-fargate-cluster/eg-test-eks-fargate-fargate/fabf25ce-e51c-e282-6b51-000000000000",
+      "data": {
+        "FargateProfile": {
+          "ClusterName": "eg-test-eks-fargate-cluster",
+          "CreatedAt": "2022-01-11T16:09:00.424-08:00",
+          "FargateProfileArn": "arn:aws:eks:us-west-2:123456789012:fargateprofile/eg-test-eks-fargate-cluster/eg-test-eks-fargate-fargate/fabf25ce-e51c-e282-6b51-000000000000",
+          "FargateProfileName": "eg-test-eks-fargate-fargate",
+          "PodExecutionRoleArn": "arn:aws:iam::123456789012:role/eg-test-eks-fargate-fargate@default",
+          "Selectors": [
+            {
+              "Labels": null,
+              "Namespace": "default"
+            }
+          ],
+          "Status": "ACTIVE",
+          "Subnets": [
+            "subnet-033fc2cb69c000000",
+            "subnet-00e9f97b3bc000000"
+          ],
+          "Tags": {
+            "Attributes": "fargate",
+            "Name": "eg-test-eks-fargate",
+            "Namespace": "eg",
+            "Stage": "test",
+            "kubernetes.io/cluster/eg-test-eks-fargate-cluster": "owned"
+          }
+        }
+      }
+    }
+  ]

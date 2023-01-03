@@ -1,0 +1,18 @@
+{
+    "CacheSubnetGroups": [
+        {
+            "CacheSubnetGroupName": "test",
+            "CacheSubnetGroupDescription": " ",
+            "VpcId": "vpc-a4bca9c3",
+            "Subnets": [
+                {
+                    "SubnetIdentifier": "subnet-9d8c9cc6",
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-west-1c"
+                    }
+                }
+            ],
+            "ARN": "arn:aws:elasticache:us-west-1:715593003215:subnetgroup:test"
+        }
+    ]
+}

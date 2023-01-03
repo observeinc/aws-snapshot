@@ -1,0 +1,16 @@
+{
+    "ApplicationVersions": [
+        {
+            "ApplicationVersionArn": "arn:aws:elasticbeanstalk:us-west-2:739672403694:applicationversion/terraflood-luke/Sample Application",
+            "ApplicationName": "terraflood-luke",
+            "VersionLabel": "Sample Application",
+            "SourceBundle": {
+                "S3Bucket": "elasticbeanstalk-us-west-2",
+                "S3Key": "GenericSampleApplication"
+            },
+            "DateCreated": "2022-02-08T13:29:41.120Z",
+            "DateUpdated": "2022-02-08T13:29:41.120Z",
+            "Status": "UNPROCESSED"
+        }
+    ]
+}

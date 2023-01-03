@@ -1,0 +1,23 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:elasticache:us-west-1:715593003215:subnetgroup:test",
+      "data": {
+        "ARN": "arn:aws:elasticache:us-west-1:715593003215:subnetgroup:test",
+        "CacheSubnetGroupDescription": " ",
+        "CacheSubnetGroupName": "test",
+        "Subnets": [
+          {
+            "SubnetAvailabilityZone": {
+              "Name": "us-west-1c"
+            },
+            "SubnetIdentifier": "subnet-9d8c9cc6",
+            "SubnetOutpost": null,
+            "SupportedNetworkTypes": null
+          }
+        ],
+        "SupportedNetworkTypes": null,
+        "VpcId": "vpc-a4bca9c3"
+      }
+    }
+  ]

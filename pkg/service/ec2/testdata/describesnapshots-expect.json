@@ -1,0 +1,74 @@
+[
+    {
+      "action": "",
+      "id": "snap-01c53a4aa621fd867",
+      "data": {
+        "DataEncryptionKeyId": null,
+        "Description": "Created by CreateImage(i-070b565a83a3e27b0) for ami-04f416855506d15e9",
+        "Encrypted": true,
+        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/9c7bac84-4f63-4b62-861e-43b97621671a",
+        "OutpostArn": null,
+        "OwnerAlias": null,
+        "OwnerId": "123456789012",
+        "Progress": "100%",
+        "RestoreExpiryTime": null,
+        "SnapshotId": "snap-01c53a4aa621fd867",
+        "StartTime": "2021-11-27T03:35:46.251Z",
+        "State": "completed",
+        "StateMessage": null,
+        "StorageTier": null,
+        "Tags": [
+          {
+            "Key": "cloud-image-type",
+            "Value": "Observe dev-sandbox"
+          }
+        ],
+        "VolumeId": "vol-05642abb44f7f3c40",
+        "VolumeSize": 60
+      }
+    },
+    {
+      "action": "",
+      "id": "snap-032d0fbc98854d7a7",
+      "data": {
+        "DataEncryptionKeyId": null,
+        "Description": "Created for policy: policy-0cd0032de85873749 schedule: 2 weeks of daily snapshots",
+        "Encrypted": true,
+        "KmsKeyId": "arn:aws:kms:us-west-2:123456789012:key/9c7bac84-4f63-4b62-861e-43b97621671a",
+        "OutpostArn": null,
+        "OwnerAlias": null,
+        "OwnerId": "123456789012",
+        "Progress": "100%",
+        "RestoreExpiryTime": null,
+        "SnapshotId": "snap-032d0fbc98854d7a7",
+        "StartTime": "2021-09-21T00:01:08.885Z",
+        "State": "completed",
+        "StateMessage": null,
+        "StorageTier": null,
+        "Tags": [
+          {
+            "Key": "SnapshotCreator",
+            "Value": "DLM"
+          },
+          {
+            "Key": "Snapshot",
+            "Value": "true"
+          },
+          {
+            "Key": "dlm:managed",
+            "Value": "true"
+          },
+          {
+            "Key": "aws:dlm:lifecycle-policy-id",
+            "Value": "policy-0cd0032de85873749"
+          },
+          {
+            "Key": "aws:dlm:lifecycle-schedule-name",
+            "Value": "2 weeks of daily snapshots"
+          }
+        ],
+        "VolumeId": "vol-050bb90318ea9d174",
+        "VolumeSize": 500
+      }
+    }
+  ]

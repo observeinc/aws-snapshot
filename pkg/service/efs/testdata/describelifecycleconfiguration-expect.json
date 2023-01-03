@@ -1,0 +1,9 @@
+[
+    {
+      "action": "",
+      "data": {
+        "TransitionToIA": "AFTER_7_DAYS",
+        "TransitionToPrimaryStorageClass": null
+      }
+    }
+  ]

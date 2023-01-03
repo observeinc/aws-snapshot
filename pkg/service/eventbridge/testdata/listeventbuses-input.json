@@ -1,0 +1,12 @@
+{
+    "EventBuses": [
+        {
+            "Name": "default",
+            "Arn": "arn:aws:events:us-west-2:123456789012:event-bus/default"
+        },
+        {
+            "Name": "new",
+            "Arn": "arn:aws:events:us-west-2:123456789012:event-bus/new"
+        }
+    ]
+}

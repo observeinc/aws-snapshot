@@ -1,0 +1,11 @@
+{
+    "Addresses": [
+        {
+            "PublicIp": "1.2.3.4",
+            "AllocationId": "eipalloc-00000000000000000",
+            "Domain": "vpc",
+            "PublicIpv4Pool": "amazon",
+            "NetworkBorderGroup": "us-east-2"
+        }
+    ]
+}

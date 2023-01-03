@@ -1,0 +1,18 @@
+[
+    {
+      "action": "",
+      "id": "fsmt-0849e4819c30ede49",
+      "data": {
+        "AvailabilityZoneId": "usw2-az3",
+        "AvailabilityZoneName": "us-west-2c",
+        "FileSystemId": "fs-0a54816cdec9f2180",
+        "IpAddress": "172.20.252.238",
+        "LifeCycleState": "available",
+        "MountTargetId": "fsmt-0849e4819c30ede49",
+        "NetworkInterfaceId": "eni-03cb91479d8d9678c",
+        "OwnerId": "723346149663",
+        "SubnetId": "subnet-08197d5fa57359a58",
+        "VpcId": "vpc-07c84fe828b96a0c5"
+      }
+    }
+  ]

@@ -1,0 +1,63 @@
+{
+    "DBClusters": [
+        {
+            "AllocatedStorage": 1,
+            "AvailabilityZones": [
+                "us-west-2c",
+                "us-west-2b",
+                "us-west-2a"
+            ],
+            "BackupRetentionPeriod": 7,
+            "DatabaseName": "example",
+            "DBClusterIdentifier": "example",
+            "DBClusterParameterGroup": "default.aurora-postgresql10",
+            "DBSubnetGroup": "default-vpc-070000000000000c5",
+            "Status": "available",
+            "EarliestRestorableTime": "2021-05-25T12:21:27.144000+00:00",
+            "Endpoint": "example.cluster-cy00000000nq.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "example.cluster-ro-cy00000000nq.us-west-2.rds.amazonaws.com",
+            "MultiAZ": false,
+            "Engine": "aurora-postgresql",
+            "EngineVersion": "10.14",
+            "LatestRestorableTime": "2021-06-01T17:43:18.835000+00:00",
+            "Port": 5432,
+            "MasterUsername": "postgres",
+            "PreferredBackupWindow": "12:12-12:42",
+            "PreferredMaintenanceWindow": "mon:09:00-mon:09:30",
+            "ReadReplicaIdentifiers": [],
+            "DBClusterMembers": [
+                {
+                    "DBInstanceIdentifier": "example",
+                    "IsClusterWriter": true,
+                    "DBClusterParameterGroupStatus": "in-sync",
+                    "PromotionTier": 1
+                }
+            ],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-05000000000000068",
+                    "Status": "active"
+                }
+            ],
+            "HostedZoneId": "Z100000000001W",
+            "StorageEncrypted": true,
+            "KmsKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000002",
+            "DbClusterResourceId": "cluster-7K0000000000000000000000HI",
+            "DBClusterArn": "arn:aws:rds:us-west-2:1234567890:cluster:example",
+            "AssociatedRoles": [],
+            "IAMDatabaseAuthenticationEnabled": false,
+            "ClusterCreateTime": "2018-11-05T19:26:41.776000+00:00",
+            "EnabledCloudwatchLogsExports": [
+                "postgresql"
+            ],
+            "EngineMode": "provisioned",
+            "DeletionProtection": true,
+            "HttpEndpointEnabled": false,
+            "ActivityStreamStatus": "stopped",
+            "CopyTagsToSnapshot": false,
+            "CrossAccountClone": false,
+            "DomainMemberships": [],
+            "TagList": []
+        }
+    ]
+}

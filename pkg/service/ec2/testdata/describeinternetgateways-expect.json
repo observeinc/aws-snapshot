@@ -1,0 +1,42 @@
+[
+    {
+      "action": "",
+      "id": "igw-000000000000000ab",
+      "data": {
+        "Attachments": [
+          {
+            "State": "available",
+            "VpcId": "vpc-090000000000000cb"
+          }
+        ],
+        "InternetGatewayId": "igw-000000000000000ab",
+        "OwnerId": "1234567890",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "bastion"
+          }
+        ]
+      }
+    },
+    {
+      "action": "",
+      "id": "igw-010000000000000b9",
+      "data": {
+        "Attachments": [
+          {
+            "State": "available",
+            "VpcId": "vpc-070000000000000cf"
+          }
+        ],
+        "InternetGatewayId": "igw-010000000000000b9",
+        "OwnerId": "1234567890",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "devinfra"
+          }
+        ]
+      }
+    }
+  ]

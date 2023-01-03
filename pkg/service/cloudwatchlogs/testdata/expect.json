@@ -1,0 +1,114 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/eks/az_test/cluster:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/eks/az_test/cluster:*",
+        "CreationTime": 1616686614974,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/eks/az_test/cluster",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 4140633
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/demo:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/demo:*",
+        "CreationTime": 1525905839402,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/kinesisfirehose/demo",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 0
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/event_link_json_input_v1_s3:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/event_link_json_input_v1_s3:*",
+        "CreationTime": 1521588035845,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/kinesisfirehose/event_link_json_input_v1_s3",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 1292
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_stream:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_stream:*",
+        "CreationTime": 1520464878241,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/kinesisfirehose/twitter_stream",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 0
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_to_s3:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/kinesisfirehose/twitter_to_s3:*",
+        "CreationTime": 1520465901889,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/kinesisfirehose/twitter_to_s3",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 670
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/awsobserver:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/awsobserver:*",
+        "CreationTime": 1569452642892,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/lambda/awsobserver",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 191843447
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing:*",
+        "CreationTime": 1544487890798,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/lambda/marketing",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 535
+      }
+    },
+    {
+      "action": "",
+      "id": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing-dev-app:*",
+      "data": {
+        "Arn": "arn:aws:logs:us-west-2:1234567890:log-group:/aws/lambda/marketing-dev-app:*",
+        "CreationTime": 1544500593461,
+        "DataProtectionStatus": null,
+        "KmsKeyId": null,
+        "LogGroupName": "/aws/lambda/marketing-dev-app",
+        "MetricFilterCount": 0,
+        "RetentionInDays": null,
+        "StoredBytes": 2470
+      }
+    }
+  ]

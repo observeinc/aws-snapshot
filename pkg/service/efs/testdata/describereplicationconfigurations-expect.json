@@ -1,0 +1,21 @@
+[
+    {
+      "action": "",
+      "id": "fs-0a54816cdec9f2180",
+      "data": {
+        "CreationTime": "2022-01-28T10:17:18Z",
+        "Destinations": [
+          {
+            "FileSystemId": "fs-0b9f93ec8736b67ba",
+            "LastReplicatedTimestamp": "2022-01-28T11:41:39.905Z",
+            "Region": "us-east-2",
+            "Status": "ENABLED"
+          }
+        ],
+        "OriginalSourceFileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+        "SourceFileSystemArn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0a54816cdec9f2180",
+        "SourceFileSystemId": "fs-0a54816cdec9f2180",
+        "SourceFileSystemRegion": "us-west-2"
+      }
+    }
+  ]

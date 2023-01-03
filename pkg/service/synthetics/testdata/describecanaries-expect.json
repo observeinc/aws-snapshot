@@ -1,0 +1,46 @@
+[
+    {
+      "action": "",
+      "id": "14e150da-14bf-4fd4-a716-2d9def66eb60",
+      "data": {
+        "ArtifactConfig": null,
+        "ArtifactS3Location": "cw-syn-results-739672403694-us-west-2/canary/us-west-2/erik_test_canary-042-0719200f75e6",
+        "Code": {
+          "Handler": "pageLoadBlueprint.handler",
+          "SourceLocationArn": "arn:aws:lambda:us-west-2:739672403694:layer:cwsyn-erik_test_canary-14e150da-14bf-4fd4-a716-2d9def66eb60:1"
+        },
+        "EngineArn": "arn:aws:lambda:us-west-2:739672403694:function:cwsyn-erik_test_canary-14e150da-14bf-4fd4-a716-2d9def66eb60:2",
+        "ExecutionRoleArn": "arn:aws:iam::739672403694:role/service-role/CloudWatchSyntheticsRole-erik_test_canary-042-0719200f75e6",
+        "FailureRetentionPeriodInDays": 31,
+        "Id": "14e150da-14bf-4fd4-a716-2d9def66eb60",
+        "Name": "erik_test_canary",
+        "RunConfig": {
+          "ActiveTracing": null,
+          "MemoryInMB": 1000,
+          "TimeoutInSeconds": 300
+        },
+        "RuntimeVersion": "syn-nodejs-puppeteer-3.7",
+        "Schedule": {
+          "DurationInSeconds": 0,
+          "Expression": "cron(0 13 ? * * *)"
+        },
+        "Status": {
+          "State": "RUNNING",
+          "StateReason": null,
+          "StateReasonCode": "UPDATE_COMPLETE"
+        },
+        "SuccessRetentionPeriodInDays": 31,
+        "Tags": {
+          "blueprint": "heartbeat"
+        },
+        "Timeline": {
+          "Created": "2021-07-11T00:00:00Z",
+          "LastModified": "2021-07-11T00:00:00Z",
+          "LastStarted": "2021-07-11T00:00:00Z",
+          "LastStopped": null
+        },
+        "VisualReference": null,
+        "VpcConfig": null
+      }
+    }
+  ]

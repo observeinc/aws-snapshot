@@ -1,0 +1,43 @@
+{
+    "Subnets": [
+        {
+            "AvailabilityZone": "us-west-2a",
+            "AvailabilityZoneId": "usw2-az1",
+            "AvailableIpAddressCount": 250,
+            "CidrBlock": "10.1.0.0/24",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": true,
+            "MapCustomerOwnedIpOnLaunch": false,
+            "State": "available",
+            "SubnetId": "subnet-0a00000000000000a",
+            "VpcId": "vpc-0900000000000000b",
+            "OwnerId": "1234567890",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "SubnetArn": "arn:aws:ec2:us-west-2:1234567890:subnet/subnet-0a00000000000000a"
+        },
+        {
+            "AvailabilityZone": "us-west-2c",
+            "AvailabilityZoneId": "usw2-az3",
+            "AvailableIpAddressCount": 251,
+            "CidrBlock": "172.20.252.0/24",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false,
+            "MapCustomerOwnedIpOnLaunch": false,
+            "State": "available",
+            "SubnetId": "subnet-08000000000000008",
+            "VpcId": "vpc-07000000000000005",
+            "OwnerId": "1234567890",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "observe-eng-rds-2c"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:us-west-2:1234567890:subnet/subnet-08000000000000008"
+        }
+    ],
+    "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
+}

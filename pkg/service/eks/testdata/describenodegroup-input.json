@@ -1,0 +1,53 @@
+{
+    "nodegroup": {
+        "nodegroupName": "eg-test-eks-fargate-workers",
+        "nodegroupArn": "arn:aws:eks:us-west-2:123456789012:nodegroup/eg-test-eks-fargate-cluster/eg-test-eks-fargate-workers/e0bf25ce-d4e3-6831-f4bf-000000000000",
+        "clusterName": "eg-test-eks-fargate-cluster",
+        "version": "1.21",
+        "releaseVersion": "1.21.5-20211206",
+        "createdAt": "2022-01-11T16:08:53.682000-08:00",
+        "modifiedAt": "2022-01-18T17:29:12.009000-08:00",
+        "status": "ACTIVE",
+        "capacityType": "ON_DEMAND",
+        "scalingConfig": {
+            "minSize": 2,
+            "maxSize": 3,
+            "desiredSize": 2
+        },
+        "instanceTypes": [
+            "t3.small"
+        ],
+        "subnets": [
+            "subnet-0bef2c06e96d00000",
+            "subnet-0168edb672b400000"
+        ],
+        "amiType": "AL2_x86_64",
+        "nodeRole": "arn:aws:iam::123456789012:role/eg-test-eks-fargate-workers",
+        "labels": {},
+        "resources": {
+            "autoScalingGroups": [
+                {
+                    "name": "eks-eg-test-eks-fargate-workers-e0bf25ce-d4e3-6831-f4bf-000000000000"
+                }
+            ]
+        },
+        "health": {
+            "issues": []
+        },
+        "updateConfig": {
+            "maxUnavailable": 1
+        },
+        "launchTemplate": {
+            "name": "eg-test-eks-fargate-workers20220112000849611400000000",
+            "version": "1",
+            "id": "lt-0b8715c26ba000000"
+        },
+        "tags": {
+            "Attributes": "workers",
+            "Stage": "test",
+            "kubernetes.io/cluster/eg-test-eks-fargate-cluster": "owned",
+            "Namespace": "eg",
+            "Name": "eg-test-eks-fargate-workers"
+        }
+    }
+}

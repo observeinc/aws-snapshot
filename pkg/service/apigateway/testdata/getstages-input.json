@@ -1,0 +1,15 @@
+{
+  "item": [
+      {
+          "deploymentId": "3omtcb",
+          "stageName": "default",
+          "description": "Created by AWS Lambda",
+          "cacheClusterEnabled": false,
+          "cacheClusterStatus": "NOT_AVAILABLE",
+          "methodSettings": {},
+          "tracingEnabled": false,
+          "createdDate": "2018-12-11T00:51:49+00:00",
+          "lastUpdatedDate": "2018-12-11T00:51:49+00:00"
+      }
+  ]
+}

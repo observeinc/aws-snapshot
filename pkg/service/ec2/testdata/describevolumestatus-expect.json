@@ -1,0 +1,52 @@
+[
+    {
+      "action": "",
+      "id": "vol-0c9f739c9a071867b",
+      "data": {
+        "Actions": [],
+        "AttachmentStatuses": null,
+        "AvailabilityZone": "us-west-2c",
+        "Events": [],
+        "OutpostArn": null,
+        "VolumeId": "vol-0c9f739c9a071867b",
+        "VolumeStatus": {
+          "Details": [
+            {
+              "Name": "io-enabled",
+              "Status": "passed"
+            },
+            {
+              "Name": "io-performance",
+              "Status": "not-applicable"
+            }
+          ],
+          "Status": "ok"
+        }
+      }
+    },
+    {
+      "action": "",
+      "id": "vol-07c77eea53b526f8b",
+      "data": {
+        "Actions": [],
+        "AttachmentStatuses": null,
+        "AvailabilityZone": "us-west-2b",
+        "Events": [],
+        "OutpostArn": null,
+        "VolumeId": "vol-07c77eea53b526f8b",
+        "VolumeStatus": {
+          "Details": [
+            {
+              "Name": "io-enabled",
+              "Status": "passed"
+            },
+            {
+              "Name": "io-performance",
+              "Status": "normal"
+            }
+          ],
+          "Status": "ok"
+        }
+      }
+    }
+  ]

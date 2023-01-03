@@ -1,0 +1,146 @@
+[
+    {
+      "action": "",
+      "id": "EJMQBC1234567",
+      "data": {
+        "ARN": "arn:aws:cloudfront::711271234567:distribution/EJMQBC1234567",
+        "AliasICPRecordals": [
+          {
+            "CNAME": "foo.bar.org",
+            "ICPRecordalStatus": "APPROVED"
+          }
+        ],
+        "Aliases": {
+          "Items": [
+            "foo.bar.org"
+          ],
+          "Quantity": 1
+        },
+        "CacheBehaviors": {
+          "Items": null,
+          "Quantity": 0
+        },
+        "Comment": "",
+        "CustomErrorResponses": {
+          "Items": null,
+          "Quantity": 0
+        },
+        "DefaultCacheBehavior": {
+          "AllowedMethods": {
+            "CachedMethods": {
+              "Items": [
+                "HEAD",
+                "GET"
+              ],
+              "Quantity": 2
+            },
+            "Items": [
+              "HEAD",
+              "GET"
+            ],
+            "Quantity": 2
+          },
+          "CachePolicyId": null,
+          "Compress": false,
+          "DefaultTTL": 60,
+          "FieldLevelEncryptionId": "",
+          "ForwardedValues": {
+            "Cookies": {
+              "Forward": "none",
+              "WhitelistedNames": null
+            },
+            "Headers": {
+              "Items": null,
+              "Quantity": 0
+            },
+            "QueryString": false,
+            "QueryStringCacheKeys": {
+              "Items": null,
+              "Quantity": 0
+            }
+          },
+          "FunctionAssociations": {
+            "Items": null,
+            "Quantity": 0
+          },
+          "LambdaFunctionAssociations": {
+            "Items": null,
+            "Quantity": 0
+          },
+          "MaxTTL": 600,
+          "MinTTL": 0,
+          "OriginRequestPolicyId": null,
+          "RealtimeLogConfigArn": null,
+          "ResponseHeadersPolicyId": null,
+          "SmoothStreaming": false,
+          "TargetOriginId": "S3-foo.bar.org",
+          "TrustedKeyGroups": {
+            "Enabled": false,
+            "Items": null,
+            "Quantity": 0
+          },
+          "TrustedSigners": {
+            "Enabled": false,
+            "Items": null,
+            "Quantity": 0
+          },
+          "ViewerProtocolPolicy": "redirect-to-https"
+        },
+        "DomainName": "dhc0o71234567.cloudfront.net",
+        "Enabled": true,
+        "HttpVersion": "HTTP2",
+        "Id": "EJMQBC1234567",
+        "IsIPV6Enabled": true,
+        "LastModifiedTime": "2019-02-24T23:57:52.65Z",
+        "OriginGroups": {
+          "Items": null,
+          "Quantity": 0
+        },
+        "Origins": {
+          "Items": [
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomHeaders": {
+                "Items": null,
+                "Quantity": 0
+              },
+              "CustomOriginConfig": null,
+              "DomainName": "foo.bar.org.s3.amazonaws.com",
+              "Id": "S3-foo.bar.org",
+              "OriginAccessControlId": null,
+              "OriginPath": "",
+              "OriginShield": {
+                "Enabled": false,
+                "OriginShieldRegion": null
+              },
+              "S3OriginConfig": {
+                "OriginAccessIdentity": "origin-access-identity/cloudfront/E3SCWN41234567"
+              }
+            }
+          ],
+          "Quantity": 1
+        },
+        "PriceClass": "PriceClass_All",
+        "Restrictions": {
+          "GeoRestriction": {
+            "Items": null,
+            "Quantity": 0,
+            "RestrictionType": "none"
+          }
+        },
+        "Staging": null,
+        "Status": "Deployed",
+        "ViewerCertificate": {
+          "ACMCertificateArn": "arn:aws:acm:us-east-1:711271234567:certificate/4f17bf79-0000-1111-2222-123456789abc",
+          "Certificate": "arn:aws:acm:us-east-1:711271234567:certificate/4f17bf79-0000-1111-2222-123456789abc",
+          "CertificateSource": "acm",
+          "CloudFrontDefaultCertificate": null,
+          "IAMCertificateId": null,
+          "MinimumProtocolVersion": "TLSv1.1_2016",
+          "SSLSupportMethod": "sni-only"
+        },
+        "WebACLId": ""
+      }
+    }
+  ]

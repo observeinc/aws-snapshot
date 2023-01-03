@@ -1,0 +1,119 @@
+{
+    "DBInstances": [
+        {
+            "DBInstanceIdentifier": "example",
+            "DBInstanceClass": "db.r5.2xlarge",
+            "Engine": "aurora-postgresql",
+            "DBInstanceStatus": "available",
+            "MasterUsername": "postgres",
+            "DBName": "example",
+            "Endpoint": {
+                "Address": "example.cy00000000nq.us-west-2.rds.amazonaws.com",
+                "Port": 5432,
+                "HostedZoneId": "Z100000000001W"
+            },
+            "AllocatedStorage": 1,
+            "InstanceCreateTime": "2018-11-05T19:32:28.805000+00:00",
+            "PreferredBackupWindow": "12:12-12:42",
+            "BackupRetentionPeriod": 7,
+            "DBSecurityGroups": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-05000000000000068",
+                    "Status": "active"
+                }
+            ],
+            "DBParameterGroups": [
+                {
+                    "DBParameterGroupName": "aurora-postgres10-database-log-connections",
+                    "ParameterApplyStatus": "in-sync"
+                }
+            ],
+            "AvailabilityZone": "us-west-2b",
+            "DBSubnetGroup": {
+                "DBSubnetGroupName": "default-vpc-070000000000000c5",
+                "DBSubnetGroupDescription": "Created from the RDS Management Console",
+                "VpcId": "vpc-070000000000000c5",
+                "SubnetGroupStatus": "Complete",
+                "Subnets": [
+                    {
+                        "SubnetIdentifier": "subnet-0f0000000000000f6",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2b"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-08000000000000001",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2a"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-0300000000000008f",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2a"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-08000000000000058",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2c"
+                        },
+                        "SubnetOutpost": {},
+                        "SubnetStatus": "Active"
+                    }
+                ]
+            },
+            "PreferredMaintenanceWindow": "mon:09:00-mon:09:30",
+            "PendingModifiedValues": {},
+            "MultiAZ": false,
+            "EngineVersion": "10.14",
+            "AutoMinorVersionUpgrade": true,
+            "ReadReplicaDBInstanceIdentifiers": [],
+            "LicenseModel": "postgresql-license",
+            "OptionGroupMemberships": [
+                {
+                    "OptionGroupName": "default:aurora-postgresql-10",
+                    "Status": "in-sync"
+                }
+            ],
+            "PubliclyAccessible": false,
+            "StorageType": "aurora",
+            "DbInstancePort": 0,
+            "DBClusterIdentifier": "example",
+            "StorageEncrypted": true,
+            "KmsKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000032",
+            "DbiResourceId": "db-6D0000000000000000000000FI",
+            "CACertificateIdentifier": "rds-ca-2019",
+            "DomainMemberships": [],
+            "CopyTagsToSnapshot": false,
+            "MonitoringInterval": 60,
+            "EnhancedMonitoringResourceArn": "arn:aws:logs:us-west-2:1234567890:log-group:RDSOSMetrics:log-stream:db-6D0000000000000000000000FI",
+            "MonitoringRoleArn": "arn:aws:iam::1234567890:role/rds-monitoring-role",
+            "PromotionTier": 1,
+            "DBInstanceArn": "arn:aws:rds:us-west-2:1234567890:db:example",
+            "IAMDatabaseAuthenticationEnabled": false,
+            "PerformanceInsightsEnabled": true,
+            "PerformanceInsightsKMSKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000032",
+            "PerformanceInsightsRetentionPeriod": 7,
+            "EnabledCloudwatchLogsExports": [
+                "postgresql"
+            ],
+            "DeletionProtection": false,
+            "AssociatedRoles": [],
+            "TagList": [
+                {
+                    "Key": "workload-type",
+                    "Value": "other"
+                }
+            ],
+            "CustomerOwnedIpEnabled": false
+        }
+    ]
+}

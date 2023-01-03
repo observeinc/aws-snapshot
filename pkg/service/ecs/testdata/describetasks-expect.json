@@ -1,0 +1,92 @@
+[
+    {
+      "action": "",
+      "id": "arn:aws:ecs:us-west-2:123456789012:task/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d",
+      "data": {
+        "Attachments": [],
+        "Attributes": null,
+        "AvailabilityZone": "us-west-2a",
+        "CapacityProviderName": null,
+        "ClusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/ec2-tutorial",
+        "Connectivity": "CONNECTED",
+        "ConnectivityAt": "2021-06-22T09:40:17.339-07:00",
+        "ContainerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/ec2-tutorial/7f5aeceba085402f8b9268dccdad3965",
+        "Containers": [
+          {
+            "ContainerArn": "arn:aws:ecs:us-west-2:123456789012:container/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d/8fe69fb9-b3b6-42dd-ab7f-1a51a02b787e",
+            "Cpu": "100",
+            "ExitCode": null,
+            "GpuIds": null,
+            "HealthStatus": "UNKNOWN",
+            "Image": "amazon/amazon-ecs-sample",
+            "ImageDigest": null,
+            "LastStatus": "RUNNING",
+            "ManagedAgents": null,
+            "Memory": "500",
+            "MemoryReservation": null,
+            "Name": "web",
+            "NetworkBindings": [
+              {
+                "BindIP": "0.0.0.0",
+                "ContainerPort": 80,
+                "ContainerPortRange": null,
+                "HostPort": 80,
+                "HostPortRange": null,
+                "Protocol": "tcp"
+              }
+            ],
+            "NetworkInterfaces": [],
+            "Reason": null,
+            "RuntimeId": "ab2827e655458a51b803dcfb366fec632c64ae9f983a417920cd725b68cdaf12",
+            "TaskArn": "arn:aws:ecs:us-west-2:123456789012:task/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d"
+          }
+        ],
+        "Cpu": "100",
+        "CreatedAt": "2021-06-22T09:40:17.339-07:00",
+        "DesiredStatus": "RUNNING",
+        "EnableExecuteCommand": null,
+        "EphemeralStorage": null,
+        "ExecutionStoppedAt": null,
+        "Group": "task:ecs-tutorial",
+        "HealthStatus": "UNKNOWN",
+        "InferenceAccelerators": null,
+        "LastStatus": "RUNNING",
+        "LaunchType": "EC2",
+        "Memory": "500",
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Command": null,
+              "Cpu": null,
+              "Environment": null,
+              "EnvironmentFiles": null,
+              "Memory": null,
+              "MemoryReservation": null,
+              "Name": "web",
+              "ResourceRequirements": null
+            }
+          ],
+          "Cpu": null,
+          "EphemeralStorage": null,
+          "ExecutionRoleArn": null,
+          "InferenceAcceleratorOverrides": [],
+          "Memory": null,
+          "TaskRoleArn": null
+        },
+        "PlatformFamily": null,
+        "PlatformVersion": null,
+        "PullStartedAt": "2021-06-22T09:40:19.919-07:00",
+        "PullStoppedAt": "2021-06-22T09:40:28.1-07:00",
+        "StartedAt": "2021-06-22T09:40:32.832-07:00",
+        "StartedBy": null,
+        "StopCode": null,
+        "StoppedAt": null,
+        "StoppedReason": null,
+        "StoppingAt": null,
+        "Tags": [],
+        "TaskArn": "arn:aws:ecs:us-west-2:123456789012:task/ec2-tutorial/7b8fc7a87d63493d8196bceec687de2d",
+        "TaskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/ecs-tutorial:1",
+        "Version": 2
+      }
+    }
+  ]
