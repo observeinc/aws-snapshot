@@ -5,6 +5,7 @@ import (
 
 	"github.com/observeinc/aws-snapshot/pkg/api"
 
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 )
 
@@ -37,9 +38,13 @@ func (fn *DescribeStacks) New(name string, config interface{}) ([]api.Request, e
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeStacksPagesWithContext(ctx, &input, func(output *cloudformation.DescribeStacksOutput, last bool) bool {
+		err := fn.DescribeStacksPagesWithContext(ctx, &input, func(output *cloudformation.DescribeStacksOutput, last bool) bool {
 			return api.SendRecords(ctx, ch, name, &DescribeStacksOutput{output})
 		})
+		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == "AccessDenied" {
+			return nil
+		}
+		return err
 	}
 
 	return []api.Request{call}, nil
