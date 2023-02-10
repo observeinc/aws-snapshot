@@ -2065,6 +2065,9 @@ func (c *RDS) CreateDBInstanceRequest(input *CreateDBInstanceInput) (req *reques
 //     The network type is invalid for the DB instance. Valid nework type values
 //     are IPV4 and DUAL.
 //
+//   - ErrCodeCertificateNotFoundFault "CertificateNotFound"
+//     CertificateIdentifier doesn't refer to an existing certificate.
+//
 // See also, https://docs.aws.amazon.com/goto/WebAPI/rds-2014-10-31/CreateDBInstance
 func (c *RDS) CreateDBInstance(input *CreateDBInstanceInput) (*CreateDBInstanceOutput, error) {
 	req, out := c.CreateDBInstanceRequest(input)
@@ -5034,6 +5037,12 @@ func (c *RDS) DescribeCertificatesRequest(input *DescribeCertificatesInput) (req
 //
 // Lists the set of CA certificates provided by Amazon RDS for this Amazon Web
 // Services account.
+//
+// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+// in the Amazon Aurora User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -14509,8 +14518,11 @@ func (c *RDS) StartActivityStreamRequest(input *StartActivityStreamInput) (req *
 // StartActivityStream API operation for Amazon Relational Database Service.
 //
 // Starts a database activity stream to monitor activity on the database. For
-// more information, see Database Activity Streams (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html)
-// in the Amazon Aurora User Guide.
+// more information, see Monitoring Amazon Aurora with Database Activity Streams
+// (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html)
+// in the Amazon Aurora User Guide or Monitoring Amazon RDS with Database Activity
+// Streams (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html)
+// in the Amazon RDS User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -15036,8 +15048,11 @@ func (c *RDS) StopActivityStreamRequest(input *StopActivityStreamInput) (req *re
 // console, the start-activity-stream CLI command, or the StartActivityStream
 // action.
 //
-// For more information, see Database Activity Streams (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html)
-// in the Amazon Aurora User Guide.
+// For more information, see Monitoring Amazon Aurora with Database Activity
+// Streams (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html)
+// in the Amazon Aurora User Guide or Monitoring Amazon RDS with Database Activity
+// Streams (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html)
+// in the Amazon RDS User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -17045,6 +17060,12 @@ func (s *CancelExportTaskOutput) SetWarningMessage(v string) *CancelExportTaskOu
 }
 
 // A CA certificate for an Amazon Web Services account.
+//
+// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+// in the Amazon Aurora User Guide.
 type Certificate struct {
 	_ struct{} `type:"structure"`
 
@@ -17136,6 +17157,54 @@ func (s *Certificate) SetValidFrom(v time.Time) *Certificate {
 
 // SetValidTill sets the ValidTill field's value.
 func (s *Certificate) SetValidTill(v time.Time) *Certificate {
+	s.ValidTill = &v
+	return s
+}
+
+// Returns the details of the DB instance’s server certificate.
+//
+// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+// in the Amazon Aurora User Guide.
+type CertificateDetails struct {
+	_ struct{} `type:"structure"`
+
+	// The CA identifier of the CA certificate used for the DB instance's server
+	// certificate.
+	CAIdentifier *string `type:"string"`
+
+	// The expiration date of the DB instance’s server certificate.
+	ValidTill *time.Time `type:"timestamp"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s CertificateDetails) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s CertificateDetails) GoString() string {
+	return s.String()
+}
+
+// SetCAIdentifier sets the CAIdentifier field's value.
+func (s *CertificateDetails) SetCAIdentifier(v string) *CertificateDetails {
+	s.CAIdentifier = &v
+	return s
+}
+
+// SetValidTill sets the ValidTill field's value.
+func (s *CertificateDetails) SetValidTill(v time.Time) *CertificateDetails {
 	s.ValidTill = &v
 	return s
 }
@@ -18903,6 +18972,15 @@ type CreateCustomDBEngineVersionOutput struct {
 	// The status of the DB engine version, either available or deprecated.
 	Status *string `type:"string"`
 
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
+	SupportedCACertificateIdentifiers []*string `type:"list"`
+
 	// A list of the character sets supported by this engine for the CharacterSetName
 	// parameter of the CreateDBInstance operation.
 	SupportedCharacterSets []*CharacterSet `locationNameList:"CharacterSet" type:"list"`
@@ -18939,6 +19017,10 @@ type CreateCustomDBEngineVersionOutput struct {
 	// A value that indicates whether the engine version supports Babelfish for
 	// Aurora PostgreSQL.
 	SupportsBabelfish *bool `type:"boolean"`
+
+	// A value that indicates whether the engine version supports rotating the server
+	// certificate without rebooting the DB instance.
+	SupportsCertificateRotationWithoutRestart *bool `type:"boolean"`
 
 	// A value that indicates whether you can use Aurora global databases with a
 	// specific DB engine version.
@@ -19084,6 +19166,12 @@ func (s *CreateCustomDBEngineVersionOutput) SetStatus(v string) *CreateCustomDBE
 	return s
 }
 
+// SetSupportedCACertificateIdentifiers sets the SupportedCACertificateIdentifiers field's value.
+func (s *CreateCustomDBEngineVersionOutput) SetSupportedCACertificateIdentifiers(v []*string) *CreateCustomDBEngineVersionOutput {
+	s.SupportedCACertificateIdentifiers = v
+	return s
+}
+
 // SetSupportedCharacterSets sets the SupportedCharacterSets field's value.
 func (s *CreateCustomDBEngineVersionOutput) SetSupportedCharacterSets(v []*CharacterSet) *CreateCustomDBEngineVersionOutput {
 	s.SupportedCharacterSets = v
@@ -19117,6 +19205,12 @@ func (s *CreateCustomDBEngineVersionOutput) SetSupportedTimezones(v []*Timezone)
 // SetSupportsBabelfish sets the SupportsBabelfish field's value.
 func (s *CreateCustomDBEngineVersionOutput) SetSupportsBabelfish(v bool) *CreateCustomDBEngineVersionOutput {
 	s.SupportsBabelfish = &v
+	return s
+}
+
+// SetSupportsCertificateRotationWithoutRestart sets the SupportsCertificateRotationWithoutRestart field's value.
+func (s *CreateCustomDBEngineVersionOutput) SetSupportsCertificateRotationWithoutRestart(v bool) *CreateCustomDBEngineVersionOutput {
+	s.SupportsCertificateRotationWithoutRestart = &v
 	return s
 }
 
@@ -20935,6 +21029,18 @@ type CreateDBInstanceInput struct {
 	// in the Amazon RDS User Guide.
 	BackupTarget *string `type:"string"`
 
+	// Specifies the CA certificate identifier to use for the DB instance’s server
+	// certificate.
+	//
+	// This setting doesn't apply to RDS Custom.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
+	CACertificateIdentifier *string `type:"string"`
+
 	// For supported engines, this value indicates that the DB instance should be
 	// associated with the specified CharacterSet.
 	//
@@ -21880,6 +21986,12 @@ func (s *CreateDBInstanceInput) SetBackupTarget(v string) *CreateDBInstanceInput
 	return s
 }
 
+// SetCACertificateIdentifier sets the CACertificateIdentifier field's value.
+func (s *CreateDBInstanceInput) SetCACertificateIdentifier(v string) *CreateDBInstanceInput {
+	s.CACertificateIdentifier = &v
+	return s
+}
+
 // SetCharacterSetName sets the CharacterSetName field's value.
 func (s *CreateDBInstanceInput) SetCharacterSetName(v string) *CreateDBInstanceInput {
 	s.CharacterSetName = &v
@@ -22212,6 +22324,14 @@ func (s *CreateDBInstanceOutput) SetDBInstance(v *DBInstance) *CreateDBInstanceO
 
 type CreateDBInstanceReadReplicaInput struct {
 	_ struct{} `type:"structure"`
+
+	// The amount of storage (in gibibytes) to allocate initially for the read replica.
+	// Follow the allocation rules specified in CreateDBInstance.
+	//
+	// Be sure to allocate enough memory for your read replica so that the create
+	// operation can succeed. You can also allocate additional memory for future
+	// growth.
+	AllocatedStorage *int64 `type:"integer"`
 
 	// A value that indicates whether minor engine upgrades are applied automatically
 	// to the read replica during the maintenance window.
@@ -22727,6 +22847,12 @@ func (s *CreateDBInstanceReadReplicaInput) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAllocatedStorage sets the AllocatedStorage field's value.
+func (s *CreateDBInstanceReadReplicaInput) SetAllocatedStorage(v int64) *CreateDBInstanceReadReplicaInput {
+	s.AllocatedStorage = &v
+	return s
 }
 
 // SetAutoMinorVersionUpgrade sets the AutoMinorVersionUpgrade field's value.
@@ -26049,6 +26175,15 @@ type DBEngineVersion struct {
 	// The status of the DB engine version, either available or deprecated.
 	Status *string `type:"string"`
 
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
+	SupportedCACertificateIdentifiers []*string `type:"list"`
+
 	// A list of the character sets supported by this engine for the CharacterSetName
 	// parameter of the CreateDBInstance operation.
 	SupportedCharacterSets []*CharacterSet `locationNameList:"CharacterSet" type:"list"`
@@ -26085,6 +26220,10 @@ type DBEngineVersion struct {
 	// A value that indicates whether the engine version supports Babelfish for
 	// Aurora PostgreSQL.
 	SupportsBabelfish *bool `type:"boolean"`
+
+	// A value that indicates whether the engine version supports rotating the server
+	// certificate without rebooting the DB instance.
+	SupportsCertificateRotationWithoutRestart *bool `type:"boolean"`
 
 	// A value that indicates whether you can use Aurora global databases with a
 	// specific DB engine version.
@@ -26230,6 +26369,12 @@ func (s *DBEngineVersion) SetStatus(v string) *DBEngineVersion {
 	return s
 }
 
+// SetSupportedCACertificateIdentifiers sets the SupportedCACertificateIdentifiers field's value.
+func (s *DBEngineVersion) SetSupportedCACertificateIdentifiers(v []*string) *DBEngineVersion {
+	s.SupportedCACertificateIdentifiers = v
+	return s
+}
+
 // SetSupportedCharacterSets sets the SupportedCharacterSets field's value.
 func (s *DBEngineVersion) SetSupportedCharacterSets(v []*CharacterSet) *DBEngineVersion {
 	s.SupportedCharacterSets = v
@@ -26263,6 +26408,12 @@ func (s *DBEngineVersion) SetSupportedTimezones(v []*Timezone) *DBEngineVersion 
 // SetSupportsBabelfish sets the SupportsBabelfish field's value.
 func (s *DBEngineVersion) SetSupportsBabelfish(v bool) *DBEngineVersion {
 	s.SupportsBabelfish = &v
+	return s
+}
+
+// SetSupportsCertificateRotationWithoutRestart sets the SupportsCertificateRotationWithoutRestart field's value.
+func (s *DBEngineVersion) SetSupportsCertificateRotationWithoutRestart(v bool) *DBEngineVersion {
+	s.SupportsCertificateRotationWithoutRestart = &v
 	return s
 }
 
@@ -26368,7 +26519,16 @@ type DBInstance struct {
 	BackupTarget *string `type:"string"`
 
 	// The identifier of the CA certificate for this DB instance.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
 	CACertificateIdentifier *string `type:"string"`
+
+	// The details of the DB instance's server certificate.
+	CertificateDetails *CertificateDetails `type:"structure"`
 
 	// If present, specifies the name of the character set that this instance is
 	// associated with.
@@ -26847,6 +27007,12 @@ func (s *DBInstance) SetBackupTarget(v string) *DBInstance {
 // SetCACertificateIdentifier sets the CACertificateIdentifier field's value.
 func (s *DBInstance) SetCACertificateIdentifier(v string) *DBInstance {
 	s.CACertificateIdentifier = &v
+	return s
+}
+
+// SetCertificateDetails sets the CertificateDetails field's value.
+func (s *DBInstance) SetCertificateDetails(v *CertificateDetails) *DBInstance {
+	s.CertificateDetails = v
 	return s
 }
 
@@ -29307,6 +29473,15 @@ type DeleteCustomDBEngineVersionOutput struct {
 	// The status of the DB engine version, either available or deprecated.
 	Status *string `type:"string"`
 
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
+	SupportedCACertificateIdentifiers []*string `type:"list"`
+
 	// A list of the character sets supported by this engine for the CharacterSetName
 	// parameter of the CreateDBInstance operation.
 	SupportedCharacterSets []*CharacterSet `locationNameList:"CharacterSet" type:"list"`
@@ -29343,6 +29518,10 @@ type DeleteCustomDBEngineVersionOutput struct {
 	// A value that indicates whether the engine version supports Babelfish for
 	// Aurora PostgreSQL.
 	SupportsBabelfish *bool `type:"boolean"`
+
+	// A value that indicates whether the engine version supports rotating the server
+	// certificate without rebooting the DB instance.
+	SupportsCertificateRotationWithoutRestart *bool `type:"boolean"`
 
 	// A value that indicates whether you can use Aurora global databases with a
 	// specific DB engine version.
@@ -29488,6 +29667,12 @@ func (s *DeleteCustomDBEngineVersionOutput) SetStatus(v string) *DeleteCustomDBE
 	return s
 }
 
+// SetSupportedCACertificateIdentifiers sets the SupportedCACertificateIdentifiers field's value.
+func (s *DeleteCustomDBEngineVersionOutput) SetSupportedCACertificateIdentifiers(v []*string) *DeleteCustomDBEngineVersionOutput {
+	s.SupportedCACertificateIdentifiers = v
+	return s
+}
+
 // SetSupportedCharacterSets sets the SupportedCharacterSets field's value.
 func (s *DeleteCustomDBEngineVersionOutput) SetSupportedCharacterSets(v []*CharacterSet) *DeleteCustomDBEngineVersionOutput {
 	s.SupportedCharacterSets = v
@@ -29521,6 +29706,12 @@ func (s *DeleteCustomDBEngineVersionOutput) SetSupportedTimezones(v []*Timezone)
 // SetSupportsBabelfish sets the SupportsBabelfish field's value.
 func (s *DeleteCustomDBEngineVersionOutput) SetSupportsBabelfish(v bool) *DeleteCustomDBEngineVersionOutput {
 	s.SupportsBabelfish = &v
+	return s
+}
+
+// SetSupportsCertificateRotationWithoutRestart sets the SupportsCertificateRotationWithoutRestart field's value.
+func (s *DeleteCustomDBEngineVersionOutput) SetSupportsCertificateRotationWithoutRestart(v bool) *DeleteCustomDBEngineVersionOutput {
+	s.SupportsCertificateRotationWithoutRestart = &v
 	return s
 }
 
@@ -38974,6 +39165,12 @@ type ModifyCertificatesOutput struct {
 	_ struct{} `type:"structure"`
 
 	// A CA certificate for an Amazon Web Services account.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
 	Certificate *Certificate `type:"structure"`
 }
 
@@ -39342,6 +39539,15 @@ type ModifyCustomDBEngineVersionOutput struct {
 	// The status of the DB engine version, either available or deprecated.
 	Status *string `type:"string"`
 
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
+	SupportedCACertificateIdentifiers []*string `type:"list"`
+
 	// A list of the character sets supported by this engine for the CharacterSetName
 	// parameter of the CreateDBInstance operation.
 	SupportedCharacterSets []*CharacterSet `locationNameList:"CharacterSet" type:"list"`
@@ -39378,6 +39584,10 @@ type ModifyCustomDBEngineVersionOutput struct {
 	// A value that indicates whether the engine version supports Babelfish for
 	// Aurora PostgreSQL.
 	SupportsBabelfish *bool `type:"boolean"`
+
+	// A value that indicates whether the engine version supports rotating the server
+	// certificate without rebooting the DB instance.
+	SupportsCertificateRotationWithoutRestart *bool `type:"boolean"`
 
 	// A value that indicates whether you can use Aurora global databases with a
 	// specific DB engine version.
@@ -39523,6 +39733,12 @@ func (s *ModifyCustomDBEngineVersionOutput) SetStatus(v string) *ModifyCustomDBE
 	return s
 }
 
+// SetSupportedCACertificateIdentifiers sets the SupportedCACertificateIdentifiers field's value.
+func (s *ModifyCustomDBEngineVersionOutput) SetSupportedCACertificateIdentifiers(v []*string) *ModifyCustomDBEngineVersionOutput {
+	s.SupportedCACertificateIdentifiers = v
+	return s
+}
+
 // SetSupportedCharacterSets sets the SupportedCharacterSets field's value.
 func (s *ModifyCustomDBEngineVersionOutput) SetSupportedCharacterSets(v []*CharacterSet) *ModifyCustomDBEngineVersionOutput {
 	s.SupportedCharacterSets = v
@@ -39556,6 +39772,12 @@ func (s *ModifyCustomDBEngineVersionOutput) SetSupportedTimezones(v []*Timezone)
 // SetSupportsBabelfish sets the SupportsBabelfish field's value.
 func (s *ModifyCustomDBEngineVersionOutput) SetSupportsBabelfish(v bool) *ModifyCustomDBEngineVersionOutput {
 	s.SupportsBabelfish = &v
+	return s
+}
+
+// SetSupportsCertificateRotationWithoutRestart sets the SupportsCertificateRotationWithoutRestart field's value.
+func (s *ModifyCustomDBEngineVersionOutput) SetSupportsCertificateRotationWithoutRestart(v bool) *ModifyCustomDBEngineVersionOutput {
+	s.SupportsCertificateRotationWithoutRestart = &v
 	return s
 }
 
@@ -40191,7 +40413,7 @@ type ModifyDBClusterInput struct {
 	//
 	// Example: my-cluster2
 	//
-	// Valid for: Aurora DB clusters only
+	// Valid for: Aurora DB clusters and Multi-AZ DB clusters
 	NewDBClusterIdentifier *string `type:"string"`
 
 	// A value that indicates that the DB cluster should be associated with the
@@ -40956,9 +41178,16 @@ type ModifyDBInstanceInput struct {
 	//    is running PostgreSQL 9.3.5.
 	BackupRetentionPeriod *int64 `type:"integer"`
 
-	// Specifies the certificate to associate with the DB instance.
+	// Specifies the CA certificate identifier to use for the DB instance’s server
+	// certificate.
 	//
 	// This setting doesn't apply to RDS Custom.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
 	CACertificateIdentifier *string `type:"string"`
 
 	// A value that indicates whether the DB instance is restarted when you rotate
@@ -44727,6 +44956,12 @@ type PendingModifiedValues struct {
 	BackupRetentionPeriod *int64 `type:"integer"`
 
 	// The identifier of the CA certificate for the DB instance.
+	//
+	// For more information, see Using SSL/TLS to encrypt a connection to a DB instance
+	// (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to
+	// a DB cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
+	// in the Amazon Aurora User Guide.
 	CACertificateIdentifier *string `type:"string"`
 
 	// The name of the compute and memory capacity class for the DB instance.
@@ -48529,6 +48764,14 @@ func (s *RestoreDBClusterToPointInTimeOutput) SetDBCluster(v *DBCluster) *Restor
 type RestoreDBInstanceFromDBSnapshotInput struct {
 	_ struct{} `type:"structure"`
 
+	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
+	// Follow the allocation rules specified in CreateDBInstance.
+	//
+	// Be sure to allocate enough memory for your new DB instance so that the restore
+	// operation can succeed. You can also allocate additional memory for future
+	// growth.
+	AllocatedStorage *int64 `type:"integer"`
+
 	// A value that indicates whether minor version upgrades are applied automatically
 	// to the DB instance during the maintenance window.
 	//
@@ -48931,6 +49174,12 @@ func (s *RestoreDBInstanceFromDBSnapshotInput) Validate() error {
 	return nil
 }
 
+// SetAllocatedStorage sets the AllocatedStorage field's value.
+func (s *RestoreDBInstanceFromDBSnapshotInput) SetAllocatedStorage(v int64) *RestoreDBInstanceFromDBSnapshotInput {
+	s.AllocatedStorage = &v
+	return s
+}
+
 // SetAutoMinorVersionUpgrade sets the AutoMinorVersionUpgrade field's value.
 func (s *RestoreDBInstanceFromDBSnapshotInput) SetAutoMinorVersionUpgrade(v bool) *RestoreDBInstanceFromDBSnapshotInput {
 	s.AutoMinorVersionUpgrade = &v
@@ -49174,7 +49423,7 @@ func (s *RestoreDBInstanceFromDBSnapshotOutput) SetDBInstance(v *DBInstance) *Re
 type RestoreDBInstanceFromS3Input struct {
 	_ struct{} `type:"structure"`
 
-	// The amount of storage (in gigabytes) to allocate initially for the DB instance.
+	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
 	// Follow the allocation rules specified in CreateDBInstance.
 	//
 	// Be sure to allocate enough memory for your new DB instance so that the restore
@@ -49980,6 +50229,14 @@ func (s *RestoreDBInstanceFromS3Output) SetDBInstance(v *DBInstance) *RestoreDBI
 type RestoreDBInstanceToPointInTimeInput struct {
 	_ struct{} `type:"structure"`
 
+	// The amount of storage (in gibibytes) to allocate initially for the DB instance.
+	// Follow the allocation rules specified in CreateDBInstance.
+	//
+	// Be sure to allocate enough memory for your new DB instance so that the restore
+	// operation can succeed. You can also allocate additional memory for future
+	// growth.
+	AllocatedStorage *int64 `type:"integer"`
+
 	// A value that indicates whether minor version upgrades are applied automatically
 	// to the DB instance during the maintenance window.
 	//
@@ -50372,6 +50629,12 @@ func (s *RestoreDBInstanceToPointInTimeInput) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAllocatedStorage sets the AllocatedStorage field's value.
+func (s *RestoreDBInstanceToPointInTimeInput) SetAllocatedStorage(v int64) *RestoreDBInstanceToPointInTimeInput {
+	s.AllocatedStorage = &v
+	return s
 }
 
 // SetAutoMinorVersionUpgrade sets the AutoMinorVersionUpgrade field's value.
@@ -51717,26 +51980,26 @@ type StartExportTaskInput struct {
 	// The ID of the Amazon Web Services KMS key to use to encrypt the snapshot
 	// exported to Amazon S3. The Amazon Web Services KMS key identifier is the
 	// key ARN, key ID, alias ARN, or alias name for the KMS key. The caller of
-	// this operation must be authorized to execute the following operations. These
+	// this operation must be authorized to run the following operations. These
 	// can be set in the Amazon Web Services KMS key policy:
 	//
-	//    * GrantOperation.Encrypt
+	//    * kms:Encrypt
 	//
-	//    * GrantOperation.Decrypt
+	//    * kms:Decrypt
 	//
-	//    * GrantOperation.GenerateDataKey
+	//    * kms:GenerateDataKey
 	//
-	//    * GrantOperation.GenerateDataKeyWithoutPlaintext
+	//    * kms:GenerateDataKeyWithoutPlaintext
 	//
-	//    * GrantOperation.ReEncryptFrom
+	//    * kms:ReEncryptFrom
 	//
-	//    * GrantOperation.ReEncryptTo
+	//    * kms:ReEncryptTo
 	//
-	//    * GrantOperation.CreateGrant
+	//    * kms:CreateGrant
 	//
-	//    * GrantOperation.DescribeKey
+	//    * kms:DescribeKey
 	//
-	//    * GrantOperation.RetireGrant
+	//    * kms:RetireGrant
 	//
 	// KmsKeyId is a required field
 	KmsKeyId *string `type:"string" required:"true"`
