@@ -19,6 +19,7 @@
         "BackupRetentionPeriod": 7,
         "BackupTarget": null,
         "CACertificateIdentifier": "rds-ca-2019",
+        "CertificateDetails": null,
         "CharacterSetName": null,
         "CopyTagsToSnapshot": false,
         "CustomIamInstanceProfile": null,
