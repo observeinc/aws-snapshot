@@ -6,6 +6,7 @@ import (
 	"github.com/observeinc/aws-snapshot/pkg/api"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
@@ -43,6 +44,9 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 					AttributeNames: []*string{aws.String("All")},
 				})
 				if err != nil {
+					if ae, ok := err.(awserr.Error); ok && ae.Code() == sqs.ErrCodeQueueDoesNotExist {
+						continue
+					}
 					panic(err)
 				}
 				if !api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}) {
