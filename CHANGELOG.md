@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/observeinc/aws-snapshot/compare/v0.1.2...v0.1.3) (2023-03-02)
+
+
+### Bug Fixes
+
+* don't panic if queue is not found ([#3](https://github.com/observeinc/aws-snapshot/issues/3)) ([d3bbf3c](https://github.com/observeinc/aws-snapshot/commit/d3bbf3c25f88ac9b145c81b77e9d45df5126406f))
+
+
+
 ## [0.1.2](https://github.com/observeinc/aws-snapshot/compare/v0.1.1...v0.1.2) (2023-02-10)
 
 
