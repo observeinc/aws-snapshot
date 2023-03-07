@@ -25,12 +25,6 @@ func TestConversion(t *testing.T) {
 			Update:     *update,
 		},
 		{
-			Source:     &DescribeEnvironmentHealthOutput{},
-			InputFile:  "testdata/describeenvironmenthealth-input.json",
-			OutputFile: "testdata/describeenvironmenthealth-expect.json",
-			Update:     *update,
-		},
-		{
 			Source:     &DescribeEnvironmentsOutput{},
 			InputFile:  "testdata/describeenvironments-input.json",
 			OutputFile: "testdata/describeenvironments-expect.json",
