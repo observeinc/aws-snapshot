@@ -27,7 +27,6 @@ func New(p client.ConfigProvider, opts ...*aws.Config) api.Endpoint {
 	return api.Endpoint{
 		"DescribeApplications":        &DescribeApplications{beanapi},
 		"DescribeApplicationVersions": &DescribeApplicationVersions{beanapi},
-		"DescribeEnvironmentHealth":   &DescribeEnvironmentHealth{beanapi},
 		"DescribeEnvironments":        &DescribeEnvironments{beanapi},
 		"DescribeInstancesHealth":     &DescribeInstancesHealth{beanapi},
 	}
