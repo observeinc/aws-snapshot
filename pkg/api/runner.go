@@ -2,9 +2,18 @@ package api
 
 import (
 	"context"
+	"fmt"
 )
 
 const defaultBufferSize = 100
+
+type PanicError struct {
+	p string
+}
+
+func (p PanicError) Error() string {
+	return p.p
+}
 
 type Runner struct {
 	Requests              []Request
@@ -26,6 +35,11 @@ func pool(fn Recorder, num int) Recorder {
 
 		for i := 0; i < num; i++ {
 			go func() {
+				defer func() {
+					if r := recover(); r != nil {
+						errCh <- PanicError{p: fmt.Sprintf("panic: %s", r)}
+					}
+				}()
 				errCh <- fn.ReadFrom(ctx, ch)
 			}()
 		}
@@ -61,6 +75,9 @@ func withSemaphore(fns []Request, maxConcurrency int) Request {
 			sem <- struct{}{}
 			go func(fn Request) {
 				defer func() {
+					if r := recover(); r != nil {
+						errCh <- PanicError{p: fmt.Sprintf("panic: %s", r)}
+					}
 					<-sem
 				}()
 				errCh <- fn(ctx, ch)
@@ -76,7 +93,12 @@ func withSemaphore(fns []Request, maxConcurrency int) Request {
 	}
 }
 
-func (r *Runner) Run(ctx context.Context) error {
+func (r *Runner) Run(ctx context.Context) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = PanicError{p: fmt.Sprintf("panic: %s", r)}
+		}
+	}()
 	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests)
 	recorder := pool(r.Recorder, r.ConcurrentRecorders)
 
@@ -93,12 +115,17 @@ func (r *Runner) Run(ctx context.Context) error {
 	defer cancelFunc()
 
 	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				readErrCh <- PanicError{p: fmt.Sprintf("panic: %s", r)}
+			}
+		}()
 		defer close(readErrCh)
 		defer close(requestCh)
 		readErrCh <- requestFunc(ctx, requestCh)
 	}()
 
-	err := recorder.ReadFrom(ctx, requestCh)
+	err = recorder.ReadFrom(ctx, requestCh)
 	if err != nil {
 		cancelFunc()
 		<-readErrCh

@@ -42,3 +42,59 @@ func TestRunner(t *testing.T) {
 		t.Fatal("wrong number of records")
 	}
 }
+
+func TestRunnerPanic(t *testing.T) {
+	var recorder apitest.Recorder
+
+	// request panic
+	{
+		r := api.Runner{
+			Requests: []api.Request{
+				func(ctx context.Context, c chan<- *api.Record) error {
+					panic("ok")
+				},
+			},
+			Recorder: &recorder,
+		}
+
+		err := r.Run(context.Background())
+		if _, ok := err.(api.PanicError); !ok {
+			t.Fatal(err)
+		}
+	}
+
+	// recorder panic
+	{
+		r := api.Runner{
+			Requests: []api.Request{
+				testRequest,
+			},
+			Recorder: api.RecorderFunc(func(ctx context.Context, c <-chan *api.Record) error {
+				panic("ok")
+			}),
+		}
+
+		err := r.Run(context.Background())
+		if _, ok := err.(api.PanicError); !ok {
+			t.Fatal(err)
+		}
+	}
+
+	// recorder panic with pool
+	{
+		r := api.Runner{
+			Requests: []api.Request{
+				testRequest,
+			},
+			Recorder: api.RecorderFunc(func(ctx context.Context, c <-chan *api.Record) error {
+				panic("ok")
+			}),
+			ConcurrentRecorders: 10,
+		}
+
+		err := r.Run(context.Background())
+		if _, ok := err.(api.PanicError); !ok {
+			t.Fatal(err)
+		}
+	}
+}
