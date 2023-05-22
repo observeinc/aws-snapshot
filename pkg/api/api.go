@@ -56,6 +56,24 @@ type RequestBuilder interface {
 	New(action string, config interface{}) ([]Request, error)
 }
 
+func prefixError(name string, reqs []Request) []Request {
+	res := []Request{}
+
+	for _, r := range reqs {
+		rq := r
+
+		res = append(res, func(ctx context.Context, ch chan<- *Record) error {
+			if err := rq(ctx, ch); err != nil {
+				return fmt.Errorf("failed to run %q: %w", name, err)
+			}
+
+			return nil
+		})
+	}
+
+	return res
+}
+
 // Endpoint is a collection of RequestBuilders.
 type Endpoint map[string]RequestBuilder
 
@@ -78,7 +96,7 @@ func (e *Endpoint) New(action string, config interface{}) ([]Request, error) {
 			if err != nil {
 				return nil, err
 			}
-			reqs = append(reqs, req...)
+			reqs = append(reqs, prefixError(reqName, req)...)
 		}
 	}
 	return reqs, nil
