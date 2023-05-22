@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"time"
 )
 
 const defaultBufferSize = 100
@@ -12,6 +13,7 @@ type Runner struct {
 	BufferSize            int
 	MaxConcurrentRequests int
 	ConcurrentRecorders   int
+	RequestTimeout        *time.Duration
 }
 
 // Pool runs num copies of Recorder.
@@ -42,7 +44,7 @@ func pool(fn Recorder, num int) Recorder {
 }
 
 // withSemaphore runs up to maxConcurrency Requests at a time.
-func withSemaphore(fns []Request, maxConcurrency int) Request {
+func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Duration) Request {
 	if maxConcurrency == 0 {
 		maxConcurrency = len(fns)
 	}
@@ -59,12 +61,20 @@ func withSemaphore(fns []Request, maxConcurrency int) Request {
 
 		for _, fn := range fns {
 			sem <- struct{}{}
-			go func(fn Request) {
+			go func(fn Request, ctx context.Context) {
 				defer func() {
 					<-sem
 				}()
+
+				var cancel context.CancelFunc
+
+				if requestTimeout != nil {
+					ctx, cancel = context.WithTimeout(ctx, *requestTimeout)
+					defer cancel()
+				}
+
 				errCh <- fn(ctx, ch)
-			}(fn)
+			}(fn, ctx)
 		}
 
 		for i := 0; i < len(fns); i++ {
@@ -77,7 +87,7 @@ func withSemaphore(fns []Request, maxConcurrency int) Request {
 }
 
 func (r *Runner) Run(ctx context.Context) error {
-	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests)
+	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests, r.RequestTimeout)
 	recorder := pool(r.Recorder, r.ConcurrentRecorders)
 
 	if r.BufferSize < 1 {

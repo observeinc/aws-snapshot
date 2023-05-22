@@ -13,6 +13,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/observeinc/aws-snapshot/pkg/api"
 	"github.com/observeinc/aws-snapshot/pkg/service"
@@ -34,6 +35,7 @@ func realMain() error {
 		maxConcurrentRequests = flag.Int("max-concurrent-requests", 10, "Maximum concurrent requests")
 		bufferSize            = flag.Int("buffer-size", 100, "Length of buffer for records")
 		manifestFile          = flag.String("manifest-file", "", "Manifest filename")
+		requestTimeout        = flag.String("request-timeout", "", "Timeout per request, default is no timeout")
 	)
 
 	flag.Parse()
@@ -58,6 +60,18 @@ func realMain() error {
 		return fmt.Errorf("failed to resolve manifest: %w", err)
 	}
 
+	var timeout *time.Duration
+
+	if *requestTimeout != "" {
+		t, err := time.ParseDuration(*requestTimeout)
+
+		if err != nil {
+			return fmt.Errorf("failed to parse timeout duration: %w", err)
+		}
+
+		timeout = &t
+	}
+
 	runner := api.Runner{
 		Requests:              reqs,
 		MaxConcurrentRequests: *maxConcurrentRequests,
@@ -72,6 +86,7 @@ func realMain() error {
 				fmt.Println(string(data))
 			}
 		}),
+		RequestTimeout: timeout,
 	}
 
 	return runner.Run(context.Background())
