@@ -67,10 +67,6 @@ func TestRunnerTimeout(t *testing.T) {
 
 	err := r.Run(context.Background())
 
-	if err == nil {
-		t.Fatal("expected error!")
-	}
-
 	if !errors.Is(err, context.DeadlineExceeded) {
 		t.Fatalf("wrong error type, expected DeadlineExceeded, got %s", err)
 	}
