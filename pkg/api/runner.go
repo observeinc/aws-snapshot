@@ -61,7 +61,7 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 
 		for _, fn := range fns {
 			sem <- struct{}{}
-			go func(fn Request, ctx context.Context) {
+			go func(ctx context.Context, fn Request) {
 				defer func() {
 					<-sem
 				}()
@@ -74,7 +74,7 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 				}
 
 				errCh <- fn(ctx, ch)
-			}(fn, ctx)
+			}(ctx, fn)
 		}
 
 		for i := 0; i < len(fns); i++ {

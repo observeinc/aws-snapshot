@@ -2,6 +2,8 @@ package api_test
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -23,8 +25,8 @@ func testLongRequest(ctx context.Context, ch chan<- *api.Record) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	default:
-		time.Sleep(10 * time.Millisecond)
+	case <-time.After(10 * time.Second):
+		return nil
 	}
 	return nil
 }
@@ -61,16 +63,27 @@ func TestRunnerTimeout(t *testing.T) {
 
 	r := api.Runner{
 		Requests: []api.Request{
-			testLongRequest,
+			func(ctx context.Context, ch chan<- *api.Record) error {
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				case <-time.After(10 * time.Second):
+					return nil
+				}
+			},
 		},
-		MaxConcurrentRequests: 1,
-		ConcurrentRecorders:   1,
-		Recorder:              &recorder,
-		RequestTimeout:        &timeout,
+		Recorder:       &recorder,
+		RequestTimeout: &timeout,
 	}
 
-	if err := r.Run(context.Background()); err == nil {
-		t.Fatal("expected timeout error!")
+	err := r.Run(context.Background())
+
+	if err == nil {
+		t.Fatal("expected error!")
+	}
+
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatal(fmt.Sprintf("wrong error type, expected DeadlineExceeded, got %s", err))
 	}
 
 	if len(recorder.Records) != 0 {
