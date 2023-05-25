@@ -24,8 +24,7 @@ func testLongRequest(ctx context.Context, ch chan<- *api.Record) error {
 	case <-ctx.Done():
 		return ctx.Err()
 	default:
-		time.Sleep(10 * time.Second)
-		ch <- &api.Record{}
+		time.Sleep(10 * time.Millisecond)
 	}
 	return nil
 }
