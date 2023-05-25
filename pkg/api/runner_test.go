@@ -2,7 +2,9 @@ package api_test
 
 import (
 	"context"
+	"errors"
 	"testing"
+	"time"
 
 	"github.com/observeinc/aws-snapshot/pkg/api"
 	"github.com/observeinc/aws-snapshot/pkg/api/apitest"
@@ -40,5 +42,36 @@ func TestRunner(t *testing.T) {
 
 	if len(recorder.Records) != 5 {
 		t.Fatal("wrong number of records")
+	}
+}
+
+func TestRunnerTimeout(t *testing.T) {
+	var recorder apitest.Recorder
+
+	timeout := time.Second
+
+	r := api.Runner{
+		Requests: []api.Request{
+			func(ctx context.Context, ch chan<- *api.Record) error {
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				case <-time.After(10 * time.Second):
+					return nil
+				}
+			},
+		},
+		Recorder:       &recorder,
+		RequestTimeout: &timeout,
+	}
+
+	err := r.Run(context.Background())
+
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("wrong error type, expected DeadlineExceeded, got %s", err)
+	}
+
+	if len(recorder.Records) != 0 {
+		t.Fatal("no records expected")
 	}
 }
