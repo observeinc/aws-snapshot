@@ -1,3 +1,7 @@
+## [0.1.6](https://github.com/observeinc/aws-snapshot/compare/v0.1.5...v0.1.6) (2023-05-26)
+
+
+
 ## [0.1.5](https://github.com/observeinc/aws-snapshot/compare/v0.1.4...v0.1.5) (2023-05-26)
 
 
@@ -27,15 +31,6 @@
 
 
 ## [0.1.2](https://github.com/observeinc/aws-snapshot/compare/v0.1.1...v0.1.2) (2023-02-10)
-
-
-
-## [0.1.1](https://github.com/observeinc/aws-snapshot/compare/v0.1.0...v0.1.1) (2023-02-10)
-
-
-### Bug Fixes
-
-* prepare for cloudformation API change ([#1](https://github.com/observeinc/aws-snapshot/issues/1)) ([e5b1b0f](https://github.com/observeinc/aws-snapshot/commit/e5b1b0f6505d67a4b1528a4dfc2d3d937574862b))
 
 
 
