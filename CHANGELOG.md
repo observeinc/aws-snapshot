@@ -1,3 +1,13 @@
+## [0.1.5](https://github.com/observeinc/aws-snapshot/compare/v0.1.4...v0.1.5) (2023-05-26)
+
+
+### Bug Fixes
+
+* add context timeouts to actions ([#7](https://github.com/observeinc/aws-snapshot/issues/7)) ([5cf7b85](https://github.com/observeinc/aws-snapshot/commit/5cf7b85aea9ae1d7dd125ff1ad6809b1d9d9bfd3))
+* prefix errors with action name ([#6](https://github.com/observeinc/aws-snapshot/issues/6)) ([bbccccf](https://github.com/observeinc/aws-snapshot/commit/bbccccf2c2101e40344d3c1a19c0aa8f4a97d3a5))
+
+
+
 ## [0.1.4](https://github.com/observeinc/aws-snapshot/compare/v0.1.3...v0.1.4) (2023-03-07)
 
 
@@ -26,15 +36,6 @@
 ### Bug Fixes
 
 * prepare for cloudformation API change ([#1](https://github.com/observeinc/aws-snapshot/issues/1)) ([e5b1b0f](https://github.com/observeinc/aws-snapshot/commit/e5b1b0f6505d67a4b1528a4dfc2d3d937574862b))
-
-
-
-# [0.1.0](https://github.com/observeinc/aws-snapshot/compare/ac1f2a83a3b78e4076d0990d1ad7b950ccc3403d...v0.1.0) (2023-01-04)
-
-
-### Features
-
-* first commit ([ac1f2a8](https://github.com/observeinc/aws-snapshot/commit/ac1f2a83a3b78e4076d0990d1ad7b950ccc3403d))
 
 
 
