@@ -1,3 +1,12 @@
+## [0.1.7](https://github.com/observeinc/aws-snapshot/compare/v0.1.6...v0.1.7) (2023-06-21)
+
+
+### Bug Fixes
+
+* propagate errors instead of panicking ([#8](https://github.com/observeinc/aws-snapshot/issues/8)) ([03b5d08](https://github.com/observeinc/aws-snapshot/commit/03b5d0894659ce6046b4c599b480ed0a1fdc715e))
+
+
+
 ## [0.1.6](https://github.com/observeinc/aws-snapshot/compare/v0.1.5...v0.1.6) (2023-05-26)
 
 
@@ -27,10 +36,6 @@
 ### Bug Fixes
 
 * don't panic if queue is not found ([#3](https://github.com/observeinc/aws-snapshot/issues/3)) ([d3bbf3c](https://github.com/observeinc/aws-snapshot/commit/d3bbf3c25f88ac9b145c81b77e9d45df5126406f))
-
-
-
-## [0.1.2](https://github.com/observeinc/aws-snapshot/compare/v0.1.1...v0.1.2) (2023-02-10)
 
 
 
