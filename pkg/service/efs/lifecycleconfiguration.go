@@ -37,17 +37,25 @@ func (fn *DescribeLifecycleConfiguration) New(name string, config interface{}) (
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
 			for _, fs := range output.FileSystems {
 				mtInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeLifecycleConfigurationWithContext(ctx, &mtInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
-				api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output})
+
+				if !api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output}) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

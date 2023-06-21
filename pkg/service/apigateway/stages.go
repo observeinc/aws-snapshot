@@ -50,7 +50,9 @@ func (fn *GetStages) New(name string, config interface{}) ([]api.Request, error)
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
+		var innerErr, outerErr error
+
+		outerErr = fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
 			for _, restApi := range output.Items {
 				stagesInput := &apigateway.GetStagesInput{
 					RestApiId: restApi.Id,
@@ -58,7 +60,8 @@ func (fn *GetStages) New(name string, config interface{}) ([]api.Request, error)
 
 				stagesOutput, err := fn.GetStagesWithContext(ctx, stagesInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 
 				source := &GetStagesOutput{
@@ -66,10 +69,15 @@ func (fn *GetStages) New(name string, config interface{}) ([]api.Request, error)
 					restApiId:       restApi.Id,
 					restApiName:     restApi.Name,
 				}
-				_ = api.SendRecords(ctx, ch, name, source)
+
+				if !api.SendRecords(ctx, ch, name, source) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

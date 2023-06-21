@@ -39,10 +39,12 @@ func (fn *DescribeEnvironments) New(name string, config interface{}) ([]api.Requ
 		for {
 			output, err := fn.DescribeEnvironmentsWithContext(ctx, &input)
 			if err != nil {
-				panic(err)
+				return err
 			}
 
-			_ = api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output})
+			if !api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output}) {
+				break
+			}
 
 			if output.NextToken == nil {
 				break

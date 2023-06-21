@@ -34,7 +34,9 @@ func (fn *DescribeFargateProfile) New(name string, config interface{}) ([]api.Re
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
 			for _, clusterName := range output.Clusters {
 				listFargateProfilesInput := &eks.ListFargateProfilesInput{
 					ClusterName: clusterName,
@@ -48,7 +50,8 @@ func (fn *DescribeFargateProfile) New(name string, config interface{}) ([]api.Re
 						}
 						describeFargateProfileOutput, err := fn.DescribeFargateProfileWithContext(ctx, describeFargateProfileInput)
 						if err != nil {
-							panic(err)
+							innerErr = err
+							return false
 						}
 						ok := api.SendRecords(ctx, ch, name, &DescribeFargateProfileOutput{describeFargateProfileOutput})
 						if !ok {
@@ -57,12 +60,14 @@ func (fn *DescribeFargateProfile) New(name string, config interface{}) ([]api.Re
 					}
 					return true
 				})
-				if err != nil {
-					panic(err)
+				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
+					return false
 				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

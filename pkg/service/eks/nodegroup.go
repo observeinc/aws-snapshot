@@ -34,7 +34,9 @@ func (fn *DescribeNodegroup) New(name string, config interface{}) ([]api.Request
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
 			for _, clusterName := range output.Clusters {
 				listNodegroupsInput := &eks.ListNodegroupsInput{
 					ClusterName: clusterName,
@@ -48,7 +50,8 @@ func (fn *DescribeNodegroup) New(name string, config interface{}) ([]api.Request
 						}
 						describeNodegroupOutput, err := fn.DescribeNodegroupWithContext(ctx, describeNodegroupInput)
 						if err != nil {
-							panic(err)
+							innerErr = err
+							return false
 						}
 						ok := api.SendRecords(ctx, ch, name, &DescribeNodegroupOutput{describeNodegroupOutput})
 						if !ok {
@@ -57,12 +60,15 @@ func (fn *DescribeNodegroup) New(name string, config interface{}) ([]api.Request
 					}
 					return true
 				})
-				if err != nil {
-					panic(err)
+
+				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
+					return false
 				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

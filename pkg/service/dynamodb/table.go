@@ -36,7 +36,9 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListTablesPagesWithContext(ctx, &input, func(output *dynamodb.ListTablesOutput, last bool) bool {
+		var innerErr, outerErr error
+
+		outerErr = fn.ListTablesPagesWithContext(ctx, &input, func(output *dynamodb.ListTablesOutput, last bool) bool {
 			for _, tableName := range output.TableNames {
 				describeTableInput := &dynamodb.DescribeTableInput{
 					TableName: tableName,
@@ -44,7 +46,8 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 
 				describeTableOutput, err := fn.DescribeTableWithContext(ctx, describeTableInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 
 				if !api.SendRecords(ctx, ch, name, &DescribeTableOutput{describeTableOutput}) {
@@ -54,6 +57,8 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

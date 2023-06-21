@@ -50,7 +50,9 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
+		var innerErr, outerErr error
+
+		outerErr = fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
 			for _, restApi := range output.Items {
 				stagesInput := &apigateway.GetDeploymentsInput{
 					RestApiId: restApi.Id,
@@ -58,7 +60,8 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 
 				deploymentsOutput, err := fn.GetDeploymentsWithContext(ctx, stagesInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 
 				source := &GetDeploymentsOutput{
@@ -66,10 +69,15 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 					restApiId:            restApi.Id,
 					restApiName:          restApi.Name,
 				}
-				_ = api.SendRecords(ctx, ch, name, source)
+
+				if !api.SendRecords(ctx, ch, name, source) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

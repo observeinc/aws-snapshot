@@ -36,7 +36,9 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListKeysPagesWithContext(ctx, &listKeysInput, func(output *kms.ListKeysOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListKeysPagesWithContext(ctx, &listKeysInput, func(output *kms.ListKeysOutput, last bool) bool {
 			for _, entry := range output.Keys {
 				output, err := fn.DescribeKeyWithContext(ctx, &kms.DescribeKeyInput{
 					KeyId: entry.KeyId,
@@ -51,7 +53,8 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 					continue
 				}
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 				if !api.SendRecords(ctx, ch, name, &DescribeKeyOutput{output}) {
 					return false
@@ -59,6 +62,8 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

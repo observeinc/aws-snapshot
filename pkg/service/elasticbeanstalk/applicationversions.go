@@ -39,10 +39,12 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 		for {
 			output, err := fn.DescribeApplicationVersionsWithContext(ctx, &input)
 			if err != nil {
-				panic(err)
+				return err
 			}
 
-			_ = api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output})
+			if !api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}) {
+				break
+			}
 
 			if output.NextToken == nil {
 				break

@@ -180,3 +180,13 @@ func SendRecords(ctx context.Context, ch chan<- *Record, name string, s Source) 
 	}
 	return true
 }
+
+func FirstError(errors ...error) error {
+	for _, err := range errors {
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -39,7 +39,9 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListSubscriptionsPagesWithContext(ctx, &listSubscriptionsInput, func(output *sns.ListSubscriptionsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListSubscriptionsPagesWithContext(ctx, &listSubscriptionsInput, func(output *sns.ListSubscriptionsOutput, last bool) bool {
 			for _, subscription := range output.Subscriptions {
 				if subscription.SubscriptionArn == nil {
 					continue
@@ -56,7 +58,8 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 				}
 
 				if err != nil {
-					panic(fmt.Errorf("failed to process %s: %w", *subscription.SubscriptionArn, err))
+					innerErr = fmt.Errorf("failed to process %s: %w", *subscription.SubscriptionArn, err)
+					return false
 				}
 				if !api.SendRecords(ctx, ch, name, &GetSubscriptionAttributesOutput{
 					subscriptionArn:                 subscription.SubscriptionArn,
@@ -67,6 +70,8 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

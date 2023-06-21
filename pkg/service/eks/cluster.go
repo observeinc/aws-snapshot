@@ -34,7 +34,9 @@ func (fn *DescribeCluster) New(name string, config interface{}) ([]api.Request, 
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *eks.ListClustersOutput, last bool) bool {
 			for _, clusterName := range output.Clusters {
 				describeClusterInput := &eks.DescribeClusterInput{
 					Name: clusterName,
@@ -42,7 +44,8 @@ func (fn *DescribeCluster) New(name string, config interface{}) ([]api.Request, 
 
 				describeClusterOutput, err := fn.DescribeClusterWithContext(ctx, describeClusterInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 				ok := api.SendRecords(ctx, ch, name, &DescribeClusterOutput{describeClusterOutput})
 				if !ok {
@@ -51,6 +54,8 @@ func (fn *DescribeCluster) New(name string, config interface{}) ([]api.Request, 
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

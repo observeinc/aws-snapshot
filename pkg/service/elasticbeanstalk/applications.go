@@ -38,7 +38,7 @@ func (fn *DescribeApplications) New(name string, config interface{}) ([]api.Requ
 		// AWS has a quota of 75 Applications by default
 		output, err := fn.DescribeApplicationsWithContext(ctx, &input)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		_ = api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
