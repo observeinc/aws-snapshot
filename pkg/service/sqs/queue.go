@@ -37,7 +37,9 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListQueuesPagesWithContext(ctx, &listQueuesInput, func(output *sqs.ListQueuesOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListQueuesPagesWithContext(ctx, &listQueuesInput, func(output *sqs.ListQueuesOutput, last bool) bool {
 			for _, queueURL := range output.QueueUrls {
 				output, err := fn.GetQueueAttributesWithContext(ctx, &sqs.GetQueueAttributesInput{
 					QueueUrl:       queueURL,
@@ -47,7 +49,9 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 					if ae, ok := err.(awserr.Error); ok && ae.Code() == sqs.ErrCodeQueueDoesNotExist {
 						continue
 					}
-					panic(err)
+
+					innerErr = err
+					return false
 				}
 				if !api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}) {
 					return false
@@ -55,6 +59,8 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

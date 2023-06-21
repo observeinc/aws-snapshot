@@ -37,7 +37,9 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListTopicsPagesWithContext(ctx, &listTopicsInput, func(output *sns.ListTopicsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListTopicsPagesWithContext(ctx, &listTopicsInput, func(output *sns.ListTopicsOutput, last bool) bool {
 			for _, topic := range output.Topics {
 				if topic.TopicArn == nil {
 					continue
@@ -45,7 +47,8 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 
 				output, err := fn.GetTopicAttributesWithContext(ctx, &sns.GetTopicAttributesInput{TopicArn: topic.TopicArn})
 				if err != nil {
-					panic(fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err))
+					innerErr = fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err)
+					return false
 				}
 				if !api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
 					topicArn:                 topic.TopicArn,
@@ -56,6 +59,8 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

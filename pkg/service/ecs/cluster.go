@@ -36,17 +36,22 @@ func (fn *DescribeClusters) New(name string, config interface{}) ([]api.Request,
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
+		var innerErr, outerErr error
+
+		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
 			describeClustersInput := &ecs.DescribeClustersInput{
 				Clusters: output.ClusterArns,
 			}
 
 			describeClustersOutput, err := fn.DescribeClustersWithContext(ctx, describeClustersInput)
 			if err != nil {
-				panic(err)
+				innerErr = err
+				return false
 			}
 			return api.SendRecords(ctx, ch, name, &DescribeClustersOutput{describeClustersOutput})
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

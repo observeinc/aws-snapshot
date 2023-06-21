@@ -29,7 +29,7 @@ func (r *Registry) Register(name string, s api.Service) {
 	}
 
 	if _, ok := r.services[name]; ok {
-		panic(fmt.Sprintf("service already registered :%s", name))
+		panic(fmt.Errorf("service already registered: %s", name))
 	}
 	r.services[name] = s
 }

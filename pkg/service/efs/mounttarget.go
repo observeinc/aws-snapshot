@@ -36,17 +36,25 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
 			for _, fs := range output.FileSystems {
 				mtInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeMountTargetsWithContext(ctx, &mtInput)
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
-				api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output})
+
+				if !api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output}) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

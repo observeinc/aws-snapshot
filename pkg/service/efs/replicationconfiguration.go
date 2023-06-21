@@ -37,7 +37,9 @@ func (fn *DescribeReplicationConfigurations) New(name string, config interface{}
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
 			for _, fs := range output.FileSystems {
 				rcInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeReplicationConfigurationsWithContext(ctx, &rcInput)
@@ -45,12 +47,19 @@ func (fn *DescribeReplicationConfigurations) New(name string, config interface{}
 					if aerr, ok := err.(awserr.Error); ok && aerr.Code() == efs.ErrCodeReplicationNotFound {
 						continue
 					}
-					panic(err)
+
+					innerErr = err
+					return false
 				}
-				api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output})
+
+				if !api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output}) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

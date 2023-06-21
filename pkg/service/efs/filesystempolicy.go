@@ -37,7 +37,9 @@ func (fn *DescribeFileSystemPolicy) New(name string, config interface{}) ([]api.
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
 			for _, fs := range output.FileSystems {
 				fspInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeFileSystemPolicyWithContext(ctx, &fspInput)
@@ -45,12 +47,19 @@ func (fn *DescribeFileSystemPolicy) New(name string, config interface{}) ([]api.
 					if ae, ok := err.(awserr.Error); ok && ae.Code() == efs.ErrCodePolicyNotFound {
 						continue
 					}
-					panic(err)
+
+					innerErr = err
+					return false
 				}
-				api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output})
+
+				if !api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output}) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

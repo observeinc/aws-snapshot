@@ -39,7 +39,9 @@ func (fn *DescribeBackupPolicy) New(name string, config interface{}) ([]api.Requ
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
 			for _, fs := range output.FileSystems {
 				bcInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeBackupPolicyWithContext(ctx, &bcInput)
@@ -47,12 +49,19 @@ func (fn *DescribeBackupPolicy) New(name string, config interface{}) ([]api.Requ
 					if aerr, ok := err.(awserr.Error); ok && aerr.Code() == efs.ErrCodePolicyNotFound {
 						continue
 					}
-					panic(err)
+
+					innerErr = err
+					return false
 				}
-				api.SendRecords(ctx, ch, name, &DescribeBackupPolicyOutput{FilesystemID: fs.FileSystemId, DescribeBackupPolicyOutput: output})
+
+				if !api.SendRecords(ctx, ch, name, &DescribeBackupPolicyOutput{FilesystemID: fs.FileSystemId, DescribeBackupPolicyOutput: output}) {
+					return false
+				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

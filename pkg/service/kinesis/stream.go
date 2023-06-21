@@ -43,18 +43,23 @@ func (fn *DescribeStreams) New(name string, config interface{}) ([]api.Request, 
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListStreamsPagesWithContext(ctx, &listStreamsInput, func(output *kinesis.ListStreamsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListStreamsPagesWithContext(ctx, &listStreamsInput, func(output *kinesis.ListStreamsOutput, last bool) bool {
 			for _, streamName := range output.StreamNames {
 				describeStreamInput.StreamName = streamName
 				err := fn.DescribeStreamPagesWithContext(ctx, &describeStreamInput, func(output *kinesis.DescribeStreamOutput, last bool) bool {
 					return api.SendRecords(ctx, ch, name, &DescribeStreamOutput{output})
 				})
 				if err != nil {
-					panic(err)
+					innerErr = err
+					return false
 				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

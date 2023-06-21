@@ -48,7 +48,7 @@ func (fn *DescribeInstancesHealth) New(name string, config interface{}) ([]api.R
 
 		envsOutput, err := fn.DescribeEnvironmentsWithContext(ctx, &envsInput)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		for _, env := range envsOutput.Environments {
 			healthInput := elasticbeanstalk.DescribeInstancesHealthInput{
@@ -57,14 +57,17 @@ func (fn *DescribeInstancesHealth) New(name string, config interface{}) ([]api.R
 			}
 			healthOutput, err := fn.DescribeInstancesHealthWithContext(ctx, &healthInput)
 			if err != nil {
-				panic(err)
+				return err
 			}
 
 			source := &DescribeInstancesHealthOutput{
 				DescribeInstancesHealthOutput: healthOutput,
 				environmentId:                 env.EnvironmentId,
 			}
-			_ = api.SendRecords(ctx, ch, name, source)
+
+			if !api.SendRecords(ctx, ch, name, source) {
+				break
+			}
 		}
 
 		return nil

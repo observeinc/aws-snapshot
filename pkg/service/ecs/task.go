@@ -35,7 +35,9 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 	var input ecs.ListClustersInput
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
 			for _, clusterArn := range output.ClusterArns {
 				// we can now describe up to 10 tasks per nested page
 				listTasksInput := &ecs.ListTasksInput{
@@ -56,16 +58,19 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 
 					describeTasksOutput, err := fn.DescribeTasksWithContext(ctx, describeTasksInput)
 					if err != nil {
-						panic(err)
+						innerErr = err
+						return false
 					}
 					return api.SendRecords(ctx, ch, name, &DescribeTasksOutput{describeTasksOutput})
 				})
-				if err != nil {
-					panic(err)
+				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
+					return false
 				}
 			}
 			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil
