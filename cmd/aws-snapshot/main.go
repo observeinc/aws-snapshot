@@ -33,6 +33,7 @@ func loadManifest(filename string, dst *api.Manifest) error {
 func realMain() error {
 	var (
 		maxConcurrentRequests = flag.Int("max-concurrent-requests", 10, "Maximum concurrent requests")
+		maxRecords            = flag.Int("max-records", 0, "Maximum number of records emitted")
 		bufferSize            = flag.Int("buffer-size", 100, "Length of buffer for records")
 		manifestFile          = flag.String("manifest-file", "", "Manifest filename")
 		requestTimeout        = flag.String("request-timeout", "", "Timeout per request, default is no timeout")
@@ -75,6 +76,7 @@ func realMain() error {
 	runner := api.Runner{
 		Requests:              reqs,
 		MaxConcurrentRequests: *maxConcurrentRequests,
+		MaxRecords:            *maxRecords,
 		BufferSize:            *bufferSize,
 		Recorder: api.RecorderFunc(func(ctx context.Context, ch <-chan *api.Record) error {
 			for {

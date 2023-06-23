@@ -12,6 +12,7 @@ type Runner struct {
 	Recorder              Recorder
 	BufferSize            int
 	MaxConcurrentRequests int
+	MaxRecords            int
 	ConcurrentRecorders   int
 	RequestTimeout        *time.Duration
 }
@@ -96,21 +97,21 @@ func (r *Runner) Run(ctx context.Context) error {
 		r.BufferSize = defaultBufferSize
 	}
 
-	var (
-		requestCh = make(chan *Record, r.BufferSize)
-		readErrCh = make(chan error, 1)
-	)
-
 	ctx, cancelFunc := context.WithCancel(ctx)
 	defer cancelFunc()
 
+	var (
+		limitCh   = newLimitCh(r.BufferSize, r.MaxRecords, cancelFunc)
+		readErrCh = make(chan error, 1)
+	)
+
 	go func() {
 		defer close(readErrCh)
-		defer close(requestCh)
-		readErrCh <- requestFunc(ctx, requestCh)
+		defer limitCh.Close()
+		readErrCh <- requestFunc(ctx, limitCh.In())
 	}()
 
-	err := recorder.ReadFrom(ctx, requestCh)
+	err := recorder.ReadFrom(ctx, limitCh.Out())
 	if err != nil {
 		cancelFunc()
 		<-readErrCh
