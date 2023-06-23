@@ -12,6 +12,7 @@
         ],
         "BillingModeSummary": null,
         "CreationDateTime": "2020-04-09T12:57:21.205-07:00",
+        "DeletionProtectionEnabled": null,
         "GlobalSecondaryIndexes": null,
         "GlobalTableVersion": null,
         "ItemCount": 9,

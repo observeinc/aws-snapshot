@@ -34,9 +34,11 @@
           },
           "ClientToken": "",
           "CpuOptions": {
+            "AmdSevSnp": null,
             "CoreCount": 2,
             "ThreadsPerCore": 2
           },
+          "CurrentInstanceBootMode": null,
           "EbsOptimized": false,
           "ElasticGpuAssociations": null,
           "ElasticInferenceAcceleratorAssociations": null,
@@ -226,9 +228,11 @@
           },
           "ClientToken": "00000000-8999-bd17-d6f7-000000000000",
           "CpuOptions": {
+            "AmdSevSnp": null,
             "CoreCount": 1,
             "ThreadsPerCore": 2
           },
+          "CurrentInstanceBootMode": null,
           "EbsOptimized": false,
           "ElasticGpuAssociations": null,
           "ElasticInferenceAcceleratorAssociations": null,
@@ -571,9 +575,11 @@
           },
           "ClientToken": "00000000-c9b9-cc34-85b2-000000000000",
           "CpuOptions": {
+            "AmdSevSnp": null,
             "CoreCount": 1,
             "ThreadsPerCore": 2
           },
+          "CurrentInstanceBootMode": null,
           "EbsOptimized": false,
           "ElasticGpuAssociations": null,
           "ElasticInferenceAcceleratorAssociations": null,

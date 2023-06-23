@@ -3,14 +3,21 @@
 package lambda
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/awsutil"
+	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/private/protocol"
+	"github.com/aws/aws-sdk-go/private/protocol/eventstream"
+	"github.com/aws/aws-sdk-go/private/protocol/eventstream/eventstreamapi"
+	"github.com/aws/aws-sdk-go/private/protocol/rest"
 	"github.com/aws/aws-sdk-go/private/protocol/restjson"
 )
 
@@ -484,6 +491,8 @@ func (c *Lambda) CreateEventSourceMappingRequest(input *CreateEventSourceMapping
 //
 //   - Apache Kafka (https://docs.aws.amazon.com/lambda/latest/dg/kafka-smaa.html)
 //
+//   - Amazon DocumentDB (https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html)
+//
 // The following error handling options are available only for stream sources
 // (DynamoDB and Kinesis):
 //
@@ -517,6 +526,8 @@ func (c *Lambda) CreateEventSourceMappingRequest(input *CreateEventSourceMapping
 //   - Amazon MSK (https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-parms)
 //
 //   - Apache Kafka (https://docs.aws.amazon.com/lambda/latest/dg/with-kafka.html#services-kafka-parms)
+//
+//   - Amazon DocumentDB (https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html#docdb-configuration)
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -3393,6 +3404,10 @@ func (c *Lambda) InvokeRequest(input *InvokeInput) (req *request.Request, output
 //     The function is inactive and its VPC connection is no longer available. Wait
 //     for the VPC connection to reestablish and try again.
 //
+//   - RecursiveInvocationException
+//     Lambda has detected your function being invoked in a recursive loop with
+//     other Amazon Web Services resources and stopped your function's invocation.
+//
 // See also, https://docs.aws.amazon.com/goto/WebAPI/lambda-2015-03-31/Invoke
 func (c *Lambda) Invoke(input *InvokeInput) (*InvokeOutput, error) {
 	req, out := c.InvokeRequest(input)
@@ -3515,6 +3530,354 @@ func (c *Lambda) InvokeAsyncWithContext(ctx aws.Context, input *InvokeAsyncInput
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+const opInvokeWithResponseStream = "InvokeWithResponseStream"
+
+// InvokeWithResponseStreamRequest generates a "aws/request.Request" representing the
+// client's request for the InvokeWithResponseStream operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See InvokeWithResponseStream for more information on using the InvokeWithResponseStream
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//	// Example sending a request using the InvokeWithResponseStreamRequest method.
+//	req, resp := client.InvokeWithResponseStreamRequest(params)
+//
+//	err := req.Send()
+//	if err == nil { // resp is now filled
+//	    fmt.Println(resp)
+//	}
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/lambda-2015-03-31/InvokeWithResponseStream
+func (c *Lambda) InvokeWithResponseStreamRequest(input *InvokeWithResponseStreamInput) (req *request.Request, output *InvokeWithResponseStreamOutput) {
+	op := &request.Operation{
+		Name:       opInvokeWithResponseStream,
+		HTTPMethod: "POST",
+		HTTPPath:   "/2021-11-15/functions/{FunctionName}/response-streaming-invocations",
+	}
+
+	if input == nil {
+		input = &InvokeWithResponseStreamInput{}
+	}
+
+	output = &InvokeWithResponseStreamOutput{}
+	req = c.newRequest(op, input, output)
+
+	es := NewInvokeWithResponseStreamEventStream()
+	output.eventStream = es
+
+	req.Handlers.Send.Swap(client.LogHTTPResponseHandler.Name, client.LogHTTPResponseHeaderHandler)
+	req.Handlers.Unmarshal.Swap(restjson.UnmarshalHandler.Name, rest.UnmarshalHandler)
+	req.Handlers.Unmarshal.PushBack(es.runOutputStream)
+	req.Handlers.Unmarshal.PushBack(es.runOnStreamPartClose)
+	return
+}
+
+// InvokeWithResponseStream API operation for AWS Lambda.
+//
+// Configure your Lambda functions to stream response payloads back to clients.
+// For more information, see Configuring a Lambda function to stream responses
+// (https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html).
+//
+// This operation requires permission for the lambda:InvokeFunction (https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html)
+// action. For details on how to set up permissions for cross-account invocations,
+// see Granting function access to other accounts (https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke).
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Lambda's
+// API operation InvokeWithResponseStream for usage and error information.
+//
+// Returned Error Types:
+//
+//   - ServiceException
+//     The Lambda service encountered an internal error.
+//
+//   - ResourceNotFoundException
+//     The resource specified in the request does not exist.
+//
+//   - InvalidRequestContentException
+//     The request body could not be parsed as JSON.
+//
+//   - RequestTooLargeException
+//     The request payload exceeded the Invoke request body JSON input quota. For
+//     more information, see Lambda quotas (https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html).
+//
+//   - UnsupportedMediaTypeException
+//     The content type of the Invoke request body is not JSON.
+//
+//   - TooManyRequestsException
+//     The request throughput limit was exceeded. For more information, see Lambda
+//     quotas (https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html#api-requests).
+//
+//   - InvalidParameterValueException
+//     One of the parameters in the request is not valid.
+//
+//   - EC2UnexpectedException
+//     Lambda received an unexpected Amazon EC2 client exception while setting up
+//     for the Lambda function.
+//
+//   - SubnetIPAddressLimitReachedException
+//     Lambda couldn't set up VPC access for the Lambda function because one or
+//     more configured subnets has no available IP addresses.
+//
+//   - ENILimitReachedException
+//     Lambda couldn't create an elastic network interface in the VPC, specified
+//     as part of Lambda function configuration, because the limit for network interfaces
+//     has been reached. For more information, see Lambda quotas (https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html).
+//
+//   - EFSMountConnectivityException
+//     The Lambda function couldn't make a network connection to the configured
+//     file system.
+//
+//   - EFSMountFailureException
+//     The Lambda function couldn't mount the configured file system due to a permission
+//     or configuration issue.
+//
+//   - EFSMountTimeoutException
+//     The Lambda function made a network connection to the configured file system,
+//     but the mount operation timed out.
+//
+//   - EFSIOException
+//     An error occurred when reading from or writing to a connected file system.
+//
+//   - SnapStartException
+//     The afterRestore() runtime hook (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-runtime-hooks.html)
+//     encountered an error. For more information, check the Amazon CloudWatch logs.
+//
+//   - SnapStartTimeoutException
+//     Lambda couldn't restore the snapshot within the timeout limit.
+//
+//   - SnapStartNotReadyException
+//     Lambda is initializing your function. You can invoke the function when the
+//     function state (https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html)
+//     becomes Active.
+//
+//   - EC2ThrottledException
+//     Amazon EC2 throttled Lambda during Lambda function initialization using the
+//     execution role provided for the function.
+//
+//   - EC2AccessDeniedException
+//     Need additional permissions to configure VPC settings.
+//
+//   - InvalidSubnetIDException
+//     The subnet ID provided in the Lambda function VPC configuration is not valid.
+//
+//   - InvalidSecurityGroupIDException
+//     The security group ID provided in the Lambda function VPC configuration is
+//     not valid.
+//
+//   - InvalidZipFileException
+//     Lambda could not unzip the deployment package.
+//
+//   - KMSDisabledException
+//     Lambda couldn't decrypt the environment variables because the KMS key used
+//     is disabled. Check the Lambda function's KMS key settings.
+//
+//   - KMSInvalidStateException
+//     Lambda couldn't decrypt the environment variables because the state of the
+//     KMS key used is not valid for Decrypt. Check the function's KMS key settings.
+//
+//   - KMSAccessDeniedException
+//     Lambda couldn't decrypt the environment variables because KMS access was
+//     denied. Check the Lambda function's KMS permissions.
+//
+//   - KMSNotFoundException
+//     Lambda couldn't decrypt the environment variables because the KMS key was
+//     not found. Check the function's KMS key settings.
+//
+//   - InvalidRuntimeException
+//     The runtime or runtime version specified is not supported.
+//
+//   - ResourceConflictException
+//     The resource already exists, or another operation is in progress.
+//
+//   - ResourceNotReadyException
+//     The function is inactive and its VPC connection is no longer available. Wait
+//     for the VPC connection to reestablish and try again.
+//
+//   - RecursiveInvocationException
+//     Lambda has detected your function being invoked in a recursive loop with
+//     other Amazon Web Services resources and stopped your function's invocation.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/lambda-2015-03-31/InvokeWithResponseStream
+func (c *Lambda) InvokeWithResponseStream(input *InvokeWithResponseStreamInput) (*InvokeWithResponseStreamOutput, error) {
+	req, out := c.InvokeWithResponseStreamRequest(input)
+	return out, req.Send()
+}
+
+// InvokeWithResponseStreamWithContext is the same as InvokeWithResponseStream with the addition of
+// the ability to pass a context and additional request options.
+//
+// See InvokeWithResponseStream for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Lambda) InvokeWithResponseStreamWithContext(ctx aws.Context, input *InvokeWithResponseStreamInput, opts ...request.Option) (*InvokeWithResponseStreamOutput, error) {
+	req, out := c.InvokeWithResponseStreamRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+var _ awserr.Error
+
+// InvokeWithResponseStreamEventStream provides the event stream handling for the InvokeWithResponseStream.
+//
+// For testing and mocking the event stream this type should be initialized via
+// the NewInvokeWithResponseStreamEventStream constructor function. Using the functional options
+// to pass in nested mock behavior.
+type InvokeWithResponseStreamEventStream struct {
+
+	// Reader is the EventStream reader for the InvokeWithResponseStreamResponseEvent
+	// events. This value is automatically set by the SDK when the API call is made
+	// Use this member when unit testing your code with the SDK to mock out the
+	// EventStream Reader.
+	//
+	// Must not be nil.
+	Reader InvokeWithResponseStreamResponseEventReader
+
+	outputReader io.ReadCloser
+
+	done      chan struct{}
+	closeOnce sync.Once
+	err       *eventstreamapi.OnceError
+}
+
+// NewInvokeWithResponseStreamEventStream initializes an InvokeWithResponseStreamEventStream.
+// This function should only be used for testing and mocking the InvokeWithResponseStreamEventStream
+// stream within your application.
+//
+// The Reader member must be set before reading events from the stream.
+//
+//	es := NewInvokeWithResponseStreamEventStream(func(o *InvokeWithResponseStreamEventStream){
+//	    es.Reader = myMockStreamReader
+//	})
+func NewInvokeWithResponseStreamEventStream(opts ...func(*InvokeWithResponseStreamEventStream)) *InvokeWithResponseStreamEventStream {
+	es := &InvokeWithResponseStreamEventStream{
+		done: make(chan struct{}),
+		err:  eventstreamapi.NewOnceError(),
+	}
+
+	for _, fn := range opts {
+		fn(es)
+	}
+
+	return es
+}
+
+func (es *InvokeWithResponseStreamEventStream) runOnStreamPartClose(r *request.Request) {
+	if es.done == nil {
+		return
+	}
+	go es.waitStreamPartClose()
+
+}
+
+func (es *InvokeWithResponseStreamEventStream) waitStreamPartClose() {
+	var outputErrCh <-chan struct{}
+	if v, ok := es.Reader.(interface{ ErrorSet() <-chan struct{} }); ok {
+		outputErrCh = v.ErrorSet()
+	}
+	var outputClosedCh <-chan struct{}
+	if v, ok := es.Reader.(interface{ Closed() <-chan struct{} }); ok {
+		outputClosedCh = v.Closed()
+	}
+
+	select {
+	case <-es.done:
+	case <-outputErrCh:
+		es.err.SetError(es.Reader.Err())
+		es.Close()
+	case <-outputClosedCh:
+		if err := es.Reader.Err(); err != nil {
+			es.err.SetError(es.Reader.Err())
+		}
+		es.Close()
+	}
+}
+
+// Events returns a channel to read events from.
+//
+// These events are:
+//
+//   - InvokeWithResponseStreamCompleteEvent
+//   - InvokeResponseStreamUpdate
+//   - InvokeWithResponseStreamResponseEventUnknownEvent
+func (es *InvokeWithResponseStreamEventStream) Events() <-chan InvokeWithResponseStreamResponseEventEvent {
+	return es.Reader.Events()
+}
+
+func (es *InvokeWithResponseStreamEventStream) runOutputStream(r *request.Request) {
+	var opts []func(*eventstream.Decoder)
+	if r.Config.Logger != nil && r.Config.LogLevel.Matches(aws.LogDebugWithEventStreamBody) {
+		opts = append(opts, eventstream.DecodeWithLogger(r.Config.Logger))
+	}
+
+	unmarshalerForEvent := unmarshalerForInvokeWithResponseStreamResponseEventEvent{
+		metadata: protocol.ResponseMetadata{
+			StatusCode: r.HTTPResponse.StatusCode,
+			RequestID:  r.RequestID,
+		},
+	}.UnmarshalerForEventName
+
+	decoder := eventstream.NewDecoder(r.HTTPResponse.Body, opts...)
+	eventReader := eventstreamapi.NewEventReader(decoder,
+		protocol.HandlerPayloadUnmarshal{
+			Unmarshalers: r.Handlers.UnmarshalStream,
+		},
+		unmarshalerForEvent,
+	)
+
+	es.outputReader = r.HTTPResponse.Body
+	es.Reader = newReadInvokeWithResponseStreamResponseEvent(eventReader)
+}
+
+// Close closes the stream. This will also cause the stream to be closed.
+// Close must be called when done using the stream API. Not calling Close
+// may result in resource leaks.
+//
+// You can use the closing of the Reader's Events channel to terminate your
+// application's read from the API's stream.
+func (es *InvokeWithResponseStreamEventStream) Close() (err error) {
+	es.closeOnce.Do(es.safeClose)
+	return es.Err()
+}
+
+func (es *InvokeWithResponseStreamEventStream) safeClose() {
+	if es.done != nil {
+		close(es.done)
+	}
+
+	es.Reader.Close()
+	if es.outputReader != nil {
+		es.outputReader.Close()
+	}
+}
+
+// Err returns any error that occurred while reading or writing EventStream
+// Events from the service API's response. Returns nil if there were no errors.
+func (es *InvokeWithResponseStreamEventStream) Err() error {
+	if err := es.err.Err(); err != nil {
+		return err
+	}
+	if err := es.Reader.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 const opListAliases = "ListAliases"
@@ -6553,6 +6916,8 @@ func (c *Lambda) UpdateEventSourceMappingRequest(input *UpdateEventSourceMapping
 //
 //   - Apache Kafka (https://docs.aws.amazon.com/lambda/latest/dg/kafka-smaa.html)
 //
+//   - Amazon DocumentDB (https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html)
+//
 // The following error handling options are available only for stream sources
 // (DynamoDB and Kinesis):
 //
@@ -6586,6 +6951,8 @@ func (c *Lambda) UpdateEventSourceMappingRequest(input *UpdateEventSourceMapping
 //   - Amazon MSK (https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-parms)
 //
 //   - Apache Kafka (https://docs.aws.amazon.com/lambda/latest/dg/with-kafka.html#services-kafka-parms)
+//
+//   - Amazon DocumentDB (https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html#docdb-configuration)
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -7404,9 +7771,9 @@ type AddPermissionInput struct {
 	FunctionName *string `location:"uri" locationName:"FunctionName" min:"1" type:"string" required:"true"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	FunctionUrlAuthType *string `type:"string" enum:"FunctionUrlAuthType"`
 
 	// The Amazon Web Service or Amazon Web Services account that invokes the function.
@@ -8468,15 +8835,20 @@ type CreateEventSourceMappingInput struct {
 	//    * Self-managed Apache Kafka – Default 100. Max 10,000.
 	//
 	//    * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
+	//
+	//    * DocumentDB – Default 100. Max 10,000.
 	BatchSize *int64 `min:"1" type:"integer"`
 
-	// (Streams only) If the function returns an error, split the batch in two and
-	// retry.
+	// (Kinesis and DynamoDB Streams only) If the function returns an error, split
+	// the batch in two and retry.
 	BisectBatchOnFunctionError *bool `type:"boolean"`
 
-	// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
-	// records.
+	// (Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard
+	// Amazon SNS topic destination for discarded records.
 	DestinationConfig *DestinationConfig `type:"structure"`
+
+	// Specific configuration settings for a DocumentDB event source.
+	DocumentDBEventSourceConfig *DocumentDBEventSourceConfig `type:"structure"`
 
 	// When true, the event source mapping is active. When false, Lambda pauses
 	// polling and invocation.
@@ -8495,6 +8867,8 @@ type CreateEventSourceMappingInput struct {
 	//    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.
 	//
 	//    * Amazon MQ – The ARN of the broker.
+	//
+	//    * Amazon DocumentDB – The ARN of the DocumentDB change stream.
 	EventSourceArn *string `type:"string"`
 
 	// An object that defines the filter criteria that determine whether Lambda
@@ -8520,8 +8894,8 @@ type CreateEventSourceMappingInput struct {
 	// FunctionName is a required field
 	FunctionName *string `min:"1" type:"string" required:"true"`
 
-	// (Streams and Amazon SQS) A list of current response type enums applied to
-	// the event source mapping.
+	// (Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type
+	// enums applied to the event source mapping.
 	FunctionResponseTypes []*string `type:"list" enum:"FunctionResponseType"`
 
 	// The maximum amount of time, in seconds, that Lambda spends gathering records
@@ -8529,28 +8903,29 @@ type CreateEventSourceMappingInput struct {
 	// to any value from 0 seconds to 300 seconds in increments of seconds.
 	//
 	// For streams and Amazon SQS event sources, the default batching window is
-	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
-	// sources, the default batching window is 500 ms. Note that because you can
-	// only change MaximumBatchingWindowInSeconds in increments of seconds, you
-	// cannot revert back to the 500 ms default batching window after you have changed
-	// it. To restore the default batching window, you must create a new event source
-	// mapping.
+	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB
+	// event sources, the default batching window is 500 ms. Note that because you
+	// can only change MaximumBatchingWindowInSeconds in increments of seconds,
+	// you cannot revert back to the 500 ms default batching window after you have
+	// changed it. To restore the default batching window, you must create a new
+	// event source mapping.
 	//
 	// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
 	// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
 	// at least 1.
 	MaximumBatchingWindowInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records older than the specified age. The default
-	// value is infinite (-1).
+	// (Kinesis and DynamoDB Streams only) Discard records older than the specified
+	// age. The default value is infinite (-1).
 	MaximumRecordAgeInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records after the specified number of retries. The
-	// default value is infinite (-1). When set to infinite (-1), failed records
-	// are retried until the record expires.
+	// (Kinesis and DynamoDB Streams only) Discard records after the specified number
+	// of retries. The default value is infinite (-1). When set to infinite (-1),
+	// failed records are retried until the record expires.
 	MaximumRetryAttempts *int64 `type:"integer"`
 
-	// (Streams only) The number of batches to process from each shard concurrently.
+	// (Kinesis and DynamoDB Streams only) The number of batches to process from
+	// each shard concurrently.
 	ParallelizationFactor *int64 `min:"1" type:"integer"`
 
 	// (MQ) The name of the Amazon MQ broker destination queue to consume.
@@ -8573,7 +8948,7 @@ type CreateEventSourceMappingInput struct {
 
 	// The position in a stream from which to start reading. Required for Amazon
 	// Kinesis, Amazon DynamoDB, and Amazon MSK Streams sources. AT_TIMESTAMP is
-	// supported only for Amazon Kinesis streams.
+	// supported only for Amazon Kinesis streams and Amazon DocumentDB.
 	StartingPosition *string `type:"string" enum:"EventSourcePosition"`
 
 	// With StartingPosition set to AT_TIMESTAMP, the time from which to start reading.
@@ -8582,8 +8957,9 @@ type CreateEventSourceMappingInput struct {
 	// The name of the Kafka topic.
 	Topics []*string `min:"1" type:"list"`
 
-	// (Streams only) The duration in seconds of a processing window. The range
-	// is between 1 second and 900 seconds.
+	// (Kinesis and DynamoDB Streams only) The duration in seconds of a processing
+	// window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds
+	// indicates no tumbling window.
 	TumblingWindowInSeconds *int64 `type:"integer"`
 }
 
@@ -8635,6 +9011,11 @@ func (s *CreateEventSourceMappingInput) Validate() error {
 	if s.AmazonManagedKafkaEventSourceConfig != nil {
 		if err := s.AmazonManagedKafkaEventSourceConfig.Validate(); err != nil {
 			invalidParams.AddNested("AmazonManagedKafkaEventSourceConfig", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.DocumentDBEventSourceConfig != nil {
+		if err := s.DocumentDBEventSourceConfig.Validate(); err != nil {
+			invalidParams.AddNested("DocumentDBEventSourceConfig", err.(request.ErrInvalidParams))
 		}
 	}
 	if s.ScalingConfig != nil {
@@ -8690,6 +9071,12 @@ func (s *CreateEventSourceMappingInput) SetBisectBatchOnFunctionError(v bool) *C
 // SetDestinationConfig sets the DestinationConfig field's value.
 func (s *CreateEventSourceMappingInput) SetDestinationConfig(v *DestinationConfig) *CreateEventSourceMappingInput {
 	s.DestinationConfig = v
+	return s
+}
+
+// SetDocumentDBEventSourceConfig sets the DocumentDBEventSourceConfig field's value.
+func (s *CreateEventSourceMappingInput) SetDocumentDBEventSourceConfig(v *DocumentDBEventSourceConfig) *CreateEventSourceMappingInput {
+	s.DocumentDBEventSourceConfig = v
 	return s
 }
 
@@ -8864,9 +9251,15 @@ type CreateFunctionInput struct {
 	// that override the values in the container image Dockerfile.
 	ImageConfig *ImageConfig `type:"structure"`
 
-	// The ARN of the Key Management Service (KMS) key that's used to encrypt your
-	// function's environment variables. If it's not provided, Lambda uses a default
-	// service key.
+	// The ARN of the Key Management Service (KMS) customer managed key that's used
+	// to encrypt your function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+	// When Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)
+	// is activated, Lambda also uses this key is to encrypt your function's snapshot.
+	// If you deploy your function using a container image, Lambda also uses this
+	// key to encrypt your function when it's deployed. Note that this is not the
+	// same key that's used to protect your container image in the Amazon Elastic
+	// Container Registry (Amazon ECR). If you don't provide a customer managed
+	// key, Lambda uses a default service key.
 	KMSKeyArn *string `type:"string"`
 
 	// A list of function layers (https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
@@ -8893,6 +9286,9 @@ type CreateFunctionInput struct {
 
 	// The identifier of the function's runtime (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
 	// Runtime is required if the deployment package is a .zip file archive.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	Runtime *string `type:"string" enum:"Runtime"`
 
 	// The function's SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html)
@@ -9131,9 +9527,9 @@ type CreateFunctionUrlConfigInput struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	//
 	// AuthType is a required field
 	AuthType *string `type:"string" required:"true" enum:"FunctionUrlAuthType"`
@@ -9157,6 +9553,18 @@ type CreateFunctionUrlConfigInput struct {
 	//
 	// FunctionName is a required field
 	FunctionName *string `location:"uri" locationName:"FunctionName" min:"1" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 
 	// The alias name.
 	Qualifier *string `location:"querystring" locationName:"Qualifier" min:"1" type:"string"`
@@ -9220,6 +9628,12 @@ func (s *CreateFunctionUrlConfigInput) SetFunctionName(v string) *CreateFunction
 	return s
 }
 
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *CreateFunctionUrlConfigInput) SetInvokeMode(v string) *CreateFunctionUrlConfigInput {
+	s.InvokeMode = &v
+	return s
+}
+
 // SetQualifier sets the Qualifier field's value.
 func (s *CreateFunctionUrlConfigInput) SetQualifier(v string) *CreateFunctionUrlConfigInput {
 	s.Qualifier = &v
@@ -9230,9 +9644,9 @@ type CreateFunctionUrlConfigOutput struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	//
 	// AuthType is a required field
 	AuthType *string `type:"string" required:"true" enum:"FunctionUrlAuthType"`
@@ -9256,6 +9670,18 @@ type CreateFunctionUrlConfigOutput struct {
 	//
 	// FunctionUrl is a required field
 	FunctionUrl *string `min:"40" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 }
 
 // String returns the string representation.
@@ -9303,6 +9729,12 @@ func (s *CreateFunctionUrlConfigOutput) SetFunctionArn(v string) *CreateFunction
 // SetFunctionUrl sets the FunctionUrl field's value.
 func (s *CreateFunctionUrlConfigOutput) SetFunctionUrl(v string) *CreateFunctionUrlConfigOutput {
 	s.FunctionUrl = &v
+	return s
+}
+
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *CreateFunctionUrlConfigOutput) SetInvokeMode(v string) *CreateFunctionUrlConfigOutput {
+	s.InvokeMode = &v
 	return s
 }
 
@@ -10232,6 +10664,76 @@ func (s *DestinationConfig) SetOnSuccess(v *OnSuccess) *DestinationConfig {
 	return s
 }
 
+// Specific configuration settings for a DocumentDB event source.
+type DocumentDBEventSourceConfig struct {
+	_ struct{} `type:"structure"`
+
+	// The name of the collection to consume within the database. If you do not
+	// specify a collection, Lambda consumes all collections.
+	CollectionName *string `min:"1" type:"string"`
+
+	// The name of the database to consume within the DocumentDB cluster.
+	DatabaseName *string `min:"1" type:"string"`
+
+	// Determines what DocumentDB sends to your event stream during document update
+	// operations. If set to UpdateLookup, DocumentDB sends a delta describing the
+	// changes, along with a copy of the entire document. Otherwise, DocumentDB
+	// sends only a partial document that contains the changes.
+	FullDocument *string `type:"string" enum:"FullDocument"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s DocumentDBEventSourceConfig) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s DocumentDBEventSourceConfig) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DocumentDBEventSourceConfig) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DocumentDBEventSourceConfig"}
+	if s.CollectionName != nil && len(*s.CollectionName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("CollectionName", 1))
+	}
+	if s.DatabaseName != nil && len(*s.DatabaseName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("DatabaseName", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetCollectionName sets the CollectionName field's value.
+func (s *DocumentDBEventSourceConfig) SetCollectionName(v string) *DocumentDBEventSourceConfig {
+	s.CollectionName = &v
+	return s
+}
+
+// SetDatabaseName sets the DatabaseName field's value.
+func (s *DocumentDBEventSourceConfig) SetDatabaseName(v string) *DocumentDBEventSourceConfig {
+	s.DatabaseName = &v
+	return s
+}
+
+// SetFullDocument sets the FullDocument field's value.
+func (s *DocumentDBEventSourceConfig) SetFullDocument(v string) *DocumentDBEventSourceConfig {
+	s.FullDocument = &v
+	return s
+}
+
 // Need additional permissions to configure VPC settings.
 type EC2AccessDeniedException struct {
 	_            struct{}                  `type:"structure"`
@@ -10973,13 +11475,16 @@ type EventSourceMappingConfiguration struct {
 	// set MaximumBatchingWindowInSeconds to at least 1.
 	BatchSize *int64 `min:"1" type:"integer"`
 
-	// (Streams only) If the function returns an error, split the batch in two and
-	// retry. The default value is false.
+	// (Kinesis and DynamoDB Streams only) If the function returns an error, split
+	// the batch in two and retry. The default value is false.
 	BisectBatchOnFunctionError *bool `type:"boolean"`
 
-	// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
-	// records.
+	// (Kinesis and DynamoDB Streams only) An Amazon SQS queue or Amazon SNS topic
+	// destination for discarded records.
 	DestinationConfig *DestinationConfig `type:"structure"`
+
+	// Specific configuration settings for a DocumentDB event source.
+	DocumentDBEventSourceConfig *DocumentDBEventSourceConfig `type:"structure"`
 
 	// The Amazon Resource Name (ARN) of the event source.
 	EventSourceArn *string `type:"string"`
@@ -10992,8 +11497,8 @@ type EventSourceMappingConfiguration struct {
 	// The ARN of the Lambda function.
 	FunctionArn *string `type:"string"`
 
-	// (Streams and Amazon SQS) A list of current response type enums applied to
-	// the event source mapping.
+	// (Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type
+	// enums applied to the event source mapping.
 	FunctionResponseTypes []*string `type:"list" enum:"FunctionResponseType"`
 
 	// The date that the event source mapping was last updated or that its state
@@ -11008,31 +11513,35 @@ type EventSourceMappingConfiguration struct {
 	// to any value from 0 seconds to 300 seconds in increments of seconds.
 	//
 	// For streams and Amazon SQS event sources, the default batching window is
-	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
-	// sources, the default batching window is 500 ms. Note that because you can
-	// only change MaximumBatchingWindowInSeconds in increments of seconds, you
-	// cannot revert back to the 500 ms default batching window after you have changed
-	// it. To restore the default batching window, you must create a new event source
-	// mapping.
+	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB
+	// event sources, the default batching window is 500 ms. Note that because you
+	// can only change MaximumBatchingWindowInSeconds in increments of seconds,
+	// you cannot revert back to the 500 ms default batching window after you have
+	// changed it. To restore the default batching window, you must create a new
+	// event source mapping.
 	//
 	// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
 	// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
 	// at least 1.
 	MaximumBatchingWindowInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records older than the specified age. The default
-	// value is -1, which sets the maximum age to infinite. When the value is set
-	// to infinite, Lambda never discards old records.
+	// (Kinesis and DynamoDB Streams only) Discard records older than the specified
+	// age. The default value is -1, which sets the maximum age to infinite. When
+	// the value is set to infinite, Lambda never discards old records.
+	//
+	// The minimum valid value for maximum record age is 60s. Although values less
+	// than 60 and greater than -1 fall within the parameter's absolute range, they
+	// are not allowed
 	MaximumRecordAgeInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records after the specified number of retries. The
-	// default value is -1, which sets the maximum number of retries to infinite.
-	// When MaximumRetryAttempts is infinite, Lambda retries failed records until
-	// the record expires in the event source.
+	// (Kinesis and DynamoDB Streams only) Discard records after the specified number
+	// of retries. The default value is -1, which sets the maximum number of retries
+	// to infinite. When MaximumRetryAttempts is infinite, Lambda retries failed
+	// records until the record expires in the event source.
 	MaximumRetryAttempts *int64 `type:"integer"`
 
-	// (Streams only) The number of batches to process concurrently from each shard.
-	// The default value is 1.
+	// (Kinesis and DynamoDB Streams only) The number of batches to process concurrently
+	// from each shard. The default value is 1.
 	ParallelizationFactor *int64 `min:"1" type:"integer"`
 
 	// (Amazon MQ) The name of the Amazon MQ broker destination queue to consume.
@@ -11055,7 +11564,7 @@ type EventSourceMappingConfiguration struct {
 
 	// The position in a stream from which to start reading. Required for Amazon
 	// Kinesis, Amazon DynamoDB, and Amazon MSK stream sources. AT_TIMESTAMP is
-	// supported only for Amazon Kinesis streams.
+	// supported only for Amazon Kinesis streams and Amazon DocumentDB.
 	StartingPosition *string `type:"string" enum:"EventSourcePosition"`
 
 	// With StartingPosition set to AT_TIMESTAMP, the time from which to start reading.
@@ -11072,8 +11581,9 @@ type EventSourceMappingConfiguration struct {
 	// The name of the Kafka topic.
 	Topics []*string `min:"1" type:"list"`
 
-	// (Streams only) The duration in seconds of a processing window. The range
-	// is 1–900 seconds.
+	// (Kinesis and DynamoDB Streams only) The duration in seconds of a processing
+	// window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds
+	// indicates no tumbling window.
 	TumblingWindowInSeconds *int64 `type:"integer"`
 
 	// The identifier of the event source mapping.
@@ -11119,6 +11629,12 @@ func (s *EventSourceMappingConfiguration) SetBisectBatchOnFunctionError(v bool) 
 // SetDestinationConfig sets the DestinationConfig field's value.
 func (s *EventSourceMappingConfiguration) SetDestinationConfig(v *DestinationConfig) *EventSourceMappingConfiguration {
 	s.DestinationConfig = v
+	return s
+}
+
+// SetDocumentDBEventSourceConfig sets the DocumentDBEventSourceConfig field's value.
+func (s *EventSourceMappingConfiguration) SetDocumentDBEventSourceConfig(v *DocumentDBEventSourceConfig) *EventSourceMappingConfiguration {
+	s.DocumentDBEventSourceConfig = v
 	return s
 }
 
@@ -11584,8 +12100,10 @@ type FunctionConfiguration struct {
 	// The function's image configuration values.
 	ImageConfigResponse *ImageConfigResponse `type:"structure"`
 
-	// The KMS key that's used to encrypt the function's environment variables.
-	// This key is returned only if you've configured a customer managed key.
+	// The KMS key that's used to encrypt the function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+	// When Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)
+	// is activated, this key is also used to encrypt the function's snapshot. This
+	// key is returned only if you've configured a customer managed key.
 	KMSKeyArn *string `type:"string"`
 
 	// The date and time that the function was last updated, in ISO-8601 format
@@ -11621,7 +12139,11 @@ type FunctionConfiguration struct {
 	// The function's execution role.
 	Role *string `type:"string"`
 
-	// The runtime environment for the Lambda function.
+	// The identifier of the function's runtime (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
+	// Runtime is required if the deployment package is a .zip file archive.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	Runtime *string `type:"string" enum:"Runtime"`
 
 	// The ARN of the runtime and any errors that occured.
@@ -11900,9 +12422,9 @@ type FunctionEventInvokeConfig struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -11973,9 +12495,9 @@ type FunctionUrlConfig struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	//
 	// AuthType is a required field
 	AuthType *string `type:"string" required:"true" enum:"FunctionUrlAuthType"`
@@ -11999,6 +12521,18 @@ type FunctionUrlConfig struct {
 	//
 	// FunctionUrl is a required field
 	FunctionUrl *string `min:"40" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 
 	// When the function URL configuration was last updated, in ISO-8601 format
 	// (https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
@@ -12052,6 +12586,12 @@ func (s *FunctionUrlConfig) SetFunctionArn(v string) *FunctionUrlConfig {
 // SetFunctionUrl sets the FunctionUrl field's value.
 func (s *FunctionUrlConfig) SetFunctionUrl(v string) *FunctionUrlConfig {
 	s.FunctionUrl = &v
+	return s
+}
+
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *FunctionUrlConfig) SetInvokeMode(v string) *FunctionUrlConfig {
+	s.InvokeMode = &v
 	return s
 }
 
@@ -12693,9 +13233,9 @@ type GetFunctionEventInvokeConfigOutput struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -12969,9 +13509,9 @@ type GetFunctionUrlConfigOutput struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	//
 	// AuthType is a required field
 	AuthType *string `type:"string" required:"true" enum:"FunctionUrlAuthType"`
@@ -12995,6 +13535,18 @@ type GetFunctionUrlConfigOutput struct {
 	//
 	// FunctionUrl is a required field
 	FunctionUrl *string `min:"40" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 
 	// When the function URL configuration was last updated, in ISO-8601 format
 	// (https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
@@ -13048,6 +13600,12 @@ func (s *GetFunctionUrlConfigOutput) SetFunctionArn(v string) *GetFunctionUrlCon
 // SetFunctionUrl sets the FunctionUrl field's value.
 func (s *GetFunctionUrlConfigOutput) SetFunctionUrl(v string) *GetFunctionUrlConfigOutput {
 	s.FunctionUrl = &v
+	return s
+}
+
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *GetFunctionUrlConfigOutput) SetInvokeMode(v string) *GetFunctionUrlConfigOutput {
+	s.InvokeMode = &v
 	return s
 }
 
@@ -13113,6 +13671,9 @@ type GetLayerVersionByArnOutput struct {
 	CompatibleArchitectures []*string `type:"list" enum:"Architecture"`
 
 	// The layer's compatible runtimes.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntimes []*string `type:"list" enum:"Runtime"`
 
 	// Details about the layer version.
@@ -13280,6 +13841,9 @@ type GetLayerVersionOutput struct {
 	CompatibleArchitectures []*string `type:"list" enum:"Architecture"`
 
 	// The layer's compatible runtimes.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntimes []*string `type:"list" enum:"Runtime"`
 
 	// Details about the layer version.
@@ -13827,6 +14391,9 @@ func (s *GetRuntimeManagementConfigInput) SetQualifier(v string) *GetRuntimeMana
 type GetRuntimeManagementConfigOutput struct {
 	_ struct{} `type:"structure"`
 
+	// The Amazon Resource Name (ARN) of your function.
+	FunctionArn *string `type:"string"`
+
 	// The ARN of the runtime the function is configured to use. If the runtime
 	// update mode is Manual, the ARN is returned, otherwise null is returned.
 	RuntimeVersionArn *string `min:"26" type:"string"`
@@ -13851,6 +14418,12 @@ func (s GetRuntimeManagementConfigOutput) String() string {
 // value will be replaced with "sensitive".
 func (s GetRuntimeManagementConfigOutput) GoString() string {
 	return s.String()
+}
+
+// SetFunctionArn sets the FunctionArn field's value.
+func (s *GetRuntimeManagementConfigOutput) SetFunctionArn(v string) *GetRuntimeManagementConfigOutput {
+	s.FunctionArn = &v
+	return s
 }
 
 // SetRuntimeVersionArn sets the RuntimeVersionArn field's value.
@@ -14787,6 +15360,487 @@ func (s *InvokeOutput) SetStatusCode(v int64) *InvokeOutput {
 	return s
 }
 
+// A chunk of the streamed response payload.
+type InvokeResponseStreamUpdate struct {
+	_ struct{} `type:"structure" payload:"Payload"`
+
+	// Data returned by your Lambda function.
+	//
+	// Payload is a sensitive parameter and its value will be
+	// replaced with "sensitive" in string returned by InvokeResponseStreamUpdate's
+	// String and GoString methods.
+	//
+	// Payload is automatically base64 encoded/decoded by the SDK.
+	Payload []byte `type:"blob" sensitive:"true"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeResponseStreamUpdate) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeResponseStreamUpdate) GoString() string {
+	return s.String()
+}
+
+// SetPayload sets the Payload field's value.
+func (s *InvokeResponseStreamUpdate) SetPayload(v []byte) *InvokeResponseStreamUpdate {
+	s.Payload = v
+	return s
+}
+
+// The InvokeResponseStreamUpdate is and event in the InvokeWithResponseStreamResponseEvent group of events.
+func (s *InvokeResponseStreamUpdate) eventInvokeWithResponseStreamResponseEvent() {}
+
+// UnmarshalEvent unmarshals the EventStream Message into the InvokeResponseStreamUpdate value.
+// This method is only used internally within the SDK's EventStream handling.
+func (s *InvokeResponseStreamUpdate) UnmarshalEvent(
+	payloadUnmarshaler protocol.PayloadUnmarshaler,
+	msg eventstream.Message,
+) error {
+	s.Payload = make([]byte, len(msg.Payload))
+	copy(s.Payload, msg.Payload)
+	return nil
+}
+
+// MarshalEvent marshals the type into an stream event value. This method
+// should only used internally within the SDK's EventStream handling.
+func (s *InvokeResponseStreamUpdate) MarshalEvent(pm protocol.PayloadMarshaler) (msg eventstream.Message, err error) {
+	msg.Headers.Set(eventstreamapi.MessageTypeHeader, eventstream.StringValue(eventstreamapi.EventMessageType))
+	msg.Headers.Set(":content-type", eventstream.StringValue("application/octet-stream"))
+	msg.Payload = s.Payload
+	return msg, err
+}
+
+// A response confirming that the event stream is complete.
+type InvokeWithResponseStreamCompleteEvent struct {
+	_ struct{} `type:"structure"`
+
+	// An error code.
+	ErrorCode *string `type:"string"`
+
+	// The details of any returned error.
+	ErrorDetails *string `type:"string"`
+
+	// The last 4 KB of the execution log, which is base64-encoded.
+	LogResult *string `type:"string"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamCompleteEvent) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamCompleteEvent) GoString() string {
+	return s.String()
+}
+
+// SetErrorCode sets the ErrorCode field's value.
+func (s *InvokeWithResponseStreamCompleteEvent) SetErrorCode(v string) *InvokeWithResponseStreamCompleteEvent {
+	s.ErrorCode = &v
+	return s
+}
+
+// SetErrorDetails sets the ErrorDetails field's value.
+func (s *InvokeWithResponseStreamCompleteEvent) SetErrorDetails(v string) *InvokeWithResponseStreamCompleteEvent {
+	s.ErrorDetails = &v
+	return s
+}
+
+// SetLogResult sets the LogResult field's value.
+func (s *InvokeWithResponseStreamCompleteEvent) SetLogResult(v string) *InvokeWithResponseStreamCompleteEvent {
+	s.LogResult = &v
+	return s
+}
+
+// The InvokeWithResponseStreamCompleteEvent is and event in the InvokeWithResponseStreamResponseEvent group of events.
+func (s *InvokeWithResponseStreamCompleteEvent) eventInvokeWithResponseStreamResponseEvent() {}
+
+// UnmarshalEvent unmarshals the EventStream Message into the InvokeWithResponseStreamCompleteEvent value.
+// This method is only used internally within the SDK's EventStream handling.
+func (s *InvokeWithResponseStreamCompleteEvent) UnmarshalEvent(
+	payloadUnmarshaler protocol.PayloadUnmarshaler,
+	msg eventstream.Message,
+) error {
+	if err := payloadUnmarshaler.UnmarshalPayload(
+		bytes.NewReader(msg.Payload), s,
+	); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalEvent marshals the type into an stream event value. This method
+// should only used internally within the SDK's EventStream handling.
+func (s *InvokeWithResponseStreamCompleteEvent) MarshalEvent(pm protocol.PayloadMarshaler) (msg eventstream.Message, err error) {
+	msg.Headers.Set(eventstreamapi.MessageTypeHeader, eventstream.StringValue(eventstreamapi.EventMessageType))
+	var buf bytes.Buffer
+	if err = pm.MarshalPayload(&buf, s); err != nil {
+		return eventstream.Message{}, err
+	}
+	msg.Payload = buf.Bytes()
+	return msg, err
+}
+
+type InvokeWithResponseStreamInput struct {
+	_ struct{} `type:"structure" payload:"Payload"`
+
+	// Up to 3,583 bytes of base64-encoded data about the invoking client to pass
+	// to the function in the context object.
+	ClientContext *string `location:"header" locationName:"X-Amz-Client-Context" type:"string"`
+
+	// The name of the Lambda function.
+	//
+	// Name formats
+	//
+	//    * Function name – my-function.
+	//
+	//    * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.
+	//
+	//    * Partial ARN – 123456789012:function:my-function.
+	//
+	// The length constraint applies only to the full ARN. If you specify only the
+	// function name, it is limited to 64 characters in length.
+	//
+	// FunctionName is a required field
+	FunctionName *string `location:"uri" locationName:"FunctionName" min:"1" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * RequestResponse (default) – Invoke the function synchronously. Keep
+	//    the connection open until the function returns a response or times out.
+	//    The API operation response includes the function response and additional
+	//    data.
+	//
+	//    * DryRun – Validate parameter values and verify that the IAM user or
+	//    role has permission to invoke the function.
+	InvocationType *string `location:"header" locationName:"X-Amz-Invocation-Type" type:"string" enum:"ResponseStreamingInvocationType"`
+
+	// Set to Tail to include the execution log in the response. Applies to synchronously
+	// invoked functions only.
+	LogType *string `location:"header" locationName:"X-Amz-Log-Type" type:"string" enum:"LogType"`
+
+	// The JSON that you want to provide to your Lambda function as input.
+	//
+	// You can enter the JSON directly. For example, --payload '{ "key": "value"
+	// }'. You can also specify a file path. For example, --payload file://payload.json.
+	//
+	// Payload is a sensitive parameter and its value will be
+	// replaced with "sensitive" in string returned by InvokeWithResponseStreamInput's
+	// String and GoString methods.
+	Payload []byte `type:"blob" sensitive:"true"`
+
+	// The alias name.
+	Qualifier *string `location:"querystring" locationName:"Qualifier" min:"1" type:"string"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *InvokeWithResponseStreamInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "InvokeWithResponseStreamInput"}
+	if s.FunctionName == nil {
+		invalidParams.Add(request.NewErrParamRequired("FunctionName"))
+	}
+	if s.FunctionName != nil && len(*s.FunctionName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("FunctionName", 1))
+	}
+	if s.Qualifier != nil && len(*s.Qualifier) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("Qualifier", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetClientContext sets the ClientContext field's value.
+func (s *InvokeWithResponseStreamInput) SetClientContext(v string) *InvokeWithResponseStreamInput {
+	s.ClientContext = &v
+	return s
+}
+
+// SetFunctionName sets the FunctionName field's value.
+func (s *InvokeWithResponseStreamInput) SetFunctionName(v string) *InvokeWithResponseStreamInput {
+	s.FunctionName = &v
+	return s
+}
+
+// SetInvocationType sets the InvocationType field's value.
+func (s *InvokeWithResponseStreamInput) SetInvocationType(v string) *InvokeWithResponseStreamInput {
+	s.InvocationType = &v
+	return s
+}
+
+// SetLogType sets the LogType field's value.
+func (s *InvokeWithResponseStreamInput) SetLogType(v string) *InvokeWithResponseStreamInput {
+	s.LogType = &v
+	return s
+}
+
+// SetPayload sets the Payload field's value.
+func (s *InvokeWithResponseStreamInput) SetPayload(v []byte) *InvokeWithResponseStreamInput {
+	s.Payload = v
+	return s
+}
+
+// SetQualifier sets the Qualifier field's value.
+func (s *InvokeWithResponseStreamInput) SetQualifier(v string) *InvokeWithResponseStreamInput {
+	s.Qualifier = &v
+	return s
+}
+
+type InvokeWithResponseStreamOutput struct {
+	_ struct{} `type:"structure" payload:"EventStream"`
+
+	eventStream *InvokeWithResponseStreamEventStream
+
+	// The version of the function that executed. When you invoke a function with
+	// an alias, this indicates which version the alias resolved to.
+	ExecutedVersion *string `location:"header" locationName:"X-Amz-Executed-Version" min:"1" type:"string"`
+
+	// The type of data the stream is returning.
+	ResponseStreamContentType *string `location:"header" locationName:"Content-Type" type:"string"`
+
+	// For a successful request, the HTTP status code is in the 200 range. For the
+	// RequestResponse invocation type, this status code is 200. For the DryRun
+	// invocation type, this status code is 204.
+	StatusCode *int64 `location:"statusCode" type:"integer"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s InvokeWithResponseStreamOutput) GoString() string {
+	return s.String()
+}
+
+// SetExecutedVersion sets the ExecutedVersion field's value.
+func (s *InvokeWithResponseStreamOutput) SetExecutedVersion(v string) *InvokeWithResponseStreamOutput {
+	s.ExecutedVersion = &v
+	return s
+}
+
+// SetResponseStreamContentType sets the ResponseStreamContentType field's value.
+func (s *InvokeWithResponseStreamOutput) SetResponseStreamContentType(v string) *InvokeWithResponseStreamOutput {
+	s.ResponseStreamContentType = &v
+	return s
+}
+
+// SetStatusCode sets the StatusCode field's value.
+func (s *InvokeWithResponseStreamOutput) SetStatusCode(v int64) *InvokeWithResponseStreamOutput {
+	s.StatusCode = &v
+	return s
+}
+
+// GetStream returns the type to interact with the event stream.
+func (s *InvokeWithResponseStreamOutput) GetStream() *InvokeWithResponseStreamEventStream {
+	return s.eventStream
+}
+
+// InvokeWithResponseStreamResponseEventEvent groups together all EventStream
+// events writes for InvokeWithResponseStreamResponseEvent.
+//
+// These events are:
+//
+//   - InvokeWithResponseStreamCompleteEvent
+//   - InvokeResponseStreamUpdate
+type InvokeWithResponseStreamResponseEventEvent interface {
+	eventInvokeWithResponseStreamResponseEvent()
+	eventstreamapi.Marshaler
+	eventstreamapi.Unmarshaler
+}
+
+// InvokeWithResponseStreamResponseEventReader provides the interface for reading to the stream. The
+// default implementation for this interface will be InvokeWithResponseStreamResponseEvent.
+//
+// The reader's Close method must allow multiple concurrent calls.
+//
+// These events are:
+//
+//   - InvokeWithResponseStreamCompleteEvent
+//   - InvokeResponseStreamUpdate
+//   - InvokeWithResponseStreamResponseEventUnknownEvent
+type InvokeWithResponseStreamResponseEventReader interface {
+	// Returns a channel of events as they are read from the event stream.
+	Events() <-chan InvokeWithResponseStreamResponseEventEvent
+
+	// Close will stop the reader reading events from the stream.
+	Close() error
+
+	// Returns any error that has occurred while reading from the event stream.
+	Err() error
+}
+
+type readInvokeWithResponseStreamResponseEvent struct {
+	eventReader *eventstreamapi.EventReader
+	stream      chan InvokeWithResponseStreamResponseEventEvent
+	err         *eventstreamapi.OnceError
+
+	done      chan struct{}
+	closeOnce sync.Once
+}
+
+func newReadInvokeWithResponseStreamResponseEvent(eventReader *eventstreamapi.EventReader) *readInvokeWithResponseStreamResponseEvent {
+	r := &readInvokeWithResponseStreamResponseEvent{
+		eventReader: eventReader,
+		stream:      make(chan InvokeWithResponseStreamResponseEventEvent),
+		done:        make(chan struct{}),
+		err:         eventstreamapi.NewOnceError(),
+	}
+	go r.readEventStream()
+
+	return r
+}
+
+// Close will close the underlying event stream reader.
+func (r *readInvokeWithResponseStreamResponseEvent) Close() error {
+	r.closeOnce.Do(r.safeClose)
+	return r.Err()
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) ErrorSet() <-chan struct{} {
+	return r.err.ErrorSet()
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) Closed() <-chan struct{} {
+	return r.done
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) safeClose() {
+	close(r.done)
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) Err() error {
+	return r.err.Err()
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) Events() <-chan InvokeWithResponseStreamResponseEventEvent {
+	return r.stream
+}
+
+func (r *readInvokeWithResponseStreamResponseEvent) readEventStream() {
+	defer r.Close()
+	defer close(r.stream)
+
+	for {
+		event, err := r.eventReader.ReadEvent()
+		if err != nil {
+			if err == io.EOF {
+				return
+			}
+			select {
+			case <-r.done:
+				// If closed already ignore the error
+				return
+			default:
+			}
+			if _, ok := err.(*eventstreamapi.UnknownMessageTypeError); ok {
+				continue
+			}
+			r.err.SetError(err)
+			return
+		}
+
+		select {
+		case r.stream <- event.(InvokeWithResponseStreamResponseEventEvent):
+		case <-r.done:
+			return
+		}
+	}
+}
+
+type unmarshalerForInvokeWithResponseStreamResponseEventEvent struct {
+	metadata protocol.ResponseMetadata
+}
+
+func (u unmarshalerForInvokeWithResponseStreamResponseEventEvent) UnmarshalerForEventName(eventType string) (eventstreamapi.Unmarshaler, error) {
+	switch eventType {
+	case "InvokeComplete":
+		return &InvokeWithResponseStreamCompleteEvent{}, nil
+	case "PayloadChunk":
+		return &InvokeResponseStreamUpdate{}, nil
+	default:
+		return &InvokeWithResponseStreamResponseEventUnknownEvent{Type: eventType}, nil
+	}
+}
+
+// InvokeWithResponseStreamResponseEventUnknownEvent provides a failsafe event for the
+// InvokeWithResponseStreamResponseEvent group of events when an unknown event is received.
+type InvokeWithResponseStreamResponseEventUnknownEvent struct {
+	Type    string
+	Message eventstream.Message
+}
+
+// The InvokeWithResponseStreamResponseEventUnknownEvent is and event in the InvokeWithResponseStreamResponseEvent
+// group of events.
+func (s *InvokeWithResponseStreamResponseEventUnknownEvent) eventInvokeWithResponseStreamResponseEvent() {
+}
+
+// MarshalEvent marshals the type into an stream event value. This method
+// should only used internally within the SDK's EventStream handling.
+func (e *InvokeWithResponseStreamResponseEventUnknownEvent) MarshalEvent(pm protocol.PayloadMarshaler) (
+	msg eventstream.Message, err error,
+) {
+	return e.Message.Clone(), nil
+}
+
+// UnmarshalEvent unmarshals the EventStream Message into the InvokeWithResponseStreamResponseEvent value.
+// This method is only used internally within the SDK's EventStream handling.
+func (e *InvokeWithResponseStreamResponseEventUnknownEvent) UnmarshalEvent(
+	payloadUnmarshaler protocol.PayloadUnmarshaler,
+	msg eventstream.Message,
+) error {
+	e.Message = msg.Clone()
+	return nil
+}
+
 // Lambda couldn't decrypt the environment variables because KMS access was
 // denied. Check the Lambda function's KMS permissions.
 type KMSAccessDeniedException struct {
@@ -15276,6 +16330,9 @@ type LayerVersionsListItem struct {
 	CompatibleArchitectures []*string `type:"list" enum:"Architecture"`
 
 	// The layer's compatible runtimes.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntimes []*string `type:"list" enum:"Runtime"`
 
 	// The date that the version was created, in ISO 8601 format. For example, 2018-11-27T15:10:45.123+0000.
@@ -15646,6 +16703,8 @@ type ListEventSourceMappingsInput struct {
 	//    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.
 	//
 	//    * Amazon MQ – The ARN of the broker.
+	//
+	//    * Amazon DocumentDB – The ARN of the DocumentDB change stream.
 	EventSourceArn *string `location:"querystring" locationName:"EventSourceArn" type:"string"`
 
 	// The name of the Lambda function.
@@ -16256,6 +17315,9 @@ type ListLayerVersionsInput struct {
 	CompatibleArchitecture *string `location:"querystring" locationName:"CompatibleArchitecture" type:"string" enum:"Architecture"`
 
 	// A runtime identifier. For example, go1.x.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntime *string `location:"querystring" locationName:"CompatibleRuntime" type:"string" enum:"Runtime"`
 
 	// The name or Amazon Resource Name (ARN) of the layer.
@@ -16384,6 +17446,9 @@ type ListLayersInput struct {
 	CompatibleArchitecture *string `location:"querystring" locationName:"CompatibleArchitecture" type:"string" enum:"Architecture"`
 
 	// A runtime identifier. For example, go1.x.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntime *string `location:"querystring" locationName:"CompatibleRuntime" type:"string" enum:"Runtime"`
 
 	// A pagination token returned by a previous call.
@@ -17181,6 +18246,9 @@ type PublishLayerVersionInput struct {
 
 	// A list of compatible function runtimes (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
 	// Used for filtering with ListLayers and ListLayerVersions.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntimes []*string `type:"list" enum:"Runtime"`
 
 	// The function layer archive.
@@ -17292,6 +18360,9 @@ type PublishLayerVersionOutput struct {
 	CompatibleArchitectures []*string `type:"list" enum:"Architecture"`
 
 	// The layer's compatible runtimes.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	CompatibleRuntimes []*string `type:"list" enum:"Runtime"`
 
 	// Details about the layer version.
@@ -17726,9 +18797,9 @@ type PutFunctionEventInvokeConfigInput struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -17839,9 +18910,9 @@ type PutFunctionEventInvokeConfigOutput struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -18254,6 +19325,75 @@ func (s *PutRuntimeManagementConfigOutput) SetRuntimeVersionArn(v string) *PutRu
 func (s *PutRuntimeManagementConfigOutput) SetUpdateRuntimeOn(v string) *PutRuntimeManagementConfigOutput {
 	s.UpdateRuntimeOn = &v
 	return s
+}
+
+// Lambda has detected your function being invoked in a recursive loop with
+// other Amazon Web Services resources and stopped your function's invocation.
+type RecursiveInvocationException struct {
+	_            struct{}                  `type:"structure"`
+	RespMetadata protocol.ResponseMetadata `json:"-" xml:"-"`
+
+	// The exception message.
+	Message_ *string `locationName:"Message" type:"string"`
+
+	// The exception type.
+	Type *string `type:"string"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s RecursiveInvocationException) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s RecursiveInvocationException) GoString() string {
+	return s.String()
+}
+
+func newErrorRecursiveInvocationException(v protocol.ResponseMetadata) error {
+	return &RecursiveInvocationException{
+		RespMetadata: v,
+	}
+}
+
+// Code returns the exception type name.
+func (s *RecursiveInvocationException) Code() string {
+	return "RecursiveInvocationException"
+}
+
+// Message returns the exception's message.
+func (s *RecursiveInvocationException) Message() string {
+	if s.Message_ != nil {
+		return *s.Message_
+	}
+	return ""
+}
+
+// OrigErr always returns nil, satisfies awserr.Error interface.
+func (s *RecursiveInvocationException) OrigErr() error {
+	return nil
+}
+
+func (s *RecursiveInvocationException) Error() string {
+	return fmt.Sprintf("%s: %s\n%s", s.Code(), s.Message(), s.String())
+}
+
+// Status code returns the HTTP status code for the request's response error.
+func (s *RecursiveInvocationException) StatusCode() int {
+	return s.RespMetadata.StatusCode
+}
+
+// RequestID returns the service's response RequestID for request.
+func (s *RecursiveInvocationException) RequestID() string {
+	return s.RespMetadata.RequestID
 }
 
 type RemoveLayerVersionPermissionInput struct {
@@ -20195,15 +21335,20 @@ type UpdateEventSourceMappingInput struct {
 	//    * Self-managed Apache Kafka – Default 100. Max 10,000.
 	//
 	//    * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
+	//
+	//    * DocumentDB – Default 100. Max 10,000.
 	BatchSize *int64 `min:"1" type:"integer"`
 
-	// (Streams only) If the function returns an error, split the batch in two and
-	// retry.
+	// (Kinesis and DynamoDB Streams only) If the function returns an error, split
+	// the batch in two and retry.
 	BisectBatchOnFunctionError *bool `type:"boolean"`
 
-	// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
-	// records.
+	// (Kinesis and DynamoDB Streams only) A standard Amazon SQS queue or standard
+	// Amazon SNS topic destination for discarded records.
 	DestinationConfig *DestinationConfig `type:"structure"`
+
+	// Specific configuration settings for a DocumentDB event source.
+	DocumentDBEventSourceConfig *DocumentDBEventSourceConfig `type:"structure"`
 
 	// When true, the event source mapping is active. When false, Lambda pauses
 	// polling and invocation.
@@ -20232,8 +21377,8 @@ type UpdateEventSourceMappingInput struct {
 	// function name, it's limited to 64 characters in length.
 	FunctionName *string `min:"1" type:"string"`
 
-	// (Streams and Amazon SQS) A list of current response type enums applied to
-	// the event source mapping.
+	// (Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type
+	// enums applied to the event source mapping.
 	FunctionResponseTypes []*string `type:"list" enum:"FunctionResponseType"`
 
 	// The maximum amount of time, in seconds, that Lambda spends gathering records
@@ -20241,28 +21386,29 @@ type UpdateEventSourceMappingInput struct {
 	// to any value from 0 seconds to 300 seconds in increments of seconds.
 	//
 	// For streams and Amazon SQS event sources, the default batching window is
-	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
-	// sources, the default batching window is 500 ms. Note that because you can
-	// only change MaximumBatchingWindowInSeconds in increments of seconds, you
-	// cannot revert back to the 500 ms default batching window after you have changed
-	// it. To restore the default batching window, you must create a new event source
-	// mapping.
+	// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB
+	// event sources, the default batching window is 500 ms. Note that because you
+	// can only change MaximumBatchingWindowInSeconds in increments of seconds,
+	// you cannot revert back to the 500 ms default batching window after you have
+	// changed it. To restore the default batching window, you must create a new
+	// event source mapping.
 	//
 	// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
 	// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
 	// at least 1.
 	MaximumBatchingWindowInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records older than the specified age. The default
-	// value is infinite (-1).
+	// (Kinesis and DynamoDB Streams only) Discard records older than the specified
+	// age. The default value is infinite (-1).
 	MaximumRecordAgeInSeconds *int64 `type:"integer"`
 
-	// (Streams only) Discard records after the specified number of retries. The
-	// default value is infinite (-1). When set to infinite (-1), failed records
-	// are retried until the record expires.
+	// (Kinesis and DynamoDB Streams only) Discard records after the specified number
+	// of retries. The default value is infinite (-1). When set to infinite (-1),
+	// failed records are retried until the record expires.
 	MaximumRetryAttempts *int64 `type:"integer"`
 
-	// (Streams only) The number of batches to process from each shard concurrently.
+	// (Kinesis and DynamoDB Streams only) The number of batches to process from
+	// each shard concurrently.
 	ParallelizationFactor *int64 `min:"1" type:"integer"`
 
 	// (Amazon SQS only) The scaling configuration for the event source. For more
@@ -20274,8 +21420,9 @@ type UpdateEventSourceMappingInput struct {
 	// your event source.
 	SourceAccessConfigurations []*SourceAccessConfiguration `type:"list"`
 
-	// (Streams only) The duration in seconds of a processing window. The range
-	// is between 1 second and 900 seconds.
+	// (Kinesis and DynamoDB Streams only) The duration in seconds of a processing
+	// window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds
+	// indicates no tumbling window.
 	TumblingWindowInSeconds *int64 `type:"integer"`
 
 	// The identifier of the event source mapping.
@@ -20326,6 +21473,11 @@ func (s *UpdateEventSourceMappingInput) Validate() error {
 	if s.UUID != nil && len(*s.UUID) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("UUID", 1))
 	}
+	if s.DocumentDBEventSourceConfig != nil {
+		if err := s.DocumentDBEventSourceConfig.Validate(); err != nil {
+			invalidParams.AddNested("DocumentDBEventSourceConfig", err.(request.ErrInvalidParams))
+		}
+	}
 	if s.ScalingConfig != nil {
 		if err := s.ScalingConfig.Validate(); err != nil {
 			invalidParams.AddNested("ScalingConfig", err.(request.ErrInvalidParams))
@@ -20363,6 +21515,12 @@ func (s *UpdateEventSourceMappingInput) SetBisectBatchOnFunctionError(v bool) *U
 // SetDestinationConfig sets the DestinationConfig field's value.
 func (s *UpdateEventSourceMappingInput) SetDestinationConfig(v *DestinationConfig) *UpdateEventSourceMappingInput {
 	s.DestinationConfig = v
+	return s
+}
+
+// SetDocumentDBEventSourceConfig sets the DocumentDBEventSourceConfig field's value.
+func (s *UpdateEventSourceMappingInput) SetDocumentDBEventSourceConfig(v *DocumentDBEventSourceConfig) *UpdateEventSourceMappingInput {
+	s.DocumentDBEventSourceConfig = v
 	return s
 }
 
@@ -20657,9 +21815,15 @@ type UpdateFunctionConfigurationInput struct {
 	// that override the values in the container image Docker file.
 	ImageConfig *ImageConfig `type:"structure"`
 
-	// The ARN of the Key Management Service (KMS) key that's used to encrypt your
-	// function's environment variables. If it's not provided, Lambda uses a default
-	// service key.
+	// The ARN of the Key Management Service (KMS) customer managed key that's used
+	// to encrypt your function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+	// When Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)
+	// is activated, Lambda also uses this key is to encrypt your function's snapshot.
+	// If you deploy your function using a container image, Lambda also uses this
+	// key to encrypt your function when it's deployed. Note that this is not the
+	// same key that's used to protect your container image in the Amazon Elastic
+	// Container Registry (Amazon ECR). If you don't provide a customer managed
+	// key, Lambda uses a default service key.
 	KMSKeyArn *string `type:"string"`
 
 	// A list of function layers (https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html)
@@ -20682,6 +21846,9 @@ type UpdateFunctionConfigurationInput struct {
 
 	// The identifier of the function's runtime (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
 	// Runtime is required if the deployment package is a .zip file archive.
+	//
+	// The following list includes deprecated runtimes. For more information, see
+	// Runtime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy).
 	Runtime *string `type:"string" enum:"Runtime"`
 
 	// The function's SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html)
@@ -20877,9 +22044,9 @@ type UpdateFunctionEventInvokeConfigInput struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -20990,9 +22157,9 @@ type UpdateFunctionEventInvokeConfigOutput struct {
 	//
 	//    * Function - The Amazon Resource Name (ARN) of a Lambda function.
 	//
-	//    * Queue - The ARN of an SQS queue.
+	//    * Queue - The ARN of a standard SQS queue.
 	//
-	//    * Topic - The ARN of an SNS topic.
+	//    * Topic - The ARN of a standard SNS topic.
 	//
 	//    * Event Bus - The ARN of an Amazon EventBridge event bus.
 	DestinationConfig *DestinationConfig `type:"structure"`
@@ -21062,9 +22229,9 @@ type UpdateFunctionUrlConfigInput struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	AuthType *string `type:"string" enum:"FunctionUrlAuthType"`
 
 	// The cross-origin resource sharing (CORS) (https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
@@ -21086,6 +22253,18 @@ type UpdateFunctionUrlConfigInput struct {
 	//
 	// FunctionName is a required field
 	FunctionName *string `location:"uri" locationName:"FunctionName" min:"1" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 
 	// The alias name.
 	Qualifier *string `location:"querystring" locationName:"Qualifier" min:"1" type:"string"`
@@ -21146,6 +22325,12 @@ func (s *UpdateFunctionUrlConfigInput) SetFunctionName(v string) *UpdateFunction
 	return s
 }
 
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *UpdateFunctionUrlConfigInput) SetInvokeMode(v string) *UpdateFunctionUrlConfigInput {
+	s.InvokeMode = &v
+	return s
+}
+
 // SetQualifier sets the Qualifier field's value.
 func (s *UpdateFunctionUrlConfigInput) SetQualifier(v string) *UpdateFunctionUrlConfigInput {
 	s.Qualifier = &v
@@ -21156,9 +22341,9 @@ type UpdateFunctionUrlConfigOutput struct {
 	_ struct{} `type:"structure"`
 
 	// The type of authentication that your function URL uses. Set to AWS_IAM if
-	// you want to restrict access to authenticated IAM users only. Set to NONE
-	// if you want to bypass IAM authentication to create a public endpoint. For
-	// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+	// you want to restrict access to authenticated users only. Set to NONE if you
+	// want to bypass IAM authentication to create a public endpoint. For more information,
+	// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
 	//
 	// AuthType is a required field
 	AuthType *string `type:"string" required:"true" enum:"FunctionUrlAuthType"`
@@ -21182,6 +22367,18 @@ type UpdateFunctionUrlConfigOutput struct {
 	//
 	// FunctionUrl is a required field
 	FunctionUrl *string `min:"40" type:"string" required:"true"`
+
+	// Use one of the following options:
+	//
+	//    * BUFFERED – This is the default option. Lambda invokes your function
+	//    using the Invoke API operation. Invocation results are available when
+	//    the payload is complete. The maximum payload size is 6 MB.
+	//
+	//    * RESPONSE_STREAM – Your function streams payload results as they become
+	//    available. Lambda invokes your function using the InvokeWithResponseStream
+	//    API operation. The maximum response payload size is 20 MB, however, you
+	//    can request a quota increase (https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html).
+	InvokeMode *string `type:"string" enum:"InvokeMode"`
 
 	// When the function URL configuration was last updated, in ISO-8601 format
 	// (https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
@@ -21235,6 +22432,12 @@ func (s *UpdateFunctionUrlConfigOutput) SetFunctionArn(v string) *UpdateFunction
 // SetFunctionUrl sets the FunctionUrl field's value.
 func (s *UpdateFunctionUrlConfigOutput) SetFunctionUrl(v string) *UpdateFunctionUrlConfigOutput {
 	s.FunctionUrl = &v
+	return s
+}
+
+// SetInvokeMode sets the InvokeMode field's value.
+func (s *UpdateFunctionUrlConfigOutput) SetInvokeMode(v string) *UpdateFunctionUrlConfigOutput {
+	s.InvokeMode = &v
 	return s
 }
 
@@ -21402,6 +22605,22 @@ func EventSourcePosition_Values() []string {
 }
 
 const (
+	// FullDocumentUpdateLookup is a FullDocument enum value
+	FullDocumentUpdateLookup = "UpdateLookup"
+
+	// FullDocumentDefault is a FullDocument enum value
+	FullDocumentDefault = "Default"
+)
+
+// FullDocument_Values returns all elements of the FullDocument enum
+func FullDocument_Values() []string {
+	return []string{
+		FullDocumentUpdateLookup,
+		FullDocumentDefault,
+	}
+}
+
+const (
 	// FunctionResponseTypeReportBatchItemFailures is a FunctionResponseType enum value
 	FunctionResponseTypeReportBatchItemFailures = "ReportBatchItemFailures"
 )
@@ -21458,6 +22677,22 @@ func InvocationType_Values() []string {
 		InvocationTypeEvent,
 		InvocationTypeRequestResponse,
 		InvocationTypeDryRun,
+	}
+}
+
+const (
+	// InvokeModeBuffered is a InvokeMode enum value
+	InvokeModeBuffered = "BUFFERED"
+
+	// InvokeModeResponseStream is a InvokeMode enum value
+	InvokeModeResponseStream = "RESPONSE_STREAM"
+)
+
+// InvokeMode_Values returns all elements of the InvokeMode enum
+func InvokeMode_Values() []string {
+	return []string{
+		InvokeModeBuffered,
+		InvokeModeResponseStream,
 	}
 }
 
@@ -21626,6 +22861,22 @@ func ProvisionedConcurrencyStatusEnum_Values() []string {
 }
 
 const (
+	// ResponseStreamingInvocationTypeRequestResponse is a ResponseStreamingInvocationType enum value
+	ResponseStreamingInvocationTypeRequestResponse = "RequestResponse"
+
+	// ResponseStreamingInvocationTypeDryRun is a ResponseStreamingInvocationType enum value
+	ResponseStreamingInvocationTypeDryRun = "DryRun"
+)
+
+// ResponseStreamingInvocationType_Values returns all elements of the ResponseStreamingInvocationType enum
+func ResponseStreamingInvocationType_Values() []string {
+	return []string{
+		ResponseStreamingInvocationTypeRequestResponse,
+		ResponseStreamingInvocationTypeDryRun,
+	}
+}
+
+const (
 	// RuntimeNodejs is a Runtime enum value
 	RuntimeNodejs = "nodejs"
 
@@ -21709,6 +22960,15 @@ const (
 
 	// RuntimeNodejs18X is a Runtime enum value
 	RuntimeNodejs18X = "nodejs18.x"
+
+	// RuntimePython310 is a Runtime enum value
+	RuntimePython310 = "python3.10"
+
+	// RuntimeJava17 is a Runtime enum value
+	RuntimeJava17 = "java17"
+
+	// RuntimeRuby32 is a Runtime enum value
+	RuntimeRuby32 = "ruby3.2"
 )
 
 // Runtime_Values returns all elements of the Runtime enum
@@ -21742,6 +23002,9 @@ func Runtime_Values() []string {
 		RuntimeProvided,
 		RuntimeProvidedAl2,
 		RuntimeNodejs18X,
+		RuntimePython310,
+		RuntimeJava17,
+		RuntimeRuby32,
 	}
 }
 

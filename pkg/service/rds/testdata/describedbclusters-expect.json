@@ -59,6 +59,7 @@
         "HostedZoneId": "Z100000000001W",
         "HttpEndpointEnabled": false,
         "IAMDatabaseAuthenticationEnabled": false,
+        "IOOptimizedNextAllowedModificationTime": null,
         "Iops": null,
         "KmsKeyId": "arn:aws:kms:us-west-2:1234567890:key/0000000b-a3d5-4588-0000-000000000002",
         "LatestRestorableTime": "2021-06-01T17:43:18.835Z",
