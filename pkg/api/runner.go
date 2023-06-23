@@ -32,14 +32,14 @@ func pool(fn Recorder, num int) Recorder {
 			}()
 		}
 
-		var err error
+		var errs []error
 		for i := 0; i < num; i++ {
-			if e := <-errCh; e != nil && err == nil {
-				err = e
+			if e := <-errCh; e != nil {
+				errs = append(errs, e)
 			}
 		}
 
-		return err
+		return Join(errs...)
 	})
 }
 
@@ -53,7 +53,6 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 		var (
 			errCh = make(chan error, len(fns))
 			sem   = make(chan struct{}, maxConcurrency)
-			err   error
 		)
 
 		defer close(errCh)
@@ -77,12 +76,15 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 			}(ctx, fn)
 		}
 
+		var errs []error
 		for i := 0; i < len(fns); i++ {
-			if e := <-errCh; e != nil && err == nil {
-				err = e
+			if e := <-errCh; e != nil {
+				errs = append(errs, e)
 			}
 		}
-		return err
+
+		return Join(errs...)
+
 	}
 }
 
