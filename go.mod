@@ -3,7 +3,7 @@ module github.com/observeinc/aws-snapshot
 go 1.19
 
 require (
-	github.com/aws/aws-sdk-go v1.44.199
+	github.com/aws/aws-sdk-go v1.44.289
 	github.com/google/go-cmp v0.5.9
 	github.com/mitchellh/mapstructure v1.5.0
 )

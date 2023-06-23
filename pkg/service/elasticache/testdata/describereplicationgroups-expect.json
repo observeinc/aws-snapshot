@@ -11,6 +11,7 @@
         "AutomaticFailover": "enabled",
         "CacheNodeType": "cache.r6g.large",
         "ClusterEnabled": false,
+        "ClusterMode": null,
         "ConfigurationEndpoint": null,
         "DataTiering": null,
         "Description": " ",
@@ -96,6 +97,7 @@
         "PendingModifiedValues": {
           "AuthTokenStatus": null,
           "AutomaticFailoverStatus": null,
+          "ClusterMode": null,
           "LogDeliveryConfigurations": null,
           "PrimaryClusterId": null,
           "Resharding": null,
