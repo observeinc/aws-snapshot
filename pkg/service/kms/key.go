@@ -56,7 +56,9 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 					innerErr = err
 					return false
 				}
-				if !api.SendRecords(ctx, ch, name, &DescribeKeyOutput{output}) {
+
+				if err := api.SendRecords(ctx, ch, name, &DescribeKeyOutput{output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

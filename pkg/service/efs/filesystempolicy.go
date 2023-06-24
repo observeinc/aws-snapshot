@@ -52,7 +52,8 @@ func (fn *DescribeFileSystemPolicy) New(name string, config interface{}) ([]api.
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

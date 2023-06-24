@@ -62,8 +62,15 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 						innerErr = err
 						return false
 					}
-					return api.SendRecords(ctx, ch, name, &DescribeServicesOutput{describeServicesOutput})
+
+					if err := api.SendRecords(ctx, ch, name, &DescribeServicesOutput{describeServicesOutput}); err != nil {
+						innerErr = err
+						return false
+					}
+
+					return true
 				})
+
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					innerErr = err
 					return false

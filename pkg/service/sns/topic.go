@@ -50,10 +50,11 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 					innerErr = fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err)
 					return false
 				}
-				if !api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
+				if err := api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
 					topicArn:                 topic.TopicArn,
 					GetTopicAttributesOutput: output,
-				}) {
+				}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

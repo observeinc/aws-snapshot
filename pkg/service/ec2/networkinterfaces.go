@@ -36,9 +36,18 @@ func (fn *DescribeNetworkInterfaces) New(name string, config interface{}) ([]api
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeNetworkInterfacesPagesWithContext(ctx, &input, func(output *ec2.DescribeNetworkInterfacesOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeNetworkInterfacesOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeNetworkInterfacesPagesWithContext(ctx, &input, func(output *ec2.DescribeNetworkInterfacesOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeNetworkInterfacesOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

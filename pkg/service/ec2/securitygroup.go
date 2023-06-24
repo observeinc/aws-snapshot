@@ -36,9 +36,18 @@ func (fn *DescribeSecurityGroups) New(name string, config interface{}) ([]api.Re
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeSecurityGroupsPagesWithContext(ctx, &input, func(output *ec2.DescribeSecurityGroupsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeSecurityGroupsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeSecurityGroupsPagesWithContext(ctx, &input, func(output *ec2.DescribeSecurityGroupsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeSecurityGroupsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

@@ -42,8 +42,8 @@ func (fn *DescribeEnvironments) New(name string, config interface{}) ([]api.Requ
 				return err
 			}
 
-			if !api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output}) {
-				break
+			if err := api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output}); err != nil {
+				return err
 			}
 
 			if output.NextToken == nil {

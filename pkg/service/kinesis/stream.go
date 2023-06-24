@@ -49,10 +49,15 @@ func (fn *DescribeStreams) New(name string, config interface{}) ([]api.Request, 
 			for _, streamName := range output.StreamNames {
 				describeStreamInput.StreamName = streamName
 				err := fn.DescribeStreamPagesWithContext(ctx, &describeStreamInput, func(output *kinesis.DescribeStreamOutput, last bool) bool {
-					return api.SendRecords(ctx, ch, name, &DescribeStreamOutput{output})
+					if err := api.SendRecords(ctx, ch, name, &DescribeStreamOutput{output}); err != nil {
+						innerErr = err
+						return false
+					}
+
+					return true
 				})
-				if err != nil {
-					innerErr = err
+
+				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					return false
 				}
 			}

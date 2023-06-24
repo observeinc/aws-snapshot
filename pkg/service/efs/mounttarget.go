@@ -47,7 +47,8 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

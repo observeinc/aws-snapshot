@@ -70,7 +70,9 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 					restApiName:          restApi.Name,
 				}
 
-				if !api.SendRecords(ctx, ch, name, source) {
+				if err := api.SendRecords(ctx, ch, name, source); err != nil {
+					innerErr = err
+
 					return false
 				}
 			}

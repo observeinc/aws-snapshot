@@ -122,9 +122,8 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 				}
 			}
 
-			ok := api.SendRecords(ctx, ch, name, listBucketsOutput)
-			if !ok {
-				return ctx.Err()
+			if err := api.SendRecords(ctx, ch, name, listBucketsOutput); err != nil {
+				return err
 			}
 		}
 

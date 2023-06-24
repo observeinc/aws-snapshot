@@ -45,9 +45,18 @@ func (fn *DescribeSnapshots) New(name string, config interface{}) ([]api.Request
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeSnapshotsPagesWithContext(ctx, &input, func(output *ec2.DescribeSnapshotsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeSnapshotsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeSnapshotsPagesWithContext(ctx, &input, func(output *ec2.DescribeSnapshotsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeSnapshotsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

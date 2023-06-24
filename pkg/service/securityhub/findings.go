@@ -41,9 +41,19 @@ func (fn *GetFindings) New(name string, config interface{}) ([]api.Request, erro
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.GetFindingsPagesWithContext(ctx, &input, func(output *securityhub.GetFindingsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &GetFindingsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.GetFindingsPagesWithContext(ctx, &input, func(output *securityhub.GetFindingsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &GetFindingsOutput{output}); err != nil {
+				innerErr = err
+
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

@@ -47,8 +47,9 @@ func (fn *DescribeCluster) New(name string, config interface{}) ([]api.Request, 
 					innerErr = err
 					return false
 				}
-				ok := api.SendRecords(ctx, ch, name, &DescribeClusterOutput{describeClusterOutput})
-				if !ok {
+
+				if err := api.SendRecords(ctx, ch, name, &DescribeClusterOutput{describeClusterOutput}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

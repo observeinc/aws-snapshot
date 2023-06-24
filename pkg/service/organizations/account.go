@@ -38,19 +38,29 @@ func (fn *ListAccounts) New(name string, config interface{}) ([]api.Request, err
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		err := fn.ListAccountsPagesWithContext(ctx, &input, func(output *organizations.ListAccountsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &ListAccountsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.ListAccountsPagesWithContext(ctx, &input, func(output *organizations.ListAccountsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &ListAccountsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
-		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == organizations.ErrCodeAWSOrganizationsNotInUseException {
+
+		if aerr, ok := outerErr.(awserr.Error); ok && aerr.Code() == organizations.ErrCodeAWSOrganizationsNotInUseException {
 			// nothing to do here
-			return nil
+			outerErr = nil
 		}
-		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == organizations.ErrCodeAccessDeniedException {
+
+		if aerr, ok := outerErr.(awserr.Error); ok && aerr.Code() == organizations.ErrCodeAccessDeniedException {
 			// ask for forgiveness, we may have configured this outside of master account
 			// TODO: log warning
-			return nil
+			outerErr = nil
 		}
-		return err
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

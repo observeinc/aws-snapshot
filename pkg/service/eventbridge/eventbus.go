@@ -42,7 +42,11 @@ func (fn *ListEventBuses) New(name string, config interface{}) ([]api.Request, e
 			if err != nil {
 				return fmt.Errorf("failed to list event buses: %w", err)
 			}
-			api.SendRecords(ctx, ch, name, &ListEventBusesOutput{output})
+
+			if err := api.SendRecords(ctx, ch, name, &ListEventBusesOutput{output}); err != nil {
+				return err
+			}
+
 			if output.NextToken == nil {
 				break
 			}

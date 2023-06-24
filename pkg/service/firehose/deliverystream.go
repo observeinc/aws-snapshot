@@ -57,8 +57,9 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 					return fmt.Errorf("failed to describe stream %q: %w", *deliveryStreamName, err)
 				}
 
-				// TODO: surface error?
-				_ = api.SendRecords(ctx, ch, name, &DescribeDeliveryStreamOutput{describeDeliveryStreamOutput})
+				if err := api.SendRecords(ctx, ch, name, &DescribeDeliveryStreamOutput{describeDeliveryStreamOutput}); err != nil {
+					return err
+				}
 
 				input.SetExclusiveStartDeliveryStreamName(*deliveryStreamName)
 			}

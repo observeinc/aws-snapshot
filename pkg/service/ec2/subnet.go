@@ -36,9 +36,18 @@ func (fn *DescribeSubnets) New(name string, config interface{}) ([]api.Request, 
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeSubnetsPagesWithContext(ctx, &input, func(output *ec2.DescribeSubnetsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeSubnetsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeSubnetsPagesWithContext(ctx, &input, func(output *ec2.DescribeSubnetsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeSubnetsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

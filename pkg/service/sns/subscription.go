@@ -61,10 +61,11 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 					innerErr = fmt.Errorf("failed to process %s: %w", *subscription.SubscriptionArn, err)
 					return false
 				}
-				if !api.SendRecords(ctx, ch, name, &GetSubscriptionAttributesOutput{
+				if err := api.SendRecords(ctx, ch, name, &GetSubscriptionAttributesOutput{
 					subscriptionArn:                 subscription.SubscriptionArn,
 					GetSubscriptionAttributesOutput: output,
-				}) {
+				}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

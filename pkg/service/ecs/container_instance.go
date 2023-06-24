@@ -61,7 +61,13 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 						innerErr = err
 						return false
 					}
-					return api.SendRecords(ctx, ch, name, &DescribeContainerInstancesOutput{describeContainerInstancesOutput})
+
+					if err := api.SendRecords(ctx, ch, name, &DescribeContainerInstancesOutput{describeContainerInstancesOutput}); err != nil {
+						innerErr = err
+						return false
+					}
+
+					return true
 				})
 
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {

@@ -36,9 +36,18 @@ func (fn *DescribeInternetGateways) New(name string, config interface{}) ([]api.
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeInternetGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeInternetGatewaysOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeInternetGatewaysOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeInternetGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeInternetGatewaysOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeInternetGatewaysOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil
