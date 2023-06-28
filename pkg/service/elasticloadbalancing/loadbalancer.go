@@ -87,32 +87,63 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 	)
 
 	v1call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ELB.DescribeLoadBalancersPagesWithContext(ctx, &input, func(output *elb.DescribeLoadBalancersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ELB.DescribeLoadBalancersPagesWithContext(ctx, &input, func(output *elb.DescribeLoadBalancersOutput, last bool) bool {
 			var describeTagsInput elb.DescribeTagsInput
 			for _, loadBalancerDescription := range output.LoadBalancerDescriptions {
 				describeTagsInput.LoadBalancerNames = append(describeTagsInput.LoadBalancerNames, loadBalancerDescription.LoadBalancerName)
 			}
 
-			describeTagsOutput, _ := fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
-			return api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
+			describeTagsOutput, err := fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+			if err != nil {
+				innerErr = err
+				return false
+			}
+
+			if err := api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
 				DescribeLoadBalancersOutput: output,
 				DescribeTagsOutput:          describeTagsOutput,
-			})
+			}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	v2call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ELBv2.DescribeLoadBalancersPagesWithContext(ctx, &inputv2, func(output *elbv2.DescribeLoadBalancersOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.ELBv2.DescribeLoadBalancersPagesWithContext(ctx, &inputv2, func(output *elbv2.DescribeLoadBalancersOutput, last bool) bool {
 			var describeTagsInput elbv2.DescribeTagsInput
 			for _, loadBalancer := range output.LoadBalancers {
 				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, loadBalancer.LoadBalancerArn)
 			}
-			describeTagsOutput, _ := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
-			return api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
+
+			describeTagsOutput, err := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+			if err != nil {
+				innerErr = err
+				return false
+			}
+
+			if err := api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
 				DescribeLoadBalancersOutput: output,
 				DescribeTagsOutput:          describeTagsOutput,
-			})
+			}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{v1call, v2call}, nil

@@ -61,10 +61,13 @@ func (fn *ListRules) New(name string, config interface{}) ([]api.Request, error)
 					}
 					listTargetsByRuleInput.NextToken = listTargetsByRuleOutput.NextToken
 				}
-				api.SendRecords(ctx, ch, name, &ListRuleOutput{
+
+				if err := api.SendRecords(ctx, ch, name, &ListRuleOutput{
 					Rule:    rule,
 					Targets: targets,
-				})
+				}); err != nil {
+					return err
+				}
 			}
 			if listRulesOutput.NextToken == nil {
 				break

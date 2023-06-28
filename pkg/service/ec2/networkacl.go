@@ -36,9 +36,17 @@ func (fn *DescribeNetworkAcls) New(name string, config interface{}) ([]api.Reque
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeNetworkAclsPagesWithContext(ctx, &input, func(output *ec2.DescribeNetworkAclsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeNetworkAclsOutput{output})
+		var outerErr, innerErr error
+		outerErr = fn.DescribeNetworkAclsPagesWithContext(ctx, &input, func(output *ec2.DescribeNetworkAclsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeNetworkAclsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

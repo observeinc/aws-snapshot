@@ -40,8 +40,8 @@ func (fn *DescribeAddresses) New(name string, config interface{}) ([]api.Request
 		if err != nil {
 			return err
 		}
-		api.SendRecords(ctx, ch, name, &DescribeAddressesOutput{output})
-		return nil
+
+		return api.SendRecords(ctx, ch, name, &DescribeAddressesOutput{output})
 	}
 
 	return []api.Request{call}, nil

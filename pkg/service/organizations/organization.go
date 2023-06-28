@@ -43,8 +43,8 @@ func (fn *DescribeOrganization) New(name string, config interface{}) ([]api.Requ
 		} else if err != nil {
 			return err
 		}
-		api.SendRecords(ctx, ch, name, &DescribeOrganizationOutput{output})
-		return nil
+
+		return api.SendRecords(ctx, ch, name, &DescribeOrganizationOutput{output})
 	}
 
 	return []api.Request{call}, nil

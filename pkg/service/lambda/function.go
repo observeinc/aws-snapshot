@@ -36,9 +36,18 @@ func (fn *ListFunctions) New(name string, config interface{}) ([]api.Request, er
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListFunctionsPagesWithContext(ctx, &input, func(output *lambda.ListFunctionsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &ListFunctionsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.ListFunctionsPagesWithContext(ctx, &input, func(output *lambda.ListFunctionsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &ListFunctionsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

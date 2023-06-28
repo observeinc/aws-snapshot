@@ -110,13 +110,22 @@ func (fn *Scan) New(name string, config interface{}) ([]api.Request, error) {
 			tableKeys = append(tableKeys, element.AttributeName)
 		}
 
-		return fn.ScanPagesWithContext(ctx, &input, func(output *dynamodb.ScanOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &ScanOutput{
+		var outerErr, innerErr error
+
+		outerErr = fn.ScanPagesWithContext(ctx, &input, func(output *dynamodb.ScanOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &ScanOutput{
 				ScanOutput: output,
 				TableArn:   describeTableOutput.Table.TableArn,
 				TableKeys:  tableKeys,
-			})
+			}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

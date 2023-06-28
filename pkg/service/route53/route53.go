@@ -49,9 +49,18 @@ func (fn *ListHostedZones) New(name string, config interface{}) ([]api.Request, 
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListHostedZonesPagesWithContext(ctx, &input, func(output *route53.ListHostedZonesOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &ListHostedZonesOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.ListHostedZonesPagesWithContext(ctx, &input, func(output *route53.ListHostedZonesOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &ListHostedZonesOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

@@ -36,9 +36,18 @@ func (fn *DescribeCacheSubnetGroups) New(name string, config interface{}) ([]api
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeCacheSubnetGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeCacheSubnetGroupsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeCacheSubnetGroupsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeCacheSubnetGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeCacheSubnetGroupsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeCacheSubnetGroupsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

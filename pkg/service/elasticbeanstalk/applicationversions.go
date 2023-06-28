@@ -42,8 +42,8 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 				return err
 			}
 
-			if !api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}) {
-				break
+			if err := api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}); err != nil {
+				return err
 			}
 
 			if output.NextToken == nil {

@@ -35,9 +35,18 @@ func (fn *DescribeFileSystems) New(name string, config interface{}) ([]api.Reque
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFileSystemsPagesWithContext(ctx, &input, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeFileSystemsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &input, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeFileSystemsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

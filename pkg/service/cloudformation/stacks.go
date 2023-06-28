@@ -38,13 +38,22 @@ func (fn *DescribeStacks) New(name string, config interface{}) ([]api.Request, e
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
+		var outerErr, innerErr error
+
 		err := fn.DescribeStacksPagesWithContext(ctx, &input, func(output *cloudformation.DescribeStacksOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeStacksOutput{output})
+			if err := api.SendRecords(ctx, ch, name, &DescribeStacksOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
-		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == "AccessDenied" {
-			return nil
+
+		if aerr, ok := err.(awserr.Error); !ok || aerr.Code() != "AccessDenied" {
+			outerErr = err
 		}
-		return err
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

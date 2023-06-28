@@ -53,13 +53,15 @@ func (fn *DescribeFargateProfile) New(name string, config interface{}) ([]api.Re
 							innerErr = err
 							return false
 						}
-						ok := api.SendRecords(ctx, ch, name, &DescribeFargateProfileOutput{describeFargateProfileOutput})
-						if !ok {
+
+						if err := api.SendRecords(ctx, ch, name, &DescribeFargateProfileOutput{describeFargateProfileOutput}); err != nil {
+							innerErr = err
 							return false
 						}
 					}
 					return true
 				})
+
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					return false
 				}

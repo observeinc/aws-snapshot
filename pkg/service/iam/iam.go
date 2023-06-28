@@ -86,9 +86,18 @@ func (fn *ListAccountAliases) New(name string, config interface{}) ([]api.Reques
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.ListAccountAliasesPagesWithContext(ctx, &input, func(output *iam.ListAccountAliasesOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &ListAccountAliasesOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.ListAccountAliasesPagesWithContext(ctx, &input, func(output *iam.ListAccountAliasesOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &ListAccountAliasesOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil
@@ -108,9 +117,18 @@ func (fn *GetAccountAuthorizationDetails) New(name string, config interface{}) (
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.GetAccountAuthorizationDetailsPagesWithContext(ctx, &input, func(output *iam.GetAccountAuthorizationDetailsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &GetAccountAuthorizationDetailsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.GetAccountAuthorizationDetailsPagesWithContext(ctx, &input, func(output *iam.GetAccountAuthorizationDetailsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &GetAccountAuthorizationDetailsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

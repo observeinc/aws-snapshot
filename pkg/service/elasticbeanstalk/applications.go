@@ -41,8 +41,7 @@ func (fn *DescribeApplications) New(name string, config interface{}) ([]api.Requ
 			return err
 		}
 
-		_ = api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
-		return nil
+		return api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
 	}
 
 	return []api.Request{call}, nil

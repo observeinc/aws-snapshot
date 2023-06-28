@@ -36,9 +36,18 @@ func (fn *DescribeVolumes) New(name string, config interface{}) ([]api.Request, 
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeVolumesPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumesOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeVolumesPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumesOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil
@@ -72,9 +81,18 @@ func (fn *DescribeVolumeStatus) New(name string, config interface{}) ([]api.Requ
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeVolumeStatusPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumeStatusOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeVolumeStatusPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumeStatusOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

@@ -50,7 +50,9 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeTableOutput{describeTableOutput}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeTableOutput{describeTableOutput}); err != nil {
+					innerErr = err
+
 					// failed to send records, stop handling tables
 					return false
 				}

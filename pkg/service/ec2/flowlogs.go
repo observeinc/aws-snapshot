@@ -36,9 +36,18 @@ func (fn *DescribeFlowLogs) New(name string, config interface{}) ([]api.Request,
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeFlowLogsPagesWithContext(ctx, &input, func(output *ec2.DescribeFlowLogsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeFlowLogsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeFlowLogsPagesWithContext(ctx, &input, func(output *ec2.DescribeFlowLogsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeFlowLogsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

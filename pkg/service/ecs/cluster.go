@@ -48,7 +48,13 @@ func (fn *DescribeClusters) New(name string, config interface{}) ([]api.Request,
 				innerErr = err
 				return false
 			}
-			return api.SendRecords(ctx, ch, name, &DescribeClustersOutput{describeClustersOutput})
+
+			if err := api.SendRecords(ctx, ch, name, &DescribeClustersOutput{describeClustersOutput}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
 
 		return api.FirstError(outerErr, innerErr)

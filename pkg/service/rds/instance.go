@@ -36,9 +36,18 @@ func (fn *DescribeDBInstances) New(name string, config interface{}) ([]api.Reque
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeDBInstancesPagesWithContext(ctx, &input, func(output *rds.DescribeDBInstancesOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeDBInstancesOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeDBInstancesPagesWithContext(ctx, &input, func(output *rds.DescribeDBInstancesOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeDBInstancesOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

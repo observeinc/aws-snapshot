@@ -36,9 +36,18 @@ func (fn *DescribeNatGateways) New(name string, config interface{}) ([]api.Reque
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeNatGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeNatGatewaysOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeNatGatewaysOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeNatGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeNatGatewaysOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeNatGatewaysOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

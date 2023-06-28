@@ -52,7 +52,8 @@ func (fn *DescribeReplicationConfigurations) New(name string, config interface{}
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

@@ -36,9 +36,18 @@ func (fn *DescribeReplicationGroups) New(name string, config interface{}) ([]api
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeReplicationGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeReplicationGroupsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeReplicationGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeReplicationGroupsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

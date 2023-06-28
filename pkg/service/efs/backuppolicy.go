@@ -54,7 +54,8 @@ func (fn *DescribeBackupPolicy) New(name string, config interface{}) ([]api.Requ
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeBackupPolicyOutput{FilesystemID: fs.FileSystemId, DescribeBackupPolicyOutput: output}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeBackupPolicyOutput{FilesystemID: fs.FileSystemId, DescribeBackupPolicyOutput: output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

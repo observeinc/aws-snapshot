@@ -53,17 +53,33 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeTargetGroupsPagesWithContext(ctx, &input, func(output *elbv2.DescribeTargetGroupsOutput, last bool) bool {
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeTargetGroupsPagesWithContext(ctx, &input, func(output *elbv2.DescribeTargetGroupsOutput, last bool) bool {
 			var describeTagsInput elbv2.DescribeTagsInput
 			for _, targetGroup := range output.TargetGroups {
 				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, targetGroup.TargetGroupArn)
 			}
-			describeTagsOutput, _ := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
-			return api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
+
+			describeTagsOutput, err := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+			if err != nil {
+				innerErr = err
+				return false
+			}
+
+			if err := api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
 				DescribeTargetGroupsOutput: output,
 				DescribeTagsOutput:         describeTagsOutput,
-			})
+			}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

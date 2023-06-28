@@ -48,7 +48,8 @@ func (fn *DescribeLifecycleConfiguration) New(name string, config interface{}) (
 					return false
 				}
 
-				if !api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output}) {
+				if err := api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

@@ -53,8 +53,9 @@ func (fn *DescribeNodegroup) New(name string, config interface{}) ([]api.Request
 							innerErr = err
 							return false
 						}
-						ok := api.SendRecords(ctx, ch, name, &DescribeNodegroupOutput{describeNodegroupOutput})
-						if !ok {
+
+						if err := api.SendRecords(ctx, ch, name, &DescribeNodegroupOutput{describeNodegroupOutput}); err != nil {
+							innerErr = err
 							return false
 						}
 					}

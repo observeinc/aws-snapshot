@@ -53,7 +53,8 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 					innerErr = err
 					return false
 				}
-				if !api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}) {
+				if err := api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}); err != nil {
+					innerErr = err
 					return false
 				}
 			}

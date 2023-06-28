@@ -166,7 +166,7 @@ type Source interface {
 	Records() []*Record
 }
 
-func SendRecords(ctx context.Context, ch chan<- *Record, name string, s Source) bool {
+func SendRecords(ctx context.Context, ch chan<- *Record, name string, s Source) error {
 	ts := time.Now().UnixNano()
 
 	for _, r := range s.Records() {
@@ -175,10 +175,11 @@ func SendRecords(ctx context.Context, ch chan<- *Record, name string, s Source) 
 		select {
 		case ch <- r:
 		case <-ctx.Done():
-			return false
+			return ctx.Err()
 		}
 	}
-	return true
+
+	return nil
 }
 
 func FirstError(errors ...error) error {

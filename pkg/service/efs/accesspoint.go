@@ -36,9 +36,18 @@ func (fn *DescribeAccessPoints) New(name string, config interface{}) ([]api.Requ
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		return fn.DescribeAccessPointsPagesWithContext(ctx, &input, func(output *efs.DescribeAccessPointsOutput, last bool) bool {
-			return api.SendRecords(ctx, ch, name, &DescribeAccessPointsOutput{output})
+		var outerErr, innerErr error
+
+		outerErr = fn.DescribeAccessPointsPagesWithContext(ctx, &input, func(output *efs.DescribeAccessPointsOutput, last bool) bool {
+			if err := api.SendRecords(ctx, ch, name, &DescribeAccessPointsOutput{output}); err != nil {
+				innerErr = err
+				return false
+			}
+
+			return true
 		})
+
+		return api.FirstError(outerErr, innerErr)
 	}
 
 	return []api.Request{call}, nil

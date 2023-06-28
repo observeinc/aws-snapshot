@@ -42,7 +42,11 @@ func (fn *ListApiDestinations) New(name string, config interface{}) ([]api.Reque
 			if err != nil {
 				return fmt.Errorf("failed to list api destinations: %w", err)
 			}
-			api.SendRecords(ctx, ch, name, &ListApiDestinationsOutput{output})
+
+			if err := api.SendRecords(ctx, ch, name, &ListApiDestinationsOutput{output}); err != nil {
+				return err
+			}
+
 			if output.NextToken == nil {
 				break
 			}

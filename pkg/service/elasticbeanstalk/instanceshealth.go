@@ -65,8 +65,8 @@ func (fn *DescribeInstancesHealth) New(name string, config interface{}) ([]api.R
 				environmentId:                 env.EnvironmentId,
 			}
 
-			if !api.SendRecords(ctx, ch, name, source) {
-				break
+			if err := api.SendRecords(ctx, ch, name, source); err != nil {
+				return err
 			}
 		}
 
