@@ -1,3 +1,18 @@
+# [0.2.0](https://github.com/observeinc/aws-snapshot/compare/v0.1.7...v0.2.0) (2023-06-28)
+
+
+### Bug Fixes
+
+* accumulate errors ([15c6255](https://github.com/observeinc/aws-snapshot/commit/15c6255b079b057bb4ebe072890c8f0949a4cacf))
+* Always pay attention to return val of api.SendRecords ([#12](https://github.com/observeinc/aws-snapshot/issues/12)) ([b0d97c4](https://github.com/observeinc/aws-snapshot/commit/b0d97c4e4aa12a720b1ba1771676aecc1eb299e8))
+
+
+### Features
+
+* add ability to limit number of records ([e1c4374](https://github.com/observeinc/aws-snapshot/commit/e1c43747b5099529f432a7ff0ed3bf968e370932))
+
+
+
 ## [0.1.7](https://github.com/observeinc/aws-snapshot/compare/v0.1.6...v0.1.7) (2023-06-21)
 
 
@@ -27,15 +42,6 @@
 ### Bug Fixes
 
 * remove beanstalk environment health call ([#4](https://github.com/observeinc/aws-snapshot/issues/4)) ([5adf242](https://github.com/observeinc/aws-snapshot/commit/5adf2421633a2d2bf80c3ab68f82d21db2f6019a))
-
-
-
-## [0.1.3](https://github.com/observeinc/aws-snapshot/compare/v0.1.2...v0.1.3) (2023-03-02)
-
-
-### Bug Fixes
-
-* don't panic if queue is not found ([#3](https://github.com/observeinc/aws-snapshot/issues/3)) ([d3bbf3c](https://github.com/observeinc/aws-snapshot/commit/d3bbf3c25f88ac9b145c81b77e9d45df5126406f))
 
 
 
