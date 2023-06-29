@@ -61,14 +61,19 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, targetGroup.TargetGroupArn)
 			}
 
-			describeTagsOutput, err := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+			var describeTagsOutput *elbv2.DescribeTagsOutput
+			var err error
 
-			if err != nil {
-				innerErr = err
-				return false
+			if len(describeTagsInput.ResourceArns) > 0 {
+				describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+				if err != nil {
+					innerErr = err
+					return false
+				}
 			}
 
-			if err := api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
+			if err = api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
 				DescribeTargetGroupsOutput: output,
 				DescribeTagsOutput:         describeTagsOutput,
 			}); err != nil {

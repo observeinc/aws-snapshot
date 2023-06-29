@@ -95,14 +95,19 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 				describeTagsInput.LoadBalancerNames = append(describeTagsInput.LoadBalancerNames, loadBalancerDescription.LoadBalancerName)
 			}
 
-			describeTagsOutput, err := fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
+			var describeTagsOutput *elb.DescribeTagsOutput
+			var err error
 
-			if err != nil {
-				innerErr = err
-				return false
+			if len(describeTagsInput.LoadBalancerNames) > 0 {
+				describeTagsOutput, err = fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+				if err != nil {
+					innerErr = err
+					return false
+				}
 			}
 
-			if err := api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
+			if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
 				DescribeLoadBalancersOutput: output,
 				DescribeTagsOutput:          describeTagsOutput,
 			}); err != nil {
@@ -125,14 +130,19 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, loadBalancer.LoadBalancerArn)
 			}
 
-			describeTagsOutput, err := fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+			var describeTagsOutput *elbv2.DescribeTagsOutput
+			var err error
 
-			if err != nil {
-				innerErr = err
-				return false
+			if len(describeTagsInput.ResourceArns) > 0 {
+				describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+
+				if err != nil {
+					innerErr = err
+					return false
+				}
 			}
 
-			if err := api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
+			if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
 				DescribeLoadBalancersOutput: output,
 				DescribeTagsOutput:          describeTagsOutput,
 			}); err != nil {
