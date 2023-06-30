@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/observeinc/aws-snapshot/compare/v0.2.0...v0.2.1) (2023-06-30)
+
+
+### Bug Fixes
+
+* don't try to describe tags on empty lists of resources ([#13](https://github.com/observeinc/aws-snapshot/issues/13)) ([6bcaedc](https://github.com/observeinc/aws-snapshot/commit/6bcaedca9687d92ec12552625df1e761ebf9378f))
+
+
+
 # [0.2.0](https://github.com/observeinc/aws-snapshot/compare/v0.1.7...v0.2.0) (2023-06-28)
 
 
@@ -33,15 +42,6 @@
 
 * add context timeouts to actions ([#7](https://github.com/observeinc/aws-snapshot/issues/7)) ([5cf7b85](https://github.com/observeinc/aws-snapshot/commit/5cf7b85aea9ae1d7dd125ff1ad6809b1d9d9bfd3))
 * prefix errors with action name ([#6](https://github.com/observeinc/aws-snapshot/issues/6)) ([bbccccf](https://github.com/observeinc/aws-snapshot/commit/bbccccf2c2101e40344d3c1a19c0aa8f4a97d3a5))
-
-
-
-## [0.1.4](https://github.com/observeinc/aws-snapshot/compare/v0.1.3...v0.1.4) (2023-03-07)
-
-
-### Bug Fixes
-
-* remove beanstalk environment health call ([#4](https://github.com/observeinc/aws-snapshot/issues/4)) ([5adf242](https://github.com/observeinc/aws-snapshot/commit/5adf2421633a2d2bf80c3ab68f82d21db2f6019a))
 
 
 
