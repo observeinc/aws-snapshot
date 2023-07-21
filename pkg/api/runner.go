@@ -96,7 +96,7 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 
 func (r *Runner) Run(ctx context.Context) error {
 	if r.Logger != nil {
-		Logger = *r.Logger
+		logger = *r.Logger
 	}
 
 	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests, r.RequestTimeout)
