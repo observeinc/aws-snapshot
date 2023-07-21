@@ -63,6 +63,8 @@ func prefixError(name string, reqs []Request) []Request {
 		rq := r
 
 		res = append(res, func(ctx context.Context, ch chan<- *Record) error {
+			logger.Info(fmt.Sprintf("Snapshot: starting %s", name))
+
 			if err := rq(ctx, ch); err != nil {
 				return fmt.Errorf("failed to run %q: %w", name, err)
 			}
