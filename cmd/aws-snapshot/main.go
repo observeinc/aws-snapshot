@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -20,6 +21,7 @@ import (
 	_ "github.com/observeinc/aws-snapshot/pkg/service/all"
 
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/go-logr/stdr"
 )
 
 func loadManifest(filename string, dst *api.Manifest) error {
@@ -73,6 +75,8 @@ func realMain() error {
 		timeout = &t
 	}
 
+	logger := stdr.New(log.New(os.Stderr, "", log.LstdFlags|log.Lshortfile))
+
 	runner := api.Runner{
 		Requests:              reqs,
 		MaxConcurrentRequests: *maxConcurrentRequests,
@@ -89,6 +93,7 @@ func realMain() error {
 			}
 		}),
 		RequestTimeout: timeout,
+		Logger:         &logger,
 	}
 
 	return runner.Run(context.Background())
