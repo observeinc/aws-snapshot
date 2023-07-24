@@ -65,13 +65,13 @@ func prefixError(name string, reqs []Request) []Request {
 
 		res = append(res, func(ctx context.Context, ch chan<- *Record) error {
 			logger := logr.FromContextOrDiscard(ctx)
-			logger.V(6).Log("snapshot start", "action", name)
+			logger.V(6).Info("snapshot start", "action", name)
 
 			if err := rq(ctx, ch); err != nil {
 				return fmt.Errorf("failed to run %q: %w", name, err)
 			}
 
-			logger.V(6).Log("snapshot complete", "action", name)
+			logger.V(6).Info("snapshot complete", "action", name)
 
 			return nil
 		})

@@ -75,6 +75,7 @@ func realMain() error {
 		timeout = &t
 	}
 
+	stdr.SetVerbosity(6)
 	logger := stdr.New(log.New(os.Stderr, "", log.LstdFlags|log.Lshortfile))
 
 	runner := api.Runner{
