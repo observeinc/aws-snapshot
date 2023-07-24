@@ -3,9 +3,13 @@ package api
 import (
 	"context"
 	"time"
+
+	"github.com/go-logr/logr"
 )
 
 const defaultBufferSize = 100
+
+var logger = logr.Discard()
 
 type Runner struct {
 	Requests              []Request
@@ -15,6 +19,7 @@ type Runner struct {
 	MaxRecords            int
 	ConcurrentRecorders   int
 	RequestTimeout        *time.Duration
+	Logger                *logr.Logger
 }
 
 // Pool runs num copies of Recorder.
@@ -90,6 +95,10 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 }
 
 func (r *Runner) Run(ctx context.Context) error {
+	if r.Logger != nil {
+		logger = *r.Logger
+	}
+
 	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests, r.RequestTimeout)
 	recorder := pool(r.Recorder, r.ConcurrentRecorders)
 
