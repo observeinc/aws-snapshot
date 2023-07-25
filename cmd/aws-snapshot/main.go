@@ -39,7 +39,7 @@ func realMain() error {
 		bufferSize            = flag.Int("buffer-size", 100, "Length of buffer for records")
 		manifestFile          = flag.String("manifest-file", "", "Manifest filename")
 		requestTimeout        = flag.String("request-timeout", "", "Timeout per request, default is no timeout")
-		verbose               = flag.Bool("v", false, "Enable verbose logging")
+		verbosity             = flag.Int("v", 0, "Logging verbosity, full debug is 6")
 	)
 
 	flag.Parse()
@@ -76,8 +76,8 @@ func realMain() error {
 		timeout = &t
 	}
 
-	if *verbose {
-		stdr.SetVerbosity(6)
+	if *verbosity > 0 {
+		stdr.SetVerbosity(*verbosity)
 	}
 
 	logger := stdr.New(log.New(os.Stderr, "", log.LstdFlags|log.Lshortfile))

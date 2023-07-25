@@ -65,9 +65,9 @@ func prefixError(name string, reqs []Request) []Request {
 
 		res = append(res, func(ctx context.Context, ch chan<- *Record) (err error) {
 			logger := logr.FromContextOrDiscard(ctx)
-			logger.V(6).Info("snapshot start", "action", name)
+			logger.V(6).Info("request start", "action", name)
 			defer func() {
-				logger.V(6).Info("snapshot complete", "action", name, "error", err)
+				logger.V(6).Info("request complete", "action", name, "error", err)
 			}()
 
 			if err = rq(ctx, ch); err != nil {
