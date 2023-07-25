@@ -1,3 +1,17 @@
+# [0.3.0](https://github.com/observeinc/aws-snapshot/compare/v0.2.1...v0.3.0) (2023-07-25)
+
+
+### Bug Fixes
+
+* logger in context, not as a global variable ([#15](https://github.com/observeinc/aws-snapshot/issues/15)) ([8760865](https://github.com/observeinc/aws-snapshot/commit/876086585159cdf86e006ba9eb75e5ab1ec25228))
+
+
+### Features
+
+* add logging ([#14](https://github.com/observeinc/aws-snapshot/issues/14)) ([767ef4e](https://github.com/observeinc/aws-snapshot/commit/767ef4e0408e159210d6367aadee525968417415))
+
+
+
 ## [0.2.1](https://github.com/observeinc/aws-snapshot/compare/v0.2.0...v0.2.1) (2023-06-30)
 
 
@@ -32,16 +46,6 @@
 
 
 ## [0.1.6](https://github.com/observeinc/aws-snapshot/compare/v0.1.5...v0.1.6) (2023-05-26)
-
-
-
-## [0.1.5](https://github.com/observeinc/aws-snapshot/compare/v0.1.4...v0.1.5) (2023-05-26)
-
-
-### Bug Fixes
-
-* add context timeouts to actions ([#7](https://github.com/observeinc/aws-snapshot/issues/7)) ([5cf7b85](https://github.com/observeinc/aws-snapshot/commit/5cf7b85aea9ae1d7dd125ff1ad6809b1d9d9bfd3))
-* prefix errors with action name ([#6](https://github.com/observeinc/aws-snapshot/issues/6)) ([bbccccf](https://github.com/observeinc/aws-snapshot/commit/bbccccf2c2101e40344d3c1a19c0aa8f4a97d3a5))
 
 
 
