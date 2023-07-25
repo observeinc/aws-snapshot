@@ -11,6 +11,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/go-logr/logr"
 )
 
 // Service (e.g. RDS, IAM, S3) provides the means of creating an Endpoint
@@ -63,11 +64,16 @@ func prefixError(name string, reqs []Request) []Request {
 		rq := r
 
 		res = append(res, func(ctx context.Context, ch chan<- *Record) error {
-			logger.Info(fmt.Sprintf("Snapshot: starting %s", name))
+			logger := logr.FromContextOrDiscard(ctx)
+			logger.V(6).Info("request start", "action", name)
 
 			if err := rq(ctx, ch); err != nil {
+				logger.V(6).Info("request complete", "action", name, "error", err.Error())
+
 				return fmt.Errorf("failed to run %q: %w", name, err)
 			}
+
+			logger.V(6).Info("request complete", "action", name)
 
 			return nil
 		})

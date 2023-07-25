@@ -9,8 +9,6 @@ import (
 
 const defaultBufferSize = 100
 
-var logger = logr.Discard()
-
 type Runner struct {
 	Requests              []Request
 	Recorder              Recorder
@@ -96,7 +94,7 @@ func withSemaphore(fns []Request, maxConcurrency int, requestTimeout *time.Durat
 
 func (r *Runner) Run(ctx context.Context) error {
 	if r.Logger != nil {
-		logger = *r.Logger
+		ctx = logr.NewContext(ctx, *r.Logger)
 	}
 
 	requestFunc := withSemaphore(r.Requests, r.MaxConcurrentRequests, r.RequestTimeout)
