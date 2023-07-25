@@ -63,18 +63,19 @@ func prefixError(name string, reqs []Request) []Request {
 	for _, r := range reqs {
 		rq := r
 
-		res = append(res, func(ctx context.Context, ch chan<- *Record) (err error) {
+		res = append(res, func(ctx context.Context, ch chan<- *Record) error {
 			logger := logr.FromContextOrDiscard(ctx)
 			logger.V(6).Info("request start", "action", name)
-			defer func() {
-				logger.V(6).Info("request complete", "action", name, "error", err)
-			}()
 
-			if err = rq(ctx, ch); err != nil {
-				err = fmt.Errorf("failed to run %q: %w", name, err)
+			if err := rq(ctx, ch); err != nil {
+				logger.V(6).Info("request complete", "action", name, "error", err.Error())
+
+				return fmt.Errorf("failed to run %q: %w", name, err)
 			}
 
-			return
+			logger.V(6).Info("request complete", "action", name)
+
+			return nil
 		})
 	}
 
