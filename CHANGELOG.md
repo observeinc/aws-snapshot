@@ -1,3 +1,12 @@
+## [0.3.1](https://github.com/observeinc/aws-snapshot/compare/v0.3.0...v0.3.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* don't accumulate errors ([#16](https://github.com/observeinc/aws-snapshot/issues/16)) ([c3c8b5c](https://github.com/observeinc/aws-snapshot/commit/c3c8b5ce6c6b053272ba1dcb730f97919f428ad5))
+
+
+
 # [0.3.0](https://github.com/observeinc/aws-snapshot/compare/v0.2.1...v0.3.0) (2023-07-25)
 
 
@@ -42,10 +51,6 @@
 ### Bug Fixes
 
 * propagate errors instead of panicking ([#8](https://github.com/observeinc/aws-snapshot/issues/8)) ([03b5d08](https://github.com/observeinc/aws-snapshot/commit/03b5d0894659ce6046b4c599b480ed0a1fdc715e))
-
-
-
-## [0.1.6](https://github.com/observeinc/aws-snapshot/compare/v0.1.5...v0.1.6) (2023-05-26)
 
 
 
