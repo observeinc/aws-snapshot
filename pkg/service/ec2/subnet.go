@@ -37,15 +37,23 @@ func (fn *DescribeSubnets) New(name string, config interface{}) ([]api.Request, 
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countSubnetsOutput int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeSubnetsPagesWithContext(ctx, &input, func(output *ec2.DescribeSubnetsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeSubnetsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countSubnetsOutput += len(output.Subnets)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeSubnetsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
+
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSubnetsOutput})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

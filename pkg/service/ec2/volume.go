@@ -37,16 +37,22 @@ func (fn *DescribeVolumes) New(name string, config interface{}) ([]api.Request, 
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var describeVolumesCount int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeVolumesPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				describeVolumesCount += len(output.Volumes)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeVolumesCount})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 
@@ -82,15 +88,23 @@ func (fn *DescribeVolumeStatus) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var volumeStatusCount int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		outerErr = fn.DescribeVolumeStatusPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumeStatusOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				volumeStatusCount += len(output.VolumeStatuses)
+			} else {
+				// Creating Nested Records happens in DescribeVolumeStatusOutput.Records
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{volumeStatusCount})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

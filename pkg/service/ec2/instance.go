@@ -52,27 +52,41 @@ type DescribeInstances struct {
 	API
 }
 
-var _ api.RequestBuilder = &DescribeInstances{}
-
 // New implements api.RequestBuilder
 func (fn *DescribeInstances) New(name string, config interface{}) ([]api.Request, error) {
 	var input ec2.DescribeInstancesInput
+	var instanceCount int
+
 	if err := api.DecodeConfig(config, &input); err != nil {
 		return nil, err
 	}
-
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
+		// This fucntion call happens for each page
 		outerErr = fn.DescribeInstancesPagesWithContext(ctx, &input, func(output *ec2.DescribeInstancesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeInstancesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			// Loop through each reservation, instance
+			if r.Stats {
+				for _, reservation := range output.Reservations {
+					for _, instance := range reservation.Instances {
+						// Is this a valid instance? Spot instances have an InstanceLifecycle of "spot".
+						// Similarly, Scheduled instances have an InstanceLifecycle of "scheduled".
+						if instance.InstanceLifecycle == nil {
+							instanceCount++
+						}
+					}
+				}
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeInstancesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{instanceCount})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

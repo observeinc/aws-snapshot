@@ -37,15 +37,22 @@ func (fn *DescribeNatGateways) New(name string, config interface{}) ([]api.Reque
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var gatewayCount int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeNatGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeNatGatewaysOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeNatGatewaysOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				gatewayCount += len(output.NatGateways)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeNatGatewaysOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{gatewayCount})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

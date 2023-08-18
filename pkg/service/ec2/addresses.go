@@ -34,14 +34,26 @@ func (fn *DescribeAddresses) New(name string, config interface{}) ([]api.Request
 	if err := api.DecodeConfig(config, &input); err != nil {
 		return nil, err
 	}
-
+	//fmt.Println("Doing EC2 Stats %d", r.Stats )
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
-		output, err := fn.DescribeAddressesWithContext(ctx, &input)
-		if err != nil {
-			return err
-		}
+		r, ok := ctx.Value("runner_config").(api.Runner)
 
-		return api.SendRecords(ctx, ch, name, &DescribeAddressesOutput{output})
+		if !ok {
+			return nil
+		} else if ok && r.Stats {
+			output, err := fn.DescribeAddressesWithContext(ctx, &input)
+			if err != nil {
+				return err
+			}
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{len(output.Addresses)})
+		} else {
+			output, err := fn.DescribeAddressesWithContext(ctx, &input)
+			if err != nil {
+				return err
+			}
+
+			return api.SendRecords(ctx, ch, name, &DescribeAddressesOutput{output})
+		}
 	}
 
 	return []api.Request{call}, nil

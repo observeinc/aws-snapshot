@@ -34,19 +34,22 @@ func (fn *DescribeInternetGateways) New(name string, config interface{}) ([]api.
 	if err := api.DecodeConfig(config, &input); err != nil {
 		return nil, err
 	}
-
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countInternetGateways int
+		r, _:= ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeInternetGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeInternetGatewaysOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeInternetGatewaysOutput{output}); err != nil {
-				innerErr = err
+			if r.Stats {
+				countInternetGateways += len(output.InternetGateways)
+			} else if innerErr = api.SendRecords(ctx, ch, name, &DescribeInternetGatewaysOutput{output}); innerErr != nil {
 				return false
 			}
-
 			return true
 		})
 
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countInternetGateways})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

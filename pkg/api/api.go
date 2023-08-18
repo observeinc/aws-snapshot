@@ -27,6 +27,17 @@ func (s ServiceFunc) New(p client.ConfigProvider, opts ...*aws.Config) Endpoint 
 	return s(p, opts...)
 }
 
+type CountRecords struct {
+	Count int `json:Count`
+}
+
+func (o *CountRecords) Records() (records []*Record) {
+	records = append(records, &Record{
+		Data: o,
+	})
+	return
+}
+
 // Record is submitted as an observation.
 type Record struct {
 	Timestamp *int64      `json:"timestamp,omitempty"` // Optional nanosecond timestamp.
