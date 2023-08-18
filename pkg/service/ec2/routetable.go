@@ -22,6 +22,17 @@ func (o *DescribeRouteTablesOutput) Records() (records []*api.Record) {
 	return
 }
 
+type CountRouteTablesOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountRouteTablesOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 type DescribeRouteTables struct {
 	API
 }
@@ -37,16 +48,22 @@ func (fn *DescribeRouteTables) New(name string, config interface{}) ([]api.Reque
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countRouteTables int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeRouteTablesPagesWithContext(ctx, &input, func(output *ec2.DescribeRouteTablesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeRouteTablesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countRouteTables += len(output.RouteTables)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeRouteTablesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountRouteTablesOutput{countRouteTables})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

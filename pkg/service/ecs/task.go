@@ -36,7 +36,7 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		// r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
 			for _, clusterArn := range output.ClusterArns {
 				// we can now describe up to 10 tasks per nested page
@@ -78,6 +78,7 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 		})
 
 		return api.FirstError(outerErr, innerErr)
+
 	}
 
 	return []api.Request{call}, nil

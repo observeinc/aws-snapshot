@@ -18,6 +18,7 @@ type Runner struct {
 	ConcurrentRecorders   int
 	RequestTimeout        *time.Duration
 	Logger                *logr.Logger
+	Stats                 bool
 }
 
 // Pool runs num copies of Recorder.
@@ -103,6 +104,7 @@ func (r *Runner) Run(ctx context.Context) error {
 	}
 
 	ctx, cancelFunc := context.WithCancel(ctx)
+	ctx = context.WithValue(ctx , "runner_config", *r)
 	defer cancelFunc()
 
 	var (

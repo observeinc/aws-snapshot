@@ -22,6 +22,18 @@ func (o *DescribeFlowLogsOutput) Records() (records []*api.Record) {
 	return
 }
 
+
+type CountFlowLogs struct {
+	Count int `json:Count`
+}
+
+func (o *CountFlowLogs) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 type DescribeFlowLogs struct {
 	API
 }
@@ -37,15 +49,22 @@ func (fn *DescribeFlowLogs) New(name string, config interface{}) ([]api.Request,
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countFlowLogsOutput int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFlowLogsPagesWithContext(ctx, &input, func(output *ec2.DescribeFlowLogsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeFlowLogsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countFlowLogsOutput += len(output.FlowLogs)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeFlowLogsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountFlowLogs{countFlowLogsOutput})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

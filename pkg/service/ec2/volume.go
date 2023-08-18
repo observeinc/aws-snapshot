@@ -26,6 +26,17 @@ type DescribeVolumes struct {
 	API
 }
 
+type CountVolumesOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountVolumesOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 var _ api.RequestBuilder = &DescribeVolumes{}
 
 // New implements api.RequestBuilder
@@ -37,16 +48,22 @@ func (fn *DescribeVolumes) New(name string, config interface{}) ([]api.Request, 
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var describeVolumesCount int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeVolumesPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				describeVolumesCount += len(output.Volumes)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeVolumesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountVolumesOutput{describeVolumesCount})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 
@@ -73,6 +90,17 @@ type DescribeVolumeStatus struct {
 
 var _ api.RequestBuilder = &DescribeVolumeStatus{}
 
+type CountVolumesStatusOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountVolumesStatusOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 // New implements api.RequestBuilder
 func (fn *DescribeVolumeStatus) New(name string, config interface{}) ([]api.Request, error) {
 	var input ec2.DescribeVolumeStatusInput
@@ -82,15 +110,23 @@ func (fn *DescribeVolumeStatus) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var volumeStatusCount int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		outerErr = fn.DescribeVolumeStatusPagesWithContext(ctx, &input, func(output *ec2.DescribeVolumeStatusOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				volumeStatusCount += len(output.VolumeStatuses)
+			} else {
+				// Creating Nested Records happens in DescribeVolumeStatusOutput.Records
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeVolumeStatusOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountVolumesStatusOutput{volumeStatusCount})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

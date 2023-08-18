@@ -22,6 +22,17 @@ func (o *DescribeVpcsOutput) Records() (records []*api.Record) {
 	return
 }
 
+type CountVpcsOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountVpcsOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 type DescribeVpcs struct {
 	API
 }
@@ -37,16 +48,23 @@ func (fn *DescribeVpcs) New(name string, config interface{}) ([]api.Request, err
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countVpcsOutput int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeVpcsPagesWithContext(ctx, &input, func(output *ec2.DescribeVpcsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeVpcsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countVpcsOutput += len(output.Vpcs)
+			} else {
+				if innerErr := api.SendRecords(ctx, ch, name, &DescribeVpcsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountVpcsOutput{countVpcsOutput})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

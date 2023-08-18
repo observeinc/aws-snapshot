@@ -22,6 +22,17 @@ func (o *DescribeNetworkInterfacesOutput) Records() (records []*api.Record) {
 	return
 }
 
+type CountNetworkInterfacesOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountNetworkInterfacesOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 type DescribeNetworkInterfaces struct {
 	API
 }
@@ -37,16 +48,23 @@ func (fn *DescribeNetworkInterfaces) New(name string, config interface{}) ([]api
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countNetworkInterfaces int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeNetworkInterfacesPagesWithContext(ctx, &input, func(output *ec2.DescribeNetworkInterfacesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeNetworkInterfacesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countNetworkInterfaces += len(output.NetworkInterfaces)
+			} else {
+				if innerErr := api.SendRecords(ctx, ch, name, &DescribeNetworkInterfacesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountNetworkInterfacesOutput{countNetworkInterfaces})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

@@ -40,6 +40,7 @@ func realMain() error {
 		manifestFile          = flag.String("manifest-file", "", "Manifest filename")
 		requestTimeout        = flag.String("request-timeout", "", "Timeout per request, default is no timeout")
 		verbosity             = flag.Int("v", 0, "Logging verbosity, full debug is 6")
+		stats                 = flag.Bool("s", false, "Counts Only")
 	)
 
 	flag.Parse()
@@ -99,6 +100,7 @@ func realMain() error {
 		}),
 		RequestTimeout: timeout,
 		Logger:         &logger,
+		Stats:          *stats,
 	}
 
 	return runner.Run(context.Background())

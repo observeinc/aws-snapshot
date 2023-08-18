@@ -22,6 +22,17 @@ func (o *DescribeSecurityGroupsOutput) Records() (records []*api.Record) {
 	return
 }
 
+type CountSecurityGroupsOutput struct {
+	Count int `json:Count`
+}
+
+func (o *CountSecurityGroupsOutput) Records() (records []*api.Record) {
+	records = append(records, &api.Record{
+		Data: o,
+	})
+	return
+}
+
 type DescribeSecurityGroups struct {
 	API
 }
@@ -38,15 +49,21 @@ func (fn *DescribeSecurityGroups) New(name string, config interface{}) ([]api.Re
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
 
+		groupCount:=0
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeSecurityGroupsPagesWithContext(ctx, &input, func(output *ec2.DescribeSecurityGroupsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeSecurityGroupsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				groupCount += len(output.SecurityGroups)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeSecurityGroupsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
-
+		if outerErr != nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &CountSecurityGroupsOutput{groupCount})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 
