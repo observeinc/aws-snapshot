@@ -37,34 +37,41 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var keyCount int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListKeysPagesWithContext(ctx, &listKeysInput, func(output *kms.ListKeysOutput, last bool) bool {
-			for _, entry := range output.Keys {
-				output, err := fn.DescribeKeyWithContext(ctx, &kms.DescribeKeyInput{
-					KeyId: entry.KeyId,
-				})
+			if r.Stats {
+				keyCount = +len(output.Keys)
+			} else {
+				for _, entry := range output.Keys {
+					output, err := fn.DescribeKeyWithContext(ctx, &kms.DescribeKeyInput{
+						KeyId: entry.KeyId,
+					})
 
-				// According to https://github.com/awsdocs/aws-kms-developer-guide/blob/master/doc_source/key-policies.md#using-key-policies-in-aws-kms
-				// "Unless the key policy explicitly allows it, you cannot use IAM policies to allow access to a KMS key."
-				//
-				// This means that AccessDeniedException errors like https://observe.atlassian.net/browse/OB-10958 should happen
-				// for users that use KMS and set a more restrictive key policy.
-				if aerr, ok := err.(awserr.Error); ok && aerr.Code() == "AccessDeniedException" {
-					continue
-				}
-				if err != nil {
-					innerErr = err
-					return false
-				}
+					// According to https://github.com/awsdocs/aws-kms-developer-guide/blob/master/doc_source/key-policies.md#using-key-policies-in-aws-kms
+					// "Unless the key policy explicitly allows it, you cannot use IAM policies to allow access to a KMS key."
+					//
+					// This means that AccessDeniedException errors like https://observe.atlassian.net/browse/OB-10958 should happen
+					// for users that use KMS and set a more restrictive key policy.
+					if aerr, ok := err.(awserr.Error); ok && aerr.Code() == "AccessDeniedException" {
+						continue
+					}
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				if err := api.SendRecords(ctx, ch, name, &DescribeKeyOutput{output}); err != nil {
-					innerErr = err
-					return false
+					if innerErr = api.SendRecords(ctx, ch, name, &DescribeKeyOutput{output}); innerErr != nil {
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{keyCount})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

@@ -44,25 +44,34 @@ func (fn *DescribeStreams) New(name string, config interface{}) ([]api.Request, 
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countStreams int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListStreamsPagesWithContext(ctx, &listStreamsInput, func(output *kinesis.ListStreamsOutput, last bool) bool {
-			for _, streamName := range output.StreamNames {
-				describeStreamInput.StreamName = streamName
-				err := fn.DescribeStreamPagesWithContext(ctx, &describeStreamInput, func(output *kinesis.DescribeStreamOutput, last bool) bool {
-					if err := api.SendRecords(ctx, ch, name, &DescribeStreamOutput{output}); err != nil {
-						innerErr = err
+			if r.Stats {
+				countStreams += len(output.StreamNames)
+			} else {
+				for _, streamName := range output.StreamNames {
+					describeStreamInput.StreamName = streamName
+					err := fn.DescribeStreamPagesWithContext(ctx, &describeStreamInput, func(output *kinesis.DescribeStreamOutput, last bool) bool {
+						if innerErr = api.SendRecords(ctx, ch, name, &DescribeStreamOutput{output}); innerErr != nil {
+							return false
+						}
+
+						return true
+					})
+
+					if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 						return false
 					}
-
-					return true
-				})
-
-				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
-					return false
 				}
 			}
 			return true
 		})
+
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStreams})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

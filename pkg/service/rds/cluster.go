@@ -37,16 +37,24 @@ func (fn *DescribeDBClusters) New(name string, config interface{}) ([]api.Reques
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countDBClusters int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeDBClustersPagesWithContext(ctx, &input, func(output *rds.DescribeDBClustersOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeDBClustersOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countDBClusters += len(output.DBClusters)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeDBClustersOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
 
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countDBClusters})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

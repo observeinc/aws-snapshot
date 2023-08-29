@@ -37,16 +37,23 @@ func (fn *DescribeDBInstances) New(name string, config interface{}) ([]api.Reque
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countDBInstances int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		outerErr = fn.DescribeDBInstancesPagesWithContext(ctx, &input, func(output *rds.DescribeDBInstancesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeDBInstancesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countDBInstances += len(output.DBInstances)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeDBInstancesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countDBInstances})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

@@ -39,7 +39,9 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 
 		var lastPage bool
+		var deliveryStreamCounts int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		for !lastPage {
 			listOutput, err := fn.ListDeliveryStreamsWithContext(ctx, &input)
 			if err != nil {
@@ -49,26 +51,39 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 				break
 			}
 
-			for _, deliveryStreamName := range listOutput.DeliveryStreamNames {
-				describeDeliveryStreamOutput, err := fn.DescribeDeliveryStreamWithContext(ctx, &firehose.DescribeDeliveryStreamInput{
-					DeliveryStreamName: deliveryStreamName,
-				})
-				if err != nil {
-					return fmt.Errorf("failed to describe stream %q: %w", *deliveryStreamName, err)
-				}
+			if r.Stats {
+				deliveryStreamCounts += len(listOutput.DeliveryStreamNames)
 
-				if err := api.SendRecords(ctx, ch, name, &DescribeDeliveryStreamOutput{describeDeliveryStreamOutput}); err != nil {
-					return err
-				}
+				} else {
 
-				input.SetExclusiveStartDeliveryStreamName(*deliveryStreamName)
+				for _, deliveryStreamName := range listOutput.DeliveryStreamNames {
+					describeDeliveryStreamOutput, err := fn.DescribeDeliveryStreamWithContext(ctx, &firehose.DescribeDeliveryStreamInput{
+						DeliveryStreamName: deliveryStreamName,
+					})
+					if err != nil {
+						return fmt.Errorf("failed to describe stream %q: %w", *deliveryStreamName, err)
+					}
+
+					if err := api.SendRecords(ctx, ch, name, &DescribeDeliveryStreamOutput{describeDeliveryStreamOutput}); err != nil {
+						return err
+					}
+
+					input.SetExclusiveStartDeliveryStreamName(*deliveryStreamName)
+				}
 			}
+
 
 			if listOutput.HasMoreDeliveryStreams != nil {
 				lastPage = !(*listOutput.HasMoreDeliveryStreams)
 			}
 		}
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{deliveryStreamCounts})
+			if innerErr != nil {
+				return innerErr
+			}
 
+		}
 		return nil
 	}
 
