@@ -38,29 +38,36 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countQueues int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListQueuesPagesWithContext(ctx, &listQueuesInput, func(output *sqs.ListQueuesOutput, last bool) bool {
-			for _, queueURL := range output.QueueUrls {
-				output, err := fn.GetQueueAttributesWithContext(ctx, &sqs.GetQueueAttributesInput{
-					QueueUrl:       queueURL,
-					AttributeNames: []*string{aws.String("All")},
-				})
-				if err != nil {
-					if ae, ok := err.(awserr.Error); ok && ae.Code() == sqs.ErrCodeQueueDoesNotExist {
-						continue
-					}
+			if r.Stats {
+				countQueues += len(output.QueueUrls)
+			} else {
+				for _, queueURL := range output.QueueUrls {
+					output, err := fn.GetQueueAttributesWithContext(ctx, &sqs.GetQueueAttributesInput{
+						QueueUrl:       queueURL,
+						AttributeNames: []*string{aws.String("All")},
+					})
+					if err != nil {
+						if ae, ok := err.(awserr.Error); ok && ae.Code() == sqs.ErrCodeQueueDoesNotExist {
+							continue
+						}
 
-					innerErr = err
-					return false
-				}
-				if err := api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}); err != nil {
-					innerErr = err
-					return false
+						innerErr = err
+						return false
+					}
+					if innerErr = api.SendRecords(ctx, ch, name, &GetQueueAttributesOutput{GetQueueAttributesOutput: output}); innerErr != nil {
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countQueues})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

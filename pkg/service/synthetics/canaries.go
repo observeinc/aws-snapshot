@@ -38,15 +38,23 @@ func (fn *DescribeCanaries) New(name string, config interface{}) ([]api.Request,
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countSynthetics int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeCanariesPagesWithContext(ctx, &input, func(output *synthetics.DescribeCanariesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeCanariesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countSynthetics += len(output.Canaries)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeCanariesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSynthetics})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

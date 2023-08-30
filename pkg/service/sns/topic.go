@@ -38,8 +38,13 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countTopics int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListTopicsPagesWithContext(ctx, &listTopicsInput, func(output *sns.ListTopicsOutput, last bool) bool {
+			if r.Stats {
+				countTopics += len(output.Topics)
+			} else { 
 			for _, topic := range output.Topics {
 				if topic.TopicArn == nil {
 					continue
@@ -50,17 +55,19 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 					innerErr = fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err)
 					return false
 				}
-				if err := api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
+				if innerErr = api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
 					topicArn:                 topic.TopicArn,
 					GetTopicAttributesOutput: output,
-				}); err != nil {
-					innerErr = err
+				}); innerErr != nil {
 					return false
 				}
 			}
+		}
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countTopics})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

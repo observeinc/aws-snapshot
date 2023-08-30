@@ -38,16 +38,24 @@ func (fn *ListSecrets) New(name string, config interface{}) ([]api.Request, erro
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countSecrets int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListSecretsPagesWithContext(ctx, &listSecretsInput, func(output *secretsmanager.ListSecretsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &ListSecretsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countSecrets += len(output.SecretList)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &ListSecretsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
 
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSecrets})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

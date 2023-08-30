@@ -40,38 +40,46 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countSubscriptions int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListSubscriptionsPagesWithContext(ctx, &listSubscriptionsInput, func(output *sns.ListSubscriptionsOutput, last bool) bool {
-			for _, subscription := range output.Subscriptions {
-				if subscription.SubscriptionArn == nil {
-					continue
-				}
+			if r.Stats {
+				countSubscriptions += len(output.Subscriptions)
 
-				// sometimes we get an invalid ARN due to pending confirmation
-				if _, err := arn.Parse(*subscription.SubscriptionArn); err != nil {
-					continue
-				}
+			} else {
+				for _, subscription := range output.Subscriptions {
+					if subscription.SubscriptionArn == nil {
+						continue
+					}
 
-				output, err := fn.GetSubscriptionAttributesWithContext(ctx, &sns.GetSubscriptionAttributesInput{SubscriptionArn: subscription.SubscriptionArn})
-				if aerr, ok := err.(awserr.Error); ok && aerr.Code() == sns.ErrCodeNotFoundException {
-					continue
-				}
+					// sometimes we get an invalid ARN due to pending confirmation
+					if _, err := arn.Parse(*subscription.SubscriptionArn); err != nil {
+						continue
+					}
 
-				if err != nil {
-					innerErr = fmt.Errorf("failed to process %s: %w", *subscription.SubscriptionArn, err)
-					return false
-				}
-				if err := api.SendRecords(ctx, ch, name, &GetSubscriptionAttributesOutput{
-					subscriptionArn:                 subscription.SubscriptionArn,
-					GetSubscriptionAttributesOutput: output,
-				}); err != nil {
-					innerErr = err
-					return false
+					output, err := fn.GetSubscriptionAttributesWithContext(ctx, &sns.GetSubscriptionAttributesInput{SubscriptionArn: subscription.SubscriptionArn})
+					if aerr, ok := err.(awserr.Error); ok && aerr.Code() == sns.ErrCodeNotFoundException {
+						continue
+					}
+
+					if err != nil {
+						innerErr = fmt.Errorf("failed to process %s: %w", *subscription.SubscriptionArn, err)
+						return false
+					}
+					if innerErr := api.SendRecords(ctx, ch, name, &GetSubscriptionAttributesOutput{
+						subscriptionArn:                 subscription.SubscriptionArn,
+						GetSubscriptionAttributesOutput: output,
+					}); innerErr != nil {
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSubscriptions})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 
