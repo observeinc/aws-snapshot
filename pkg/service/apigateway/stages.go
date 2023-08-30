@@ -51,33 +51,39 @@ func (fn *GetStages) New(name string, config interface{}) ([]api.Request, error)
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var innerErr, outerErr error
-
+		var countStages int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
-			for _, restApi := range output.Items {
-				stagesInput := &apigateway.GetStagesInput{
-					RestApiId: restApi.Id,
-				}
+			if r.Stats {
+				countStages += len(output.Items)
+			} else {
+				for _, restApi := range output.Items {
+					stagesInput := &apigateway.GetStagesInput{
+						RestApiId: restApi.Id,
+					}
 
-				stagesOutput, err := fn.GetStagesWithContext(ctx, stagesInput)
-				if err != nil {
-					innerErr = err
-					return false
-				}
+					stagesOutput, err := fn.GetStagesWithContext(ctx, stagesInput)
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				source := &GetStagesOutput{
-					GetStagesOutput: stagesOutput,
-					restApiId:       restApi.Id,
-					restApiName:     restApi.Name,
-				}
+					source := &GetStagesOutput{
+						GetStagesOutput: stagesOutput,
+						restApiId:       restApi.Id,
+						restApiName:     restApi.Name,
+					}
 
-				if err := api.SendRecords(ctx, ch, name, source); err != nil {
-					innerErr = err
-
-					return false
+					if innerErr = api.SendRecords(ctx, ch, name, source); innerErr != nil {
+						return false
+					}
 				}
 			}
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStages})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

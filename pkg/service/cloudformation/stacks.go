@@ -39,18 +39,25 @@ func (fn *DescribeStacks) New(name string, config interface{}) ([]api.Request, e
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countStacks int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		err := fn.DescribeStacksPagesWithContext(ctx, &input, func(output *cloudformation.DescribeStacksOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeStacksOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countStacks += len(output.Stacks)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeStacksOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
 		if aerr, ok := err.(awserr.Error); !ok || aerr.Code() != "AccessDenied" {
 			outerErr = err
+		}
+
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStacks})
 		}
 
 		return api.FirstError(outerErr, innerErr)

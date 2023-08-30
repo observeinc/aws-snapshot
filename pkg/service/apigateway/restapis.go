@@ -37,16 +37,22 @@ func (fn *GetRestApis) New(name string, config interface{}) ([]api.Request, erro
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countRestApis int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &GetRestApisOutput{output}); err != nil {
-				innerErr = err
+			if r.Stats {
+				countRestApis += len(output.Items)
+			} else {
+			if innerErr = api.SendRecords(ctx, ch, name, &GetRestApisOutput{output}); innerErr != nil {
 				return false
 			}
+		}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countRestApis})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

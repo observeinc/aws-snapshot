@@ -38,16 +38,24 @@ func (fn *DescribeAutoScalingGroups) New(name string, config interface{}) ([]api
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countAutoScaleGroups int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeAutoScalingGroupsPagesWithContext(ctx, &input, func(output *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeAutoScalingGroupsOutput{output}); err != nil {
-				innerErr = err
-				return false
+
+			if r.Stats {
+				countAutoScaleGroups += len(output.AutoScalingGroups)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeAutoScalingGroupsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countAutoScaleGroups})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

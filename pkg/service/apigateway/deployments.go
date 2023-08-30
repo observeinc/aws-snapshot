@@ -51,34 +51,42 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var innerErr, outerErr error
+		var countDeployments int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.GetRestApisPagesWithContext(ctx, &input, func(output *apigateway.GetRestApisOutput, last bool) bool {
-			for _, restApi := range output.Items {
-				stagesInput := &apigateway.GetDeploymentsInput{
-					RestApiId: restApi.Id,
-				}
+			if r.Stats {
+				countDeployments += len(output.Items)
+			} else {
+				for _, restApi := range output.Items {
+					stagesInput := &apigateway.GetDeploymentsInput{
+						RestApiId: restApi.Id,
+					}
 
-				deploymentsOutput, err := fn.GetDeploymentsWithContext(ctx, stagesInput)
-				if err != nil {
-					innerErr = err
-					return false
-				}
+					deploymentsOutput, err := fn.GetDeploymentsWithContext(ctx, stagesInput)
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				source := &GetDeploymentsOutput{
-					GetDeploymentsOutput: deploymentsOutput,
-					restApiId:            restApi.Id,
-					restApiName:          restApi.Name,
-				}
+					source := &GetDeploymentsOutput{
+						GetDeploymentsOutput: deploymentsOutput,
+						restApiId:            restApi.Id,
+						restApiName:          restApi.Name,
+					}
 
-				if err := api.SendRecords(ctx, ch, name, source); err != nil {
-					innerErr = err
+					if err := api.SendRecords(ctx, ch, name, source); err != nil {
+						innerErr = err
 
-					return false
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countDeployments})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

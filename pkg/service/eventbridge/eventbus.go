@@ -37,20 +37,31 @@ func (fn *ListEventBuses) New(name string, config interface{}) ([]api.Request, e
 	}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
+		var countBusses int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		for {
 			output, err := fn.ListEventBusesWithContext(ctx, &input)
 			if err != nil {
 				return fmt.Errorf("failed to list event buses: %w", err)
 			}
-
-			if err := api.SendRecords(ctx, ch, name, &ListEventBusesOutput{output}); err != nil {
-				return err
+			if r.Stats {
+				countBusses += len(output.EventBuses)
+			} else {
+				if err := api.SendRecords(ctx, ch, name, &ListEventBusesOutput{output}); err != nil {
+					return err
+				}
 			}
 
 			if output.NextToken == nil {
 				break
 			}
 			input.NextToken = output.NextToken
+		}
+		if r.Stats {
+			err := api.SendRecords(ctx, ch, name, &api.CountRecords{countBusses})
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
