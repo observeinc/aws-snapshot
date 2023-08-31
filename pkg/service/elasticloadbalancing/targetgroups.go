@@ -54,8 +54,13 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countTargetGroups int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeTargetGroupsPagesWithContext(ctx, &input, func(output *elbv2.DescribeTargetGroupsOutput, last bool) bool {
+			if r.Stats {
+				countTargetGroups += len(output.TargetGroups)
+			} else {
 			var describeTagsInput elbv2.DescribeTagsInput
 			for _, targetGroup := range output.TargetGroups {
 				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, targetGroup.TargetGroupArn)
@@ -80,9 +85,13 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 				innerErr = err
 				return false
 			}
+		}
 
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countTargetGroups})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

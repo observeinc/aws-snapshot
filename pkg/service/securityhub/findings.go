@@ -42,16 +42,22 @@ func (fn *GetFindings) New(name string, config interface{}) ([]api.Request, erro
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countFindings int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.GetFindingsPagesWithContext(ctx, &input, func(output *securityhub.GetFindingsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &GetFindingsOutput{output}); err != nil {
-				innerErr = err
-
-				return false
+			if r.Stats {
+				countFindings += len(output.Findings)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &GetFindingsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countFindings})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

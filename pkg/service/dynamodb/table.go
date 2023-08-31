@@ -37,28 +37,40 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var innerErr, outerErr error
+		var countTables int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListTablesPagesWithContext(ctx, &input, func(output *dynamodb.ListTablesOutput, last bool) bool {
-			for _, tableName := range output.TableNames {
-				describeTableInput := &dynamodb.DescribeTableInput{
-					TableName: tableName,
-				}
+			if r.Stats {
+				countTables += len(output.TableNames)
+			} else {
+				for _, tableName := range output.TableNames {
+					describeTableInput := &dynamodb.DescribeTableInput{
+						TableName: tableName,
+					}
 
-				describeTableOutput, err := fn.DescribeTableWithContext(ctx, describeTableInput)
-				if err != nil {
-					innerErr = err
-					return false
-				}
+					describeTableOutput, err := fn.DescribeTableWithContext(ctx, describeTableInput)
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				if err := api.SendRecords(ctx, ch, name, &DescribeTableOutput{describeTableOutput}); err != nil {
-					innerErr = err
+					if err := api.SendRecords(ctx, ch, name, &DescribeTableOutput{describeTableOutput}); err != nil {
+						innerErr = err
 
-					// failed to send records, stop handling tables
-					return false
+						// failed to send records, stop handling tables
+						return false
+					}
 				}
 			}
 			return true
 		})
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countTables})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

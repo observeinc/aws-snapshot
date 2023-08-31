@@ -36,20 +36,32 @@ func (fn *DescribeEnvironments) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		// AWS has a quota of 200 Environments by default
+		var countEnvironments int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		for {
 			output, err := fn.DescribeEnvironmentsWithContext(ctx, &input)
 			if err != nil {
 				return err
 			}
-
-			if err := api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output}); err != nil {
-				return err
+			if r.Stats {
+				countEnvironments += len(output.Environments)
+			} else {
+				if err := api.SendRecords(ctx, ch, name, &DescribeEnvironmentsOutput{output}); err != nil {
+					return err
+				}
 			}
 
 			if output.NextToken == nil {
 				break
 			}
 			input.NextToken = output.NextToken
+		}
+
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countEnvironments})
+			if innerErr != nil {
+				return innerErr
+			}
 		}
 
 		return nil

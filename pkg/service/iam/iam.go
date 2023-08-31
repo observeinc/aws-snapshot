@@ -87,19 +87,28 @@ func (fn *ListAccountAliases) New(name string, config interface{}) ([]api.Reques
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countAccountAliases int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		outerErr = fn.ListAccountAliasesPagesWithContext(ctx, &input, func(output *iam.ListAccountAliasesOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &ListAccountAliasesOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countAccountAliases += len(output.AccountAliases)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &ListAccountAliasesOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countAccountAliases})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
-
 	return []api.Request{call}, nil
 }
 
@@ -118,16 +127,27 @@ func (fn *GetAccountAuthorizationDetails) New(name string, config interface{}) (
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countPolices, countGroups, countRoles, countUsers int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.GetAccountAuthorizationDetailsPagesWithContext(ctx, &input, func(output *iam.GetAccountAuthorizationDetailsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &GetAccountAuthorizationDetailsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countPolices += len(output.Policies)
+				countGroups += len(output.RoleDetailList)
+				countRoles += len(output.GroupDetailList)
+				countUsers += len(output.UserDetailList)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &GetAccountAuthorizationDetailsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countGroups + countPolices + countRoles + countUsers})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

@@ -38,28 +38,39 @@ func (fn *DescribeFileSystemPolicy) New(name string, config interface{}) ([]api.
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countFileSystemPolicy int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
-			for _, fs := range output.FileSystems {
-				fspInput.FileSystemId = fs.FileSystemId
-				output, err := fn.DescribeFileSystemPolicyWithContext(ctx, &fspInput)
-				if err != nil {
-					if ae, ok := err.(awserr.Error); ok && ae.Code() == efs.ErrCodePolicyNotFound {
-						continue
+			if r.Stats {
+				countFileSystemPolicy += len(output.FileSystems)
+			} else {
+				for _, fs := range output.FileSystems {
+					fspInput.FileSystemId = fs.FileSystemId
+					output, err := fn.DescribeFileSystemPolicyWithContext(ctx, &fspInput)
+					if err != nil {
+						if ae, ok := err.(awserr.Error); ok && ae.Code() == efs.ErrCodePolicyNotFound {
+							continue
+						}
+
+						innerErr = err
+						return false
 					}
 
-					innerErr = err
-					return false
-				}
-
-				if err := api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output}); err != nil {
-					innerErr = err
-					return false
+					if err := api.SendRecords(ctx, ch, name, &DescribeFileSystemPolicyOutput{output}); err != nil {
+						innerErr = err
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFileSystemPolicy})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

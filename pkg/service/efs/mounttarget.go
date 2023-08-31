@@ -37,8 +37,14 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countFileSystemMountTargets int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
+		if r.Stats {
+			// TODO: Filter filesystems somehow
+			countFileSystemMountTargets += len(output.FileSystems)
+		} else { 
 			for _, fs := range output.FileSystems {
 				mtInput.FileSystemId = fs.FileSystemId
 				output, err := fn.DescribeMountTargetsWithContext(ctx, &mtInput)
@@ -52,9 +58,15 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 					return false
 				}
 			}
+		}
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFileSystemMountTargets})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

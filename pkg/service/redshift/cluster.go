@@ -38,15 +38,23 @@ func (fn *DescribeClusters) New(name string, config interface{}) ([]api.Request,
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countClusters int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeClustersPagesWithContext(ctx, &input, func(output *redshift.DescribeClustersOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeClustersOutput{output}); err != nil {
-				innerErr = err
+			if r.Stats {
+				countClusters += len(output.Clusters)
+			} else { 
+
+			if innerErr = api.SendRecords(ctx, ch, name, &DescribeClustersOutput{output}); innerErr != nil {
 				return false
 			}
+		}
 
 			return true
 		})
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countClusters})
+		}
 
 		return api.FirstError(outerErr, innerErr)
 	}

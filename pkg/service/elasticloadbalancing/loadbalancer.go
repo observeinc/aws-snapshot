@@ -88,33 +88,41 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 
 	v1call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countLoadBalancers int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ELB.DescribeLoadBalancersPagesWithContext(ctx, &input, func(output *elb.DescribeLoadBalancersOutput, last bool) bool {
-			var describeTagsInput elb.DescribeTagsInput
-			for _, loadBalancerDescription := range output.LoadBalancerDescriptions {
-				describeTagsInput.LoadBalancerNames = append(describeTagsInput.LoadBalancerNames, loadBalancerDescription.LoadBalancerName)
-			}
+			if r.Stats {
+				countLoadBalancers += len(output.LoadBalancerDescriptions)
+			} else {
+				var describeTagsInput elb.DescribeTagsInput
+				for _, loadBalancerDescription := range output.LoadBalancerDescriptions {
+					describeTagsInput.LoadBalancerNames = append(describeTagsInput.LoadBalancerNames, loadBalancerDescription.LoadBalancerName)
+				}
 
-			var describeTagsOutput *elb.DescribeTagsOutput
-			var err error
+				var describeTagsOutput *elb.DescribeTagsOutput
+				var err error
 
-			if len(describeTagsInput.LoadBalancerNames) > 0 {
-				describeTagsOutput, err = fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
+				if len(describeTagsInput.LoadBalancerNames) > 0 {
+					describeTagsOutput, err = fn.ELB.DescribeTagsWithContext(ctx, &describeTagsInput)
 
-				if err != nil {
+					if err != nil {
+						innerErr = err
+						return false
+					}
+				}
+
+				if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
+					DescribeLoadBalancersOutput: output,
+					DescribeTagsOutput:          describeTagsOutput,
+				}); err != nil {
 					innerErr = err
 					return false
 				}
 			}
-
-			if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutput{
-				DescribeLoadBalancersOutput: output,
-				DescribeTagsOutput:          describeTagsOutput,
-			}); err != nil {
-				innerErr = err
-				return false
+			if outerErr == nil && r.Stats {
+				innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLoadBalancers})
 			}
-
 			return true
 		})
 
@@ -123,36 +131,44 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 
 	v2call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
+		var countLoadBalancers int
 
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ELBv2.DescribeLoadBalancersPagesWithContext(ctx, &inputv2, func(output *elbv2.DescribeLoadBalancersOutput, last bool) bool {
 			var describeTagsInput elbv2.DescribeTagsInput
-			for _, loadBalancer := range output.LoadBalancers {
-				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, loadBalancer.LoadBalancerArn)
-			}
+			if r.Stats {
+				countLoadBalancers += len(output.LoadBalancers)
+			} else {
+				for _, loadBalancer := range output.LoadBalancers {
+					describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, loadBalancer.LoadBalancerArn)
+				}
 
-			var describeTagsOutput *elbv2.DescribeTagsOutput
-			var err error
+				var describeTagsOutput *elbv2.DescribeTagsOutput
+				var err error
 
-			if len(describeTagsInput.ResourceArns) > 0 {
-				describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+				if len(describeTagsInput.ResourceArns) > 0 {
+					describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
 
-				if err != nil {
+					if err != nil {
+						innerErr = err
+						return false
+					}
+				}
+
+				if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
+					DescribeLoadBalancersOutput: output,
+					DescribeTagsOutput:          describeTagsOutput,
+				}); err != nil {
 					innerErr = err
 					return false
 				}
 			}
 
-			if err = api.SendRecords(ctx, ch, name, &DescribeLoadBalancersOutputV2{
-				DescribeLoadBalancersOutput: output,
-				DescribeTagsOutput:          describeTagsOutput,
-			}); err != nil {
-				innerErr = err
-				return false
-			}
-
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLoadBalancers})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

@@ -36,12 +36,17 @@ func (fn *DescribeApplications) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		// AWS has a quota of 75 Applications by default
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		output, err := fn.DescribeApplicationsWithContext(ctx, &input)
 		if err != nil {
 			return err
 		}
 
-		return api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
+		if r.Stats {
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{len(output.Applications)})
+		} else {
+			return api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
+		}
 	}
 
 	return []api.Request{call}, nil

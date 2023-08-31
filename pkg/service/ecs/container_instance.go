@@ -36,7 +36,8 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var innerErr, outerErr error
-
+		var countContainerInstances int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
 			for _, clusterArn := range output.ClusterArns {
 				// we can now describe up to 10 tasks per nested page
@@ -47,6 +48,10 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 
 				// run nested query
 				err := fn.ListContainerInstancesPagesWithContext(ctx, listContainerInstancesInput, func(output *ecs.ListContainerInstancesOutput, last bool) bool {
+					if r.Stats { 
+						countContainerInstances += len(output.ContainerInstanceArns)
+						return true
+					}
 					if len(output.ContainerInstanceArns) == 0 {
 						return true
 					}
@@ -69,6 +74,9 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 
 					return true
 				})
+				if r.Stats {
+					innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countContainerInstances})
+				}
 
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					return false

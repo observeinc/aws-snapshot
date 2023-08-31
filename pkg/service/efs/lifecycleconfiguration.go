@@ -38,24 +38,35 @@ func (fn *DescribeLifecycleConfiguration) New(name string, config interface{}) (
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countLifeCyclePolices int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
-			for _, fs := range output.FileSystems {
-				mtInput.FileSystemId = fs.FileSystemId
-				output, err := fn.DescribeLifecycleConfigurationWithContext(ctx, &mtInput)
-				if err != nil {
-					innerErr = err
-					return false
-				}
+			if r.Stats {
+				// assumption we have 1 lifecycle per fs?
+				countLifeCyclePolices += len(output.FileSystems)
+			} else {
+				for _, fs := range output.FileSystems {
+					mtInput.FileSystemId = fs.FileSystemId
+					output, err := fn.DescribeLifecycleConfigurationWithContext(ctx, &mtInput)
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				if err := api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output}); err != nil {
-					innerErr = err
-					return false
+					if err := api.SendRecords(ctx, ch, name, &DescribeLifecycleConfigurationOutput{FilesystemID: fs.FileSystemId, DescribeLifecycleConfigurationOutput: output}); err != nil {
+						innerErr = err
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countLifeCyclePolices})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

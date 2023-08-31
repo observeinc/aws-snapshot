@@ -37,16 +37,25 @@ func (fn *DescribeReplicationGroups) New(name string, config interface{}) ([]api
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countReplicationGroups int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeReplicationGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeReplicationGroupsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output}); err != nil {
-				innerErr = err
+			if r.Stats {
+				countReplicationGroups += len(output.ReplicationGroups)
+			} else {
+			if innerErr = api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output}); innerErr != nil {
 				return false
 			}
+		}
 
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countReplicationGroups})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

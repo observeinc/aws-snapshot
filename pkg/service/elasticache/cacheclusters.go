@@ -37,16 +37,22 @@ func (fn *DescribeCacheClusters) New(name string, config interface{}) ([]api.Req
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countCacheClusters int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeCacheClustersPagesWithContext(ctx, &input, func(output *elasticache.DescribeCacheClustersOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeCacheClustersOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countCacheClusters += len(output.CacheClusters)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeCacheClustersOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if outerErr == nil && r.Stats {
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countCacheClusters})
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

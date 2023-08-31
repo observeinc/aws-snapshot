@@ -45,7 +45,8 @@ func (fn *DescribeInstancesHealth) New(name string, config interface{}) ([]api.R
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		// AWS has a quota of 200 Environments by default
-
+		var countEnvironments int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		envsOutput, err := fn.DescribeEnvironmentsWithContext(ctx, &envsInput)
 		if err != nil {
 			return err
@@ -59,17 +60,25 @@ func (fn *DescribeInstancesHealth) New(name string, config interface{}) ([]api.R
 			if err != nil {
 				return err
 			}
+			if r.Stats {
+				countEnvironments += len(healthOutput.InstanceHealthList)
+			} else {
+				source := &DescribeInstancesHealthOutput{
+					DescribeInstancesHealthOutput: healthOutput,
+					environmentId:                 env.EnvironmentId,
+				}
 
-			source := &DescribeInstancesHealthOutput{
-				DescribeInstancesHealthOutput: healthOutput,
-				environmentId:                 env.EnvironmentId,
-			}
-
-			if err := api.SendRecords(ctx, ch, name, source); err != nil {
-				return err
+				if err := api.SendRecords(ctx, ch, name, source); err != nil {
+					return err
+				}
 			}
 		}
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countEnvironments})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return nil
 	}
 

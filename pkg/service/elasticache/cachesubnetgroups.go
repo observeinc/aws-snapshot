@@ -37,16 +37,25 @@ func (fn *DescribeCacheSubnetGroups) New(name string, config interface{}) ([]api
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countCacheSubnetGroups int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeCacheSubnetGroupsPagesWithContext(ctx, &input, func(output *elasticache.DescribeCacheSubnetGroupsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeCacheSubnetGroupsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countCacheSubnetGroups += len(output.CacheSubnetGroups)
+			} else {
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeCacheSubnetGroupsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countCacheSubnetGroups})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

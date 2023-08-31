@@ -36,14 +36,20 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		// AWS has a quota of 1,000 Application Versions by default
+		var countApplicationVersions int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		for {
 			output, err := fn.DescribeApplicationVersionsWithContext(ctx, &input)
 			if err != nil {
 				return err
 			}
 
+			if r.Stats {
+				countApplicationVersions += len(output.ApplicationVersions)
+			} else {
 			if err := api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}); err != nil {
 				return err
+			}
 			}
 
 			if output.NextToken == nil {
@@ -52,6 +58,12 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 			input.NextToken = output.NextToken
 		}
 
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countApplicationVersions})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return nil
 	}
 

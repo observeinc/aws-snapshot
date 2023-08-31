@@ -36,7 +36,8 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countServices int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
 			for _, clusterArn := range output.ClusterArns {
 
@@ -48,6 +49,10 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 
 				// run nested query
 				err := fn.ListServicesPagesWithContext(ctx, listServicesInput, func(output *ecs.ListServicesOutput, last bool) bool {
+					if r.Stats { 
+						countServices += len(output.ServiceArns)
+						return true	
+					}
 					if len(output.ServiceArns) == 0 {
 						return true
 					}
@@ -70,7 +75,6 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 
 					return true
 				})
-
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					innerErr = err
 					return false
@@ -78,7 +82,12 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 			}
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countServices})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

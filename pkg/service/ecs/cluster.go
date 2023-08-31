@@ -37,26 +37,36 @@ func (fn *DescribeClusters) New(name string, config interface{}) ([]api.Request,
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var innerErr, outerErr error
-
+		var countClusters int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListClustersPagesWithContext(ctx, &input, func(output *ecs.ListClustersOutput, last bool) bool {
-			describeClustersInput := &ecs.DescribeClustersInput{
-				Clusters: output.ClusterArns,
-			}
+			if r.Stats {
+				countClusters += len(output.ClusterArns)
+			} else {
+				describeClustersInput := &ecs.DescribeClustersInput{
+					Clusters: output.ClusterArns,
+				}
 
-			describeClustersOutput, err := fn.DescribeClustersWithContext(ctx, describeClustersInput)
-			if err != nil {
-				innerErr = err
-				return false
-			}
+				describeClustersOutput, err := fn.DescribeClustersWithContext(ctx, describeClustersInput)
+				if err != nil {
+					innerErr = err
+					return false
+				}
 
-			if err := api.SendRecords(ctx, ch, name, &DescribeClustersOutput{describeClustersOutput}); err != nil {
-				innerErr = err
-				return false
+				if err := api.SendRecords(ctx, ch, name, &DescribeClustersOutput{describeClustersOutput}); err != nil {
+					innerErr = err
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countClusters})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

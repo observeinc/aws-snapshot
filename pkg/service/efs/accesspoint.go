@@ -37,16 +37,26 @@ func (fn *DescribeAccessPoints) New(name string, config interface{}) ([]api.Requ
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countAccessPoints int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeAccessPointsPagesWithContext(ctx, &input, func(output *efs.DescribeAccessPointsOutput, last bool) bool {
-			if err := api.SendRecords(ctx, ch, name, &DescribeAccessPointsOutput{output}); err != nil {
-				innerErr = err
-				return false
+			if r.Stats {
+				countAccessPoints += len(output.AccessPoints)
+			} else {
+				if err := api.SendRecords(ctx, ch, name, &DescribeAccessPointsOutput{output}); err != nil {
+					innerErr = err
+					return false
+				}
 			}
 
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countAccessPoints})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 

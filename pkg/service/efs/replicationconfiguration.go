@@ -38,28 +38,38 @@ func (fn *DescribeReplicationConfigurations) New(name string, config interface{}
 
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
-
+		var countReplicationConfig int
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
-			for _, fs := range output.FileSystems {
-				rcInput.FileSystemId = fs.FileSystemId
-				output, err := fn.DescribeReplicationConfigurationsWithContext(ctx, &rcInput)
-				if err != nil {
-					if aerr, ok := err.(awserr.Error); ok && aerr.Code() == efs.ErrCodeReplicationNotFound {
-						continue
+			if r.Stats {
+				countReplicationConfig += len(output.FileSystems)
+			} else {
+				for _, fs := range output.FileSystems {
+					rcInput.FileSystemId = fs.FileSystemId
+					output, err := fn.DescribeReplicationConfigurationsWithContext(ctx, &rcInput)
+					if err != nil {
+						if aerr, ok := err.(awserr.Error); ok && aerr.Code() == efs.ErrCodeReplicationNotFound {
+							continue
+						}
+
+						innerErr = err
+						return false
 					}
 
-					innerErr = err
-					return false
-				}
-
-				if err := api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output}); err != nil {
-					innerErr = err
-					return false
+					if err := api.SendRecords(ctx, ch, name, &DescribeReplicationConfigurationsOutput{output}); err != nil {
+						innerErr = err
+						return false
+					}
 				}
 			}
 			return true
 		})
-
+		if r.Stats {
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countReplicationConfig})
+			if innerErr != nil {
+				return innerErr
+			}
+		}
 		return api.FirstError(outerErr, innerErr)
 	}
 
