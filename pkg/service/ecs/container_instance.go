@@ -75,7 +75,7 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 					return true
 				})
 				if r.Stats {
-					innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countContainerInstances})
+					innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countContainerInstances})
 				}
 
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {

@@ -51,7 +51,7 @@ func (fn *DescribeNatGateways) New(name string, config interface{}) ([]api.Reque
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{gatewayCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: gatewayCount})
 		}
 
 		return api.FirstError(outerErr, innerErr)

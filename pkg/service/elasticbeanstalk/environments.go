@@ -58,7 +58,7 @@ func (fn *DescribeEnvironments) New(name string, config interface{}) ([]api.Requ
 		}
 
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countEnvironments})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countEnvironments})
 			if innerErr != nil {
 				return innerErr
 			}

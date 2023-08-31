@@ -83,7 +83,7 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countServices})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countServices})
 			if innerErr != nil {
 				return innerErr
 			}

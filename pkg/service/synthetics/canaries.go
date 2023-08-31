@@ -53,7 +53,7 @@ func (fn *DescribeCanaries) New(name string, config interface{}) ([]api.Request,
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSynthetics})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countSynthetics})
 		}
 
 		return api.FirstError(outerErr, innerErr)

@@ -70,7 +70,7 @@ func (fn *DescribeKey) New(name string, config interface{}) ([]api.Request, erro
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{keyCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: keyCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

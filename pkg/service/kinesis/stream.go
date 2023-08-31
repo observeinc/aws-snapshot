@@ -70,7 +70,7 @@ func (fn *DescribeStreams) New(name string, config interface{}) ([]api.Request, 
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStreams})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countStreams})
 		}
 
 		return api.FirstError(outerErr, innerErr)

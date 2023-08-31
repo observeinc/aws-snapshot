@@ -66,7 +66,7 @@ func (fn *DescribeLogGroups) New(name string, config interface{}) ([]api.Request
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeLogGroupsCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: describeLogGroupsCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

@@ -66,7 +66,7 @@ func (fn *GetQueueAttributes) New(name string, config interface{}) ([]api.Reques
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countQueues})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countQueues})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

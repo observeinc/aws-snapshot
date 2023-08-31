@@ -62,7 +62,7 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFileSystemMountTargets})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFileSystemMountTargets})
 			if innerErr != nil {
 				return innerErr
 			}

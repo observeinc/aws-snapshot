@@ -54,7 +54,7 @@ func (fn *ListDistributions) New(name string, config interface{}) ([]api.Request
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countListDistributions})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countListDistributions})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

@@ -137,7 +137,7 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 			}
 		}
 		if r.Stats {
-			return api.SendRecords(ctx, ch, name, &api.CountRecords{countBucketOutput})
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countBucketOutput})
 		}
 		return nil
 	}

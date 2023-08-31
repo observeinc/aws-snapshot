@@ -77,7 +77,7 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 			}
 		}
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{deliveryStreamCounts})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: deliveryStreamCounts})
 			if innerErr != nil {
 				return innerErr
 			}

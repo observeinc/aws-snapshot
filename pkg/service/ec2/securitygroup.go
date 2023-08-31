@@ -51,7 +51,7 @@ func (fn *DescribeSecurityGroups) New(name string, config interface{}) ([]api.Re
 			return true
 		})
 		if outerErr != nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{groupCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: groupCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

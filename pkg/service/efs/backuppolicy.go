@@ -68,7 +68,7 @@ func (fn *DescribeBackupPolicy) New(name string, config interface{}) ([]api.Requ
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFilesystems})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFilesystems})
 			if innerErr != nil {
 				return innerErr
 			}

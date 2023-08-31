@@ -43,7 +43,7 @@ func (fn *DescribeAddresses) New(name string, config interface{}) ([]api.Request
 		}
 		if r.Stats {
 			// Dont use intermediate variable because there is only one call
-			return api.SendRecords(ctx, ch, name, &api.CountRecords{len(output.Addresses)})
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{Count: len(output.Addresses)})
 		} else {
 			return api.SendRecords(ctx, ch, name, &DescribeAddressesOutput{output})
 		}

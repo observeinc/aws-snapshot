@@ -57,7 +57,7 @@ func (fn *DescribeStacks) New(name string, config interface{}) ([]api.Request, e
 		}
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStacks})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countStacks})
 		}
 
 		return api.FirstError(outerErr, innerErr)

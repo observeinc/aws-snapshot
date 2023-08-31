@@ -58,7 +58,7 @@ func (fn *ListApiDestinations) New(name string, config interface{}) ([]api.Reque
 			input.NextToken = output.NextToken
 		}
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countApiDestination})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countApiDestination})
 			if innerErr != nil {
 				return innerErr
 			}

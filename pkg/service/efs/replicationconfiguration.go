@@ -65,7 +65,7 @@ func (fn *DescribeReplicationConfigurations) New(name string, config interface{}
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countReplicationConfig})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countReplicationConfig})
 			if innerErr != nil {
 				return innerErr
 			}

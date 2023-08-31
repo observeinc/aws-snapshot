@@ -51,7 +51,7 @@ func (fn *DescribeVolumes) New(name string, config interface{}) ([]api.Request, 
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeVolumesCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: describeVolumesCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}
@@ -103,7 +103,7 @@ func (fn *DescribeVolumeStatus) New(name string, config interface{}) ([]api.Requ
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{volumeStatusCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: volumeStatusCount})
 		}
 
 		return api.FirstError(outerErr, innerErr)

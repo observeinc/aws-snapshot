@@ -54,7 +54,7 @@ func (fn *ListFunctions) New(name string, config interface{}) ([]api.Request, er
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLambdaFunctions})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countLambdaFunctions})
 		}
 
 		return api.FirstError(outerErr, innerErr)

@@ -51,7 +51,7 @@ func (fn *DescribeCacheClusters) New(name string, config interface{}) ([]api.Req
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countCacheClusters})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countCacheClusters})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

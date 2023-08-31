@@ -75,7 +75,7 @@ func (fn *DescribeNodegroup) New(name string, config interface{}) ([]api.Request
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeNodegroupCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: describeNodegroupCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

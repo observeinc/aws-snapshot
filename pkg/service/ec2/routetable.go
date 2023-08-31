@@ -51,7 +51,7 @@ func (fn *DescribeRouteTables) New(name string, config interface{}) ([]api.Reque
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countRouteTables})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countRouteTables})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

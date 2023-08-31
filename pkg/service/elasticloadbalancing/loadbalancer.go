@@ -121,7 +121,7 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 				}
 			}
 			if outerErr == nil && r.Stats {
-				innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLoadBalancers})
+				innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countLoadBalancers})
 			}
 			return true
 		})
@@ -167,7 +167,7 @@ func (fn *DescribeLoadBalancers) New(name string, config interface{}) ([]api.Req
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLoadBalancers})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countLoadBalancers})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

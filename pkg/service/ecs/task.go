@@ -75,7 +75,7 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 					return true
 				})
 				if r.Stats {
-					innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countTasks})
+					innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countTasks})
 				}
 				if innerErr = api.FirstError(err, innerErr); innerErr != nil {
 					return false

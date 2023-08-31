@@ -52,7 +52,7 @@ func (fn *DescribeAccessPoints) New(name string, config interface{}) ([]api.Requ
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countAccessPoints})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countAccessPoints})
 			if innerErr != nil {
 				return innerErr
 			}

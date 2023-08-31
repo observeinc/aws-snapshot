@@ -51,7 +51,7 @@ func (fn *DescribeFileSystems) New(name string, config interface{}) ([]api.Reque
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFileSystems})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFileSystems})
 			if innerErr != nil {
 				return innerErr
 			}

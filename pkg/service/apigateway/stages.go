@@ -82,7 +82,7 @@ func (fn *GetStages) New(name string, config interface{}) ([]api.Request, error)
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countStages})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countStages})
 		}
 
 		return api.FirstError(outerErr, innerErr)

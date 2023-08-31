@@ -52,7 +52,7 @@ func (fn *DescribeNetworkInterfaces) New(name string, config interface{}) ([]api
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countNetworkInterfaces})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countNetworkInterfaces})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

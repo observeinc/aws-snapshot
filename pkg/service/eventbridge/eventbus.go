@@ -58,7 +58,7 @@ func (fn *ListEventBuses) New(name string, config interface{}) ([]api.Request, e
 			input.NextToken = output.NextToken
 		}
 		if r.Stats {
-			err := api.SendRecords(ctx, ch, name, &api.CountRecords{countBusses})
+			err := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countBusses})
 			if err != nil {
 				return err
 			}

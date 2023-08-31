@@ -66,7 +66,7 @@ func (fn *DescribeTable) New(name string, config interface{}) ([]api.Request, er
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countTables})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countTables})
 			if innerErr != nil {
 				return innerErr
 			}

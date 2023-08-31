@@ -85,7 +85,7 @@ func (fn *GetDeployments) New(name string, config interface{}) ([]api.Request, e
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countDeployments})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countDeployments})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

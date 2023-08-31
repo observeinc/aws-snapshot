@@ -48,7 +48,7 @@ func (fn *DescribeInternetGateways) New(name string, config interface{}) ([]api.
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countInternetGateways})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countInternetGateways})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

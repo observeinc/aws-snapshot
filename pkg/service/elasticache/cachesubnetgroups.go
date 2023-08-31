@@ -51,7 +51,7 @@ func (fn *DescribeCacheSubnetGroups) New(name string, config interface{}) ([]api
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countCacheSubnetGroups})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countCacheSubnetGroups})
 			if innerErr != nil {
 				return innerErr
 			}

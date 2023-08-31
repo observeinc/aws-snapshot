@@ -59,7 +59,7 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 		}
 
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countApplicationVersions})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countApplicationVersions})
 			if innerErr != nil {
 				return innerErr
 			}

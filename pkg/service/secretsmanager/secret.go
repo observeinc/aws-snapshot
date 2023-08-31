@@ -54,7 +54,7 @@ func (fn *ListSecrets) New(name string, config interface{}) ([]api.Request, erro
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSecrets})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countSecrets})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

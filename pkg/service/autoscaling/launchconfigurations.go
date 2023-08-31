@@ -53,7 +53,7 @@ func (fn *DescribeLaunchConfigurations) New(name string, config interface{}) ([]
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countLaunchConfigurations})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countLaunchConfigurations})
 		}
 
 		return api.FirstError(outerErr, innerErr)

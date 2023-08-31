@@ -43,7 +43,7 @@ func (fn *DescribeApplications) New(name string, config interface{}) ([]api.Requ
 		}
 
 		if r.Stats {
-			return api.SendRecords(ctx, ch, name, &api.CountRecords{len(output.Applications)})
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{Count: len(output.Applications)})
 		} else {
 			return api.SendRecords(ctx, ch, name, &DescribeApplicationsOutput{output})
 		}

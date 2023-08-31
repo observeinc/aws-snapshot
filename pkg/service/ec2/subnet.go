@@ -52,7 +52,7 @@ func (fn *DescribeSubnets) New(name string, config interface{}) ([]api.Request, 
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSubnetsOutput})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countSubnetsOutput})
 		}
 
 		return api.FirstError(outerErr, innerErr)

@@ -75,7 +75,7 @@ func (fn *DescribeFargateProfile) New(name string, config interface{}) ([]api.Re
 		})
 
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeFargateCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: describeFargateCount})
 		}
 
 		return api.FirstError(outerErr, innerErr)

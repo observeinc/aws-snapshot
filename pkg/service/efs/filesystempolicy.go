@@ -66,7 +66,7 @@ func (fn *DescribeFileSystemPolicy) New(name string, config interface{}) ([]api.
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countFileSystemPolicy})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFileSystemPolicy})
 			if innerErr != nil {
 				return innerErr
 			}

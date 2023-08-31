@@ -56,7 +56,7 @@ func (fn *GetFindings) New(name string, config interface{}) ([]api.Request, erro
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countFindings})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFindings})
 		}
 
 		return api.FirstError(outerErr, innerErr)

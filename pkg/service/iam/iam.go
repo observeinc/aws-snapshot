@@ -102,7 +102,7 @@ func (fn *ListAccountAliases) New(name string, config interface{}) ([]api.Reques
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countAccountAliases})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countAccountAliases})
 			if innerErr != nil {
 				return innerErr
 			}
@@ -143,7 +143,7 @@ func (fn *GetAccountAuthorizationDetails) New(name string, config interface{}) (
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countGroups + countPolices + countRoles + countUsers})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countGroups + countPolices + countRoles + countUsers})
 			if innerErr != nil {
 				return innerErr
 			}

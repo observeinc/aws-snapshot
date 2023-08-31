@@ -52,7 +52,7 @@ func (fn *DescribeVpcs) New(name string, config interface{}) ([]api.Request, err
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countVpcsOutput})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countVpcsOutput})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

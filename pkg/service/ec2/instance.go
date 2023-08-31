@@ -84,7 +84,7 @@ func (fn *DescribeInstances) New(name string, config interface{}) ([]api.Request
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{instanceCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: instanceCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

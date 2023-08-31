@@ -62,7 +62,7 @@ func (fn *DescribeLifecycleConfiguration) New(name string, config interface{}) (
 			return true
 		})
 		if r.Stats {
-			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{countLifeCyclePolices})
+			innerErr := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countLifeCyclePolices})
 			if innerErr != nil {
 				return innerErr
 			}

@@ -81,7 +81,7 @@ func (fn *ListRules) New(name string, config interface{}) ([]api.Request, error)
 			listRulesInput.NextToken = listRulesOutput.NextToken
 		}
 		if r.Stats {
-			err := api.SendRecords(ctx, ch, name, &api.CountRecords{countRules})
+			err := api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countRules})
 			if err != nil {
 				return err
 			}

@@ -61,7 +61,7 @@ func (fn *DescribeCluster) New(name string, config interface{}) ([]api.Request, 
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{describeClusterCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: describeClusterCount})
 		}
 
 		return api.FirstError(outerErr, innerErr)

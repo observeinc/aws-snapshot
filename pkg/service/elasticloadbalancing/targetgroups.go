@@ -90,7 +90,7 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countTargetGroups})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countTargetGroups})
 		}
 
 		return api.FirstError(outerErr, innerErr)

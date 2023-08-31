@@ -54,7 +54,7 @@ func (fn *DescribeAutoScalingGroups) New(name string, config interface{}) ([]api
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countAutoScaleGroups})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countAutoScaleGroups})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

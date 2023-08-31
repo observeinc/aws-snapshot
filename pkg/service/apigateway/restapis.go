@@ -51,7 +51,7 @@ func (fn *GetRestApis) New(name string, config interface{}) ([]api.Request, erro
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countRestApis})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countRestApis})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

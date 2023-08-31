@@ -51,7 +51,7 @@ func (fn *DescribeFlowLogs) New(name string, config interface{}) ([]api.Request,
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countFlowLogsOutput})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countFlowLogsOutput})
 		}
 
 		return api.FirstError(outerErr, innerErr)

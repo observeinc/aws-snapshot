@@ -51,7 +51,7 @@ func (fn *DescribeNetworkAcls) New(name string, config interface{}) ([]api.Reque
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{networkACLCount})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: networkACLCount})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}

@@ -78,7 +78,7 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 			return true
 		})
 		if outerErr == nil && r.Stats {
-			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{countSubscriptions})
+			innerErr = api.SendRecords(ctx, ch, name, &api.CountRecords{Count: countSubscriptions})
 		}
 		return api.FirstError(outerErr, innerErr)
 	}
