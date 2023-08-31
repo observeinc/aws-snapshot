@@ -31,17 +31,6 @@ type ListBuckets struct {
 	Region *string
 }
 
-type CountBucketsOutput struct {
-	Count int `json:"Count"`
-}
-
-func (o *CountBucketsOutput) Records() (records []*api.Record) {
-	records = append(records, &api.Record{
-		Data: o,
-	})
-	return
-}
-
 var _ api.RequestBuilder = &ListBuckets{}
 
 // New implements api.RequestBuilder
@@ -53,6 +42,7 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 	}
 	// define the call function
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
+		var countBucketOutput int
 		output, err := fn.ListBucketsWithContext(ctx, &input)
 		if err != nil {
 			return err
@@ -60,11 +50,7 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		if r.Stats {
-			countBucketOutput := &CountBucketsOutput{Count: len(output.Buckets)}
-			// Send it
-			if err := api.SendRecords(ctx, ch, name, countBucketOutput); err != nil {
-				return err
-			}
+			countBucketOutput += len(output.Buckets)
 		} else {
 			// for each bucket
 			for _, b := range output.Buckets {
@@ -150,7 +136,9 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 				}
 			}
 		}
-
+		if r.Stats {
+			return api.SendRecords(ctx, ch, name, &api.CountRecords{countBucketOutput})
+		}
 		return nil
 	}
 

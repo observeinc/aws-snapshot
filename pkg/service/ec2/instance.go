@@ -64,7 +64,6 @@ func (fn *DescribeInstances) New(name string, config interface{}) ([]api.Request
 		var outerErr, innerErr error
 
 		r, _ := ctx.Value("runner_config").(api.Runner)
-		// This fucntion call happens for each page
 		outerErr = fn.DescribeInstancesPagesWithContext(ctx, &input, func(output *ec2.DescribeInstancesOutput, last bool) bool {
 			// Loop through each reservation, instance
 			if r.Stats {

@@ -45,8 +45,8 @@ func (fn *GetSubscriptionAttributes) New(name string, config interface{}) ([]api
 		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.ListSubscriptionsPagesWithContext(ctx, &listSubscriptionsInput, func(output *sns.ListSubscriptionsOutput, last bool) bool {
 			if r.Stats {
+				// TODO: Filter on subscription ARN
 				countSubscriptions += len(output.Subscriptions)
-
 			} else {
 				for _, subscription := range output.Subscriptions {
 					if subscription.SubscriptionArn == nil {
