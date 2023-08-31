@@ -103,8 +103,9 @@ func (r *Runner) Run(ctx context.Context) error {
 		r.BufferSize = defaultBufferSize
 	}
 
-	ctx, cancelFunc := context.WithCancel(ctx)
+	// Pass around the runner options
 	ctx = context.WithValue(ctx, "runner_config", *r)
+	ctx, cancelFunc := context.WithCancel(ctx)
 	defer cancelFunc()
 
 	var (

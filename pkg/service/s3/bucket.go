@@ -68,7 +68,7 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 		} else {
 			// for each bucket
 			for _, b := range output.Buckets {
-				/// get bucket locations
+				// get bucket locations
 				locationOutput, err := fn.GetBucketLocationWithContext(ctx, &s3.GetBucketLocationInput{
 					Bucket: b.Name,
 				})

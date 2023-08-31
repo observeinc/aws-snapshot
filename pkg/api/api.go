@@ -28,7 +28,7 @@ func (s ServiceFunc) New(p client.ConfigProvider, opts ...*aws.Config) Endpoint 
 }
 
 type CountRecords struct {
-	Count int `json:Count`
+	Count int `json:"Count"`
 }
 
 func (o *CountRecords) Records() (records []*Record) {
