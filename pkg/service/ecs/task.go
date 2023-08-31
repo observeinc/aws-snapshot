@@ -48,9 +48,9 @@ func (fn *DescribeTasks) New(name string, config interface{}) ([]api.Request, er
 
 				// run nested query
 				err := fn.ListTasksPagesWithContext(ctx, listTasksInput, func(output *ecs.ListTasksOutput, last bool) bool {
-					if r.Stats { 
+					if r.Stats {
 						countTasks += len(output.TaskArns)
-						return true	
+						return true
 					}
 					if len(output.TaskArns) == 0 {
 						return true

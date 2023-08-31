@@ -104,7 +104,7 @@ func (r *Runner) Run(ctx context.Context) error {
 	}
 
 	ctx, cancelFunc := context.WithCancel(ctx)
-	ctx = context.WithValue(ctx , "runner_config", *r)
+	ctx = context.WithValue(ctx, "runner_config", *r)
 	defer cancelFunc()
 
 	var (

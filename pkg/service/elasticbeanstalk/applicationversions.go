@@ -47,9 +47,9 @@ func (fn *DescribeApplicationVersions) New(name string, config interface{}) ([]a
 			if r.Stats {
 				countApplicationVersions += len(output.ApplicationVersions)
 			} else {
-			if err := api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}); err != nil {
-				return err
-			}
+				if err := api.SendRecords(ctx, ch, name, &DescribeApplicationVersionsOutput{output}); err != nil {
+					return err
+				}
 			}
 
 			if output.NextToken == nil {

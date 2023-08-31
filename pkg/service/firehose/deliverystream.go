@@ -54,7 +54,7 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 			if r.Stats {
 				deliveryStreamCounts += len(listOutput.DeliveryStreamNames)
 
-				} else {
+			} else {
 
 				for _, deliveryStreamName := range listOutput.DeliveryStreamNames {
 					describeDeliveryStreamOutput, err := fn.DescribeDeliveryStreamWithContext(ctx, &firehose.DescribeDeliveryStreamInput{
@@ -71,7 +71,6 @@ func (fn *DescribeDeliveryStreams) New(name string, config interface{}) ([]api.R
 					input.SetExclusiveStartDeliveryStreamName(*deliveryStreamName)
 				}
 			}
-
 
 			if listOutput.HasMoreDeliveryStreams != nil {
 				lastPage = !(*listOutput.HasMoreDeliveryStreams)

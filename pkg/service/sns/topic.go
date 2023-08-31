@@ -44,25 +44,25 @@ func (fn *GetTopicAttributes) New(name string, config interface{}) ([]api.Reques
 		outerErr = fn.ListTopicsPagesWithContext(ctx, &listTopicsInput, func(output *sns.ListTopicsOutput, last bool) bool {
 			if r.Stats {
 				countTopics += len(output.Topics)
-			} else { 
-			for _, topic := range output.Topics {
-				if topic.TopicArn == nil {
-					continue
-				}
+			} else {
+				for _, topic := range output.Topics {
+					if topic.TopicArn == nil {
+						continue
+					}
 
-				output, err := fn.GetTopicAttributesWithContext(ctx, &sns.GetTopicAttributesInput{TopicArn: topic.TopicArn})
-				if err != nil {
-					innerErr = fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err)
-					return false
-				}
-				if innerErr = api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
-					topicArn:                 topic.TopicArn,
-					GetTopicAttributesOutput: output,
-				}); innerErr != nil {
-					return false
+					output, err := fn.GetTopicAttributesWithContext(ctx, &sns.GetTopicAttributesInput{TopicArn: topic.TopicArn})
+					if err != nil {
+						innerErr = fmt.Errorf("failed to get %q: %w", *topic.TopicArn, err)
+						return false
+					}
+					if innerErr = api.SendRecords(ctx, ch, name, &GetTopicAttributesOutput{
+						topicArn:                 topic.TopicArn,
+						GetTopicAttributesOutput: output,
+					}); innerErr != nil {
+						return false
+					}
 				}
 			}
-		}
 			return true
 		})
 		if outerErr == nil && r.Stats {

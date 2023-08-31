@@ -60,7 +60,7 @@ func (fn *ListBuckets) New(name string, config interface{}) ([]api.Request, erro
 		r, _ := ctx.Value("runner_config").(api.Runner)
 
 		if r.Stats {
-			countBucketOutput := &CountBucketsOutput{ Count: len(output.Buckets), }
+			countBucketOutput := &CountBucketsOutput{Count: len(output.Buckets)}
 			// Send it
 			if err := api.SendRecords(ctx, ch, name, countBucketOutput); err != nil {
 				return err

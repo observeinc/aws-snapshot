@@ -38,7 +38,7 @@ func (fn *DescribeSecurityGroups) New(name string, config interface{}) ([]api.Re
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
 
-		groupCount:=0
+		groupCount := 0
 		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeSecurityGroupsPagesWithContext(ctx, &input, func(output *ec2.DescribeSecurityGroupsOutput, last bool) bool {
 			if r.Stats {

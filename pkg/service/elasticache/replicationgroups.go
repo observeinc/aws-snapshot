@@ -43,10 +43,10 @@ func (fn *DescribeReplicationGroups) New(name string, config interface{}) ([]api
 			if r.Stats {
 				countReplicationGroups += len(output.ReplicationGroups)
 			} else {
-			if innerErr = api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output}); innerErr != nil {
-				return false
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeReplicationGroupsOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-		}
 
 			return true
 		})

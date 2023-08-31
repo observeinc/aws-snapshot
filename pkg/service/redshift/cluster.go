@@ -43,12 +43,12 @@ func (fn *DescribeClusters) New(name string, config interface{}) ([]api.Request,
 		outerErr = fn.DescribeClustersPagesWithContext(ctx, &input, func(output *redshift.DescribeClustersOutput, last bool) bool {
 			if r.Stats {
 				countClusters += len(output.Clusters)
-			} else { 
+			} else {
 
-			if innerErr = api.SendRecords(ctx, ch, name, &DescribeClustersOutput{output}); innerErr != nil {
-				return false
+				if innerErr = api.SendRecords(ctx, ch, name, &DescribeClustersOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-		}
 
 			return true
 		})

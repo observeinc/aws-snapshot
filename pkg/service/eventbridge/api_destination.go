@@ -47,10 +47,10 @@ func (fn *ListApiDestinations) New(name string, config interface{}) ([]api.Reque
 				countApiDestination += len(output.ApiDestinations)
 			} else {
 
-			if err := api.SendRecords(ctx, ch, name, &ListApiDestinationsOutput{output}); err != nil {
-				return err
+				if err := api.SendRecords(ctx, ch, name, &ListApiDestinationsOutput{output}); err != nil {
+					return err
+				}
 			}
-		}
 
 			if output.NextToken == nil {
 				break

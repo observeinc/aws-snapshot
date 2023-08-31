@@ -43,10 +43,10 @@ func (fn *GetRestApis) New(name string, config interface{}) ([]api.Request, erro
 			if r.Stats {
 				countRestApis += len(output.Items)
 			} else {
-			if innerErr = api.SendRecords(ctx, ch, name, &GetRestApisOutput{output}); innerErr != nil {
-				return false
+				if innerErr = api.SendRecords(ctx, ch, name, &GetRestApisOutput{output}); innerErr != nil {
+					return false
+				}
 			}
-		}
 
 			return true
 		})

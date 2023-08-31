@@ -37,7 +37,7 @@ func (fn *DescribeInternetGateways) New(name string, config interface{}) ([]api.
 	call := func(ctx context.Context, ch chan<- *api.Record) error {
 		var outerErr, innerErr error
 		var countInternetGateways int
-		r, _:= ctx.Value("runner_config").(api.Runner)
+		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeInternetGatewaysPagesWithContext(ctx, &input, func(output *ec2.DescribeInternetGatewaysOutput, last bool) bool {
 			if r.Stats {
 				countInternetGateways += len(output.InternetGateways)

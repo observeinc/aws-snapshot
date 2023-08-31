@@ -49,9 +49,9 @@ func (fn *DescribeServices) New(name string, config interface{}) ([]api.Request,
 
 				// run nested query
 				err := fn.ListServicesPagesWithContext(ctx, listServicesInput, func(output *ecs.ListServicesOutput, last bool) bool {
-					if r.Stats { 
+					if r.Stats {
 						countServices += len(output.ServiceArns)
-						return true	
+						return true
 					}
 					if len(output.ServiceArns) == 0 {
 						return true

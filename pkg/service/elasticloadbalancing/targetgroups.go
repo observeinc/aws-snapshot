@@ -61,31 +61,31 @@ func (fn *DescribeTargetGroups) New(name string, config interface{}) ([]api.Requ
 			if r.Stats {
 				countTargetGroups += len(output.TargetGroups)
 			} else {
-			var describeTagsInput elbv2.DescribeTagsInput
-			for _, targetGroup := range output.TargetGroups {
-				describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, targetGroup.TargetGroupArn)
-			}
+				var describeTagsInput elbv2.DescribeTagsInput
+				for _, targetGroup := range output.TargetGroups {
+					describeTagsInput.ResourceArns = append(describeTagsInput.ResourceArns, targetGroup.TargetGroupArn)
+				}
 
-			var describeTagsOutput *elbv2.DescribeTagsOutput
-			var err error
+				var describeTagsOutput *elbv2.DescribeTagsOutput
+				var err error
 
-			if len(describeTagsInput.ResourceArns) > 0 {
-				describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
+				if len(describeTagsInput.ResourceArns) > 0 {
+					describeTagsOutput, err = fn.ELBv2.DescribeTagsWithContext(ctx, &describeTagsInput)
 
-				if err != nil {
+					if err != nil {
+						innerErr = err
+						return false
+					}
+				}
+
+				if err = api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
+					DescribeTargetGroupsOutput: output,
+					DescribeTagsOutput:         describeTagsOutput,
+				}); err != nil {
 					innerErr = err
 					return false
 				}
 			}
-
-			if err = api.SendRecords(ctx, ch, name, &DescribeTargetGroupsOutput{
-				DescribeTargetGroupsOutput: output,
-				DescribeTagsOutput:         describeTagsOutput,
-			}); err != nil {
-				innerErr = err
-				return false
-			}
-		}
 
 			return true
 		})

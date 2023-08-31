@@ -41,24 +41,24 @@ func (fn *DescribeMountTargets) New(name string, config interface{}) ([]api.Requ
 
 		r, _ := ctx.Value("runner_config").(api.Runner)
 		outerErr = fn.DescribeFileSystemsPagesWithContext(ctx, &fsInput, func(output *efs.DescribeFileSystemsOutput, last bool) bool {
-		if r.Stats {
-			// TODO: Filter filesystems somehow
-			countFileSystemMountTargets += len(output.FileSystems)
-		} else { 
-			for _, fs := range output.FileSystems {
-				mtInput.FileSystemId = fs.FileSystemId
-				output, err := fn.DescribeMountTargetsWithContext(ctx, &mtInput)
-				if err != nil {
-					innerErr = err
-					return false
-				}
+			if r.Stats {
+				// TODO: Filter filesystems somehow
+				countFileSystemMountTargets += len(output.FileSystems)
+			} else {
+				for _, fs := range output.FileSystems {
+					mtInput.FileSystemId = fs.FileSystemId
+					output, err := fn.DescribeMountTargetsWithContext(ctx, &mtInput)
+					if err != nil {
+						innerErr = err
+						return false
+					}
 
-				if err := api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output}); err != nil {
-					innerErr = err
-					return false
+					if err := api.SendRecords(ctx, ch, name, &DescribeMountTargetsOutput{output}); err != nil {
+						innerErr = err
+						return false
+					}
 				}
 			}
-		}
 			return true
 		})
 		if r.Stats {

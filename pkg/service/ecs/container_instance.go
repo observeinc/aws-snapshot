@@ -48,7 +48,7 @@ func (fn *DescribeContainerInstances) New(name string, config interface{}) ([]ap
 
 				// run nested query
 				err := fn.ListContainerInstancesPagesWithContext(ctx, listContainerInstancesInput, func(output *ecs.ListContainerInstancesOutput, last bool) bool {
-					if r.Stats { 
+					if r.Stats {
 						countContainerInstances += len(output.ContainerInstanceArns)
 						return true
 					}

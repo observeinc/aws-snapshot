@@ -22,7 +22,6 @@ func (o *DescribeNetworkInterfacesOutput) Records() (records []*api.Record) {
 	return
 }
 
-
 type DescribeNetworkInterfaces struct {
 	API
 }
